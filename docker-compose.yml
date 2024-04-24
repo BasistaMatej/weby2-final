@@ -24,7 +24,7 @@ services:
 
   # Vue.js 3
   vue:
-    build: 
+    build:
       context: .
       dockerfile: ./.docker/vue/Dockerfile
     ports:
@@ -45,7 +45,7 @@ services:
   mysql:
     image: mysql/mysql-server:8.0
     ports:
-        - 3306:3306
+      - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: "finalne"
       MYSQL_ROOT_HOST: "%"
