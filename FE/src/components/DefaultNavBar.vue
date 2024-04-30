@@ -3,13 +3,16 @@
     <div class="container">
       <nav class="d-flex justify-content-end p-2">
         <span class="fw-bold btn-login">Prihlásiť sa</span>
-        <Button class="ml-5" label="Registrácia" />
+        <router-link to="/registration">
+          <Button class="ml-5" label="Registrácia" />
+        </router-link>
       </nav>
     </div>
   </div>
 </template>
 
 <script setup>
+import router from '@/router';
 import Button from 'primevue/button';
 </script>
 
