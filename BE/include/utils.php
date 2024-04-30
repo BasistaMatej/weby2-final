@@ -1,5 +1,5 @@
 <?php
-    require_once 'vendor/autoload.php';
+    require_once str_replace('include','',__DIR__) . 'vendor/autoload.php';
 
     use PHPMailer\PHPMailer\PHPMailer;
     use PHPMailer\PHPMailer\Exception;

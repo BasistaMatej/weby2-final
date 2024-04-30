@@ -4,8 +4,8 @@
   header("Access-Control-Allow-Methods: GET,POST,OPTIONS");
   header("Content-Type: application/json");
   
-  require 'include/.config.php';
-  require 'include/utils.php';
+  require __DIR__ . '/.config.php';
+  require __DIR__ . '/utils.php';
   
   try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
