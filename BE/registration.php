@@ -73,7 +73,10 @@
       $token = generate_jwt($postdata['email'], 24*60);
 
       try {
-        $body    = '<h1>You have been registered successfully.</h1><br><p>Welcome to Classroom Interact! To activate your account, please click on the following link: <a style="color: #7825c6; text-decoration: none; border-bottom: 1px solid #7825c6" href="http://localhost:5173/activate/' . $token . '">Activate Account</a></p><p>Link is valid for 24 hours.</p><br><p>Best regards,<br>Classroom Interact Team</p>';
+        $body = file_get_contents(__DIR__."/html/email.html");
+        $body = str_replace("{{token}}", $token, $body);
+        $body = str_replace("{{year}}", Date('y'), $body);
+
         send_email('Classroom Interact - Welcome!', $body, $postdata['email']);
 
         $conn->commit();
