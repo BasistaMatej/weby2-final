@@ -85,7 +85,7 @@ CREATE TABLE `users` (
   `name` varchar(32) COLLATE utf8mb4_general_ci NOT NULL,
   `surname` varchar(64) COLLATE utf8mb4_general_ci NOT NULL,
   `email` varchar(256) COLLATE utf8mb4_general_ci NOT NULL,
-  `password` varchar(64) COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(128) COLLATE utf8mb4_general_ci NOT NULL,
   `auth_level` tinyint(1) NOT NULL DEFAULT '1' COMMENT '1 = basic, 2 = admin, -1 = blokovany',
   `valid` tinyint(1) NOT NULL DEFAULT '0',
   `last_login` timestamp NULL DEFAULT NULL
