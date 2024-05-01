@@ -11,7 +11,7 @@
     </div>
 
     <div class="d-flex align-items-center flex-column">
-        <div class="box">
+        <div class="box" v-if="!isFormSubmitted">
             <InputGroup>
                 <InputGroupAddon>
                     <i class="pi pi-user"></i>
@@ -51,13 +51,23 @@
                 <Password v-model="confirmPassword" @click="checkPasswords" :invalid="!passwordsMatch"
                     placeholder="Confirm Password" toggleMask />
             </InputGroup>
-            <Button @click="submitForm" type="submit" label="Registrácia">Registrovať <lord-icon
+            <Button @click="submitForm" type="submit" label="Registrácia">Registrovať <lord-icon v-if="!isLoading"
                     src="https://cdn.lordicon.com/oqdmuxru.json" trigger="hover" colors="primary:#ffffff"
                     style="width:2em;height:2em;margin-left:1em;">
+                </lord-icon><lord-icon v-else src="https://cdn.lordicon.com/lqxfrxad.json" trigger="loop" delay="200"
+                    colors="primary:#ffffff" style="width:2em;height:2em;margin-left: 1em;">
                 </lord-icon></Button>
-            <Toast />
+        </div>
+
+        <div class="box" v-if="!isFormSubmitted">
+            <h1 class="mt-4">Potvrdenie registrácie je na vašom e-maily !</h1>
+            <lord-icon src="https://cdn.lordicon.com/nzixoeyk.json" trigger="loop" delay="500" colors="primary:#8b5cf6"
+                style="width:8rem;height:15rem">
+            </lord-icon>
         </div>
     </div>
+
+    <Toast />
 
 </template>
 
@@ -82,6 +92,8 @@ const isNameValid = ref(true)
 const surname = ref(null)
 const isSurnameValid = ref(true)
 const toast = useToast();
+const isFormSubmitted = ref(false)
+const isLoading = ref(false);
 
 watch([password, confirmPassword], () => {
     checkPasswords();
@@ -99,7 +111,6 @@ const checkPasswords = () => {
             passwordsMatch.value = false;
         } else {
             passwordsMatch.value = true;
-
         }
     }
 }
@@ -139,15 +150,16 @@ watch(surname, () => {
     validateSurname();
 })
 
-const showSuccess = () => {
-    toast.add({ severity: 'success', summary: 'Success Message', detail: 'Form submitted ! To activate your account, please visit your email inbox and activate your account.', life: 5000 });
+const showSuccess = (successMessage) => {
+    toast.add({ severity: 'success', summary: 'Success', detail: successMessage, life: 5000 });
 };
 
-const showError = () => {
-    toast.add({ severity: 'error', summary: 'Error Message', detail: 'Form was not submitted !', life: 3000 });
+const showError = (errorMessage) => {
+    toast.add({ severity: 'error', summary: 'Error Message', detail: errorMessage, life: 3000 });
 };
 
 const submitForm = async () => {
+    isLoading.value = true;
     if (isEmailValid.value == true && isNameValid.value == true && isSurnameValid.value == true && passwordsMatch.value == true) {
         const response = await fetch('https://node17.webte.fei.stuba.sk/final/registration.php', {
             method: 'POST',
@@ -160,11 +172,22 @@ const submitForm = async () => {
         });
 
         if (!response.ok) {
-            showError();
+            isLoading.value = false;
+            const data = await response.json();
+            showError(data.error);
         } else {
-            showSuccess();
+            name.value = null;
+            surname.value = null;
+            email.value = null;
+            password.value = null;
+            confirmPassword.value = null;
+            isFormSubmitted.value = true;
+            const data = await response.json();
+            console.log(data);
+            showSuccess(data.message);
         }
     }
+    isLoading.value = false;
 }
 </script>
 
