@@ -12,11 +12,6 @@
 import { ref, watch } from 'vue';
 import InputOtp from 'primevue/inputotp';
 import DefaultNavBar from '../components/DefaultNavBar.vue';
-import InputGroup from 'primevue/inputgroup';
-import InputGroupAddon from 'primevue/inputgroupaddon';
-import InputText from 'primevue/inputtext';
-import Password from 'primevue/password';
-
 
 const code = ref(null)
 </script>

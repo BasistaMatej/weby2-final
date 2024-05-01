@@ -1,6 +1,6 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
-// import HelloWorld from './components/HelloWorld.vue'
+import { store } from './store.js';
 </script>
 
 <template>
@@ -10,13 +10,13 @@ import { RouterLink, RouterView } from 'vue-router'
 
       <div class="wrapper">
         <nav>
-            <RouterLink to="/">Home</RouterLink>
-            <RouterLink to="/about">About</RouterLink>
-          </nav>
-        </div>
-      </header> -->
+              <RouterLink to="/">Home</RouterLink>
+              <RouterLink to="/about">About</RouterLink>
+            </nav>
+          </div>
+        </header> -->
 
-    <RouterView />
+    <RouterView v-if="store.renderComponent" />
   </div>
 </template>
 

@@ -3,17 +3,30 @@
     <div class="container">
       <nav class="d-flex justify-content-end p-2">
         <span class="fw-bold btn-login" v-on:click="$router.push('/login')">Prihlásiť sa</span>
-        <router-link to="/registration">
-          <Button class="ml-5" label="Registrácia" />
-        </router-link>
+        <Button class="ml-5" label="Registrácia" @click="registrationShow" />
       </nav>
     </div>
   </div>
 </template>
 
 <script setup>
-//import router from '@/router';
+import { nextTick } from 'vue';
+import { store } from '@/store';
 import Button from 'primevue/button';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const registrationShow = async () => {
+  const currentRoute = router.currentRoute.value;
+  if (currentRoute.path === '/registration') {
+    store.renderComponent = false;
+    await nextTick();
+    store.renderComponent = true;
+  } else {
+    router.push('/registration');
+  }
+}
 </script>
 
 <style scoped>

@@ -1,39 +1,38 @@
 <template>
-
+  <div>
     <div>
-        <DefaultNavBar />
-        <div class="d-flex justify-content-center align-items-center flex-column w-100 p-3 h-100">
-            <h1 class="roboto-black h1">PRIHLÁSENIE</h1>
-            <h4>EXISTUJÚCI POUŽÍVATEĽ</h4>
-        </div>
+      <DefaultNavBar />
+      <div class="d-flex justify-content-center align-items-center flex-column w-100 p-3 h-100">
+        <h1 class="roboto-black h1">PRIHLÁSENIE</h1>
+        <h4>EXISTUJÚCI POUŽÍVATEĽ</h4>
+      </div>
     </div>
 
     <div class="d-flex align-items-center flex-column">
-        <div class="box">
-            <InputGroup>
-                <InputGroupAddon>
-                    <i class="pi pi-at"></i>
-                </InputGroupAddon>
-                <InputText v-model="email" @click="validateEmail" :invalid="!isEmailValid" placeholder="Email"
-                    name="email" />
-            </InputGroup>
+      <div class="box">
+        <InputGroup>
+          <InputGroupAddon>
+            <i class="pi pi-at"></i>
+          </InputGroupAddon>
+          <InputText v-model="email" @click="validateEmail" :invalid="!isEmailValid" placeholder="Email" name="email" />
+        </InputGroup>
 
-            <InputGroup>
-                <InputGroupAddon>
-                    <i class="pi pi-lock"></i>
-                </InputGroupAddon>
-                <Password v-model="password" @click="checkPasswords" :invalid="!isValidPassword" placeholder="Password"
-                    toggleMask />
-            </InputGroup>
+        <InputGroup>
+          <InputGroupAddon>
+            <i class="pi pi-lock"></i>
+          </InputGroupAddon>
+          <Password v-model="password" @click="checkPasswords" :invalid="!isValidPassword" placeholder="Password"
+            toggleMask />
+        </InputGroup>
 
-            <Button @click="submitForm" type="submit" label="Prihlásenie">Prihlásiť <lord-icon
-                    src="https://cdn.lordicon.com/oqdmuxru.json" trigger="hover" colors="primary:#ffffff"
-                    style="width:2em;height:2em;margin-left:1em;">
-                </lord-icon></Button>
-            <Toast />
-        </div>
+        <Button @click="submitForm" type="submit" label="Prihlásenie">Prihlásiť <lord-icon
+            src="https://cdn.lordicon.com/oqdmuxru.json" trigger="hover" colors="primary:#ffffff"
+            style="width:2em;height:2em;margin-left:1em;">
+          </lord-icon></Button>
+        <Toast />
+      </div>
     </div>
-
+  </div>
 </template>
 
 <script setup>
@@ -54,77 +53,77 @@ const isEmailValid = ref(true);
 const toast = useToast();
 
 watch([email], () => {
-    validateEmail();
+  validateEmail();
 })
 
 watch([password], () => {
-    checkPasswords();
+  checkPasswords();
 })
 
 const validateEmail = () => {
-    const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
-    if (email.value) {
-        isEmailValid.value = emailRegex.test(email.value);
-    } else {
-        isEmailValid.value = false;
-    }
+  const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+  if (email.value) {
+    isEmailValid.value = emailRegex.test(email.value);
+  } else {
+    isEmailValid.value = false;
+  }
 }
 
 const checkPasswords = () => {
-    if (password.value) {
-        if (password.value.length < 5) {
-            isValidPassword.value = false;
-        } else {
-            isValidPassword.value = true;
-        }
+  if (password.value) {
+    if (password.value.length < 5) {
+      isValidPassword.value = false;
     } else {
-        isValidPassword.value = false;
+      isValidPassword.value = true;
     }
+  } else {
+    isValidPassword.value = false;
+  }
 }
 
 const submitForm = async () => {
-    if (isEmailValid.value == true && isValidPassword.value == true) {
-        const response = await fetch('https://node17.webte.fei.stuba.sk/final/auth/login.php', {
-            method: 'POST',
-            body: JSON.stringify({
-                email: email.value,
-                password: password.value
-            })
-        });
+  if (isEmailValid.value == true && isValidPassword.value == true) {
+    const response = await fetch('https://node17.webte.fei.stuba.sk/final/auth/login.php', {
+      method: 'POST',
+      body: JSON.stringify({
+        email: email.value,
+        password: password.value
+      })
+    });
 
-        if (!response.ok) {
-            showError();
-        } else {
-            const data = await response.json();
-            localStorage.setItem('accessToken', data.accessToken);
-            showSuccess();
-        }
+    if (!response.ok) {
+      showError();
+    } else {
+      const data = await response.json();
+      localStorage.setItem('accessToken', data.accessToken);
+      showSuccess();
     }
+  }
 }
 
 const showSuccess = () => {
-    toast.add({ severity: 'success', summary: 'Success Message', detail: 'Form submitted ! To activate your account, please visit your email inbox and activate your account.', life: 5000 });
+  toast.add({ severity: 'success', summary: 'Success Message', detail: 'Form submitted ! To activate your account, please visit your email inbox and activate your account.', life: 5000 });
 };
 
 const showError = () => {
-    toast.add({ severity: 'error', summary: 'Error Message', detail: 'Form was not submitted !', life: 3000 });
+  toast.add({ severity: 'error', summary: 'Error Message', detail: 'Form was not submitted !', life: 3000 });
 };
 
 </script>
 
 <style scoped>
 h4 {
-    text-decoration: underline dotted #8B5CF6aa;
-    color: #8B5CF6ee;
+  text-decoration: underline dotted #8B5CF6aa;
+  color: #8B5CF6ee;
 }
 
 .p-inputgroup {
-    margin: 1rem !important;
-    width: calc(100% - 2rem) !important;
+  margin: 1rem !important;
+  width: calc(100% - 2rem) !important;
 }
 
 Button {
-    border-radius: 1em;
-    margin-bottom: 1rem;
+  border-radius: 1em;
+  margin-bottom: 1rem;
 }
 </style>
