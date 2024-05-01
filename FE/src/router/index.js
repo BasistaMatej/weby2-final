@@ -18,6 +18,11 @@ const router = createRouter({
       component: () => import('../views/Registration.vue')
     },
     {
+      path: '/activate/:token',
+      name: 'Activate email',
+      component: () => import('../views/EmailValidationView.vue')
+    },
+    {
       path: '/login',
       name: 'login',
       // route level code-splitting
