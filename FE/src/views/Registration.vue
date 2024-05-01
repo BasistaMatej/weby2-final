@@ -11,7 +11,7 @@
     </div>
 
     <div class="d-flex align-items-center flex-column">
-        <div id="box">
+        <div class="box">
             <InputGroup>
                 <InputGroupAddon>
                     <i class="pi pi-user"></i>
@@ -95,7 +95,12 @@ const checkPasswords = () => {
     if (password.value !== confirmPassword.value || (!password.value && !confirmPassword.value)) {
         passwordsMatch.value = false;
     } else {
-        passwordsMatch.value = true;
+        if (password.value.length < 5) {
+            passwordsMatch.value = false;
+        } else {
+            passwordsMatch.value = true;
+
+        }
     }
 }
 
@@ -169,17 +174,6 @@ h4 {
     color: #8B5CF6ee;
 }
 
-#box {
-    width: 50%;
-    box-sizing: border-box !important;
-    border-radius: 10px;
-    box-shadow: 0 0.5em 1em #8B5CF6aa;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    margin-top: 3em;
-}
-
 .p-inputgroup {
     margin: 1rem !important;
     width: calc(100% - 2rem) !important;
@@ -188,11 +182,5 @@ h4 {
 Button {
     border-radius: 1em;
     margin-bottom: 1rem;
-}
-
-@media (max-width: 930px) {
-    #box {
-        width: 80%;
-    }
 }
 </style>

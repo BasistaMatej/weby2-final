@@ -2,7 +2,7 @@
   <div class="w-100">
     <div class="container">
       <nav class="d-flex justify-content-end p-2">
-        <span class="fw-bold btn-login">Prihlásiť sa</span>
+        <span class="fw-bold btn-login" v-on:click="$router.push('/login')">Prihlásiť sa</span>
         <router-link to="/registration">
           <Button class="ml-5" label="Registrácia" />
         </router-link>
@@ -12,7 +12,7 @@
 </template>
 
 <script setup>
-import router from '@/router';
+//import router from '@/router';
 import Button from 'primevue/button';
 </script>
 

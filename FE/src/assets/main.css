@@ -83,3 +83,20 @@
 h1, h2, h3, h4, h5, h6 {
   color: var(--primary-color);
 }
+
+.box {
+  width: 50%;
+  box-sizing: border-box !important;
+  border-radius: 10px;
+  box-shadow: 0 0.5em 1em #8B5CF6aa;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 3em;
+}
+
+@media (max-width: 930px) {
+  .box {
+      width: 80%;
+  }
+}
