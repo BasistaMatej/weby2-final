@@ -23,6 +23,11 @@ const router = createRouter({
       component: () => import('../views/EmailValidationView.vue')
     },
     {
+      path: '/auth',
+      name: 'Welcome!',
+      component: () => import('../views/AuthHomeView.vue')
+    },
+    {
       path: '/login',
       name: 'login',
       // route level code-splitting
