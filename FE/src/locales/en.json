@@ -1,6 +1,19 @@
 {
-  "sign_in": "Sign in",
+  "login": "Login",
+  "up_login": "LOGIN",
   "registration": "Registration",
-  "enter_code": "Enter code"
+  "register": "Register",
+  "up_registration": "REGISTRATION",
+  "enter_code": "Enter code",
+  "up_new_user": "NEW USER",
+  "up_ex_user": "EXISTING USER",
+  "name": "Name",
+  "surname": "Surname",
+  "password": "Password",
+  "confirm_password": "Confirm Password",
+  "forgotten_password": "Forgotten password",
+  "submit": "Submit",
+  "reg_confirm_mail": "Registration confirmation is in your email!",
+  "one_more_step": "Just one more step!"
 
 }

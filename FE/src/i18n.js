@@ -3,7 +3,7 @@ import en from './locales/en.json'
 import sk from './locales/sk.json'
 
 function localeMessage() {
-    const locales = [{en: en}, {sk: sk}]
+    const locales = [{EN: en}, {SK: sk}]
     const message = {}
     locales.forEach(lang => {
         const key = Object.keys(lang)
@@ -13,7 +13,7 @@ function localeMessage() {
 }
 
 export default createI18n({
-    locale: 'sk',
-    fallbackLocale: 'sk',
+    locale: 'SK',
+    fallbackLocale: 'SK',
     messages: localeMessage()
 })
