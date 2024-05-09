@@ -1,0 +1,19 @@
+{
+  "login": "Prihlásiť sa",
+  "up_login": "PRIHLÁSENIE",
+  "registration": "Registrácia",
+  "register": "Registrovať",
+  "up_registration": "REGISTRÁCIA",
+  "enter_code": "Zadajte kód",
+  "up_new_user": "NOVÝ POUŽÍVATEĽ",
+  "up_ex_user": "EXISTUJÚCI POUŽÍVATEĽ",
+  "name": "Meno",
+  "surname": "Priezvisko",
+  "password": "Heslo",
+  "confirm_password": "Potvrď heslo",
+  "forgotten_password": "Zabudnuté heslo",
+  "submit": "Odoslať",
+  "reg_confirm_mail": "Potvrdenie registrácie je na vašom e-maily!",
+  "one_more_step": "Už iba krôčik!"
+
+}
