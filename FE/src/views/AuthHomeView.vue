@@ -2,16 +2,16 @@
   <div>
     <AuthNavBar />
     <div class="container">
-      <div class="px-5">
+      <div class="px-md-5">
         <div>
           <div class="d-inline-block">
-            <router-link to="/create-question"
+            <div @click="editQuestion(null, null, null, null)"
               class="d-flex flex-columns align-items-center align-content-center p-2 table-link">
               <lord-icon src="https://cdn.lordicon.com/zrkkrrpl.json" trigger="hover" stroke="bold"
                 style="width:2em;height:2em" colors="primary:#121331,secondary:#8b5cf6">
               </lord-icon>
               <span>Vytvoriť otázku</span>
-            </router-link>
+            </div>
           </div>
         </div>
         <span class="d-inline-block" style="margin-top: 2em; font-size: 80%; color: rgba(0,0,0,0.5)">Pri podržaní klávesy
@@ -20,7 +20,7 @@
           viacero stľpov
           naraz!</span>
         <DataTable class="auth-table" stripedRows paginator :rows="50" :rowsPerPageOptions="[50, 100, 200]"
-          sortMode="multiple" :value="products" removableSort dataKey="id">
+          sortMode="multiple" :value="products" removableSort dataKey="id" selectionMode="single" @rowSelect="editRow">
           <template #empty>
             <div class="d-flex flex-column align-items-center">
               <lord-icon src="https://cdn.lordicon.com/ribxmuoc.json" trigger="loop" delay="500"
@@ -40,6 +40,8 @@
         </DataTable>
       </div>
     </div>
+    <EditQuestionDialog v-model="showDialog" :title="dialogTitle" :category="dialogSubject" :id="dialogId"
+      :isActive="dialogActive" :question="dialogQuestion" />
   </div>
 </template>
 
@@ -48,9 +50,17 @@ import { ref } from 'vue';
 import AuthNavBar from '@/components/AuthNavBar.vue';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
+import EditQuestionDialog from '@/components/EditQuestionDialog.vue';
 import { FilterMatchMode } from 'primevue/api';
 import ColumnGroup from 'primevue/columngroup';
 import Row from 'primevue/row';
+
+const showDialog = ref(false);
+const dialogTitle = ref('Vytvorenie novej otázky');
+const dialogQuestion = ref('');
+const dialogSubject = ref('');
+const dialogActive = ref(false);
+const dialogId = ref(null);
 
 const products = ref([]);
 
@@ -59,6 +69,27 @@ const productsSample = ref([
   { id: 12, question: 'Koľko je 2+2?', subject: 'Matematika', created: '01-03-2024', code: 'MATH15', tools: '' },
   { id: 66, question: 'Odkiaľ pochádza slovo "káva"?', subject: 'Jazyk', created: '01-03-2024', code: 'JSH15', tools: '' },
 ]);
+
+const editRow = (event) => {
+  editQuestion(event.data.id, event.data.question, event.data.category, event.data.active)
+}
+
+const editQuestion = (id, question, subject, active) => {
+  if (id == null) {
+    dialogTitle.value = 'Vytvorenie novej otázky';
+    dialogQuestion.value = '';
+    dialogSubject.value = '';
+    dialogActive.value = false;
+    dialogId.value = null;
+  } else {
+    dialogTitle.value = 'Upravenie otázky';
+    dialogQuestion.value = question;
+    dialogSubject.value = subject;
+    dialogActive.value = active;
+    dialogId.value = id;
+  }
+  showDialog.value = true;
+}
 
 </script>
 
