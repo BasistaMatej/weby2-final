@@ -4,6 +4,10 @@
   font-family: 'Open Sans', Helvetica, Arial, sans-serif !important;
 }
 
+html, body {
+  background-color: #f1f1f1;
+}
+
 .pi{
   font-family: primeicons !important;
 }

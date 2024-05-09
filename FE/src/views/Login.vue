@@ -23,10 +23,10 @@
                         <i class="pi pi-lock"></i>
                     </InputGroupAddon>
                     <Password v-model="password" @click="checkPasswords" :invalid="!isValidPassword"
-                        placeholder="Password" toggleMask />
+                        placeholder="Heslo" toggleMask :feedback="false" />
                 </InputGroup>
 
-                <Button @click="submitForm" type="submit" label="Registrácia">Registrovať <lord-icon v-if="!isLoading"
+                <Button @click="submitForm" type="submit" label="Prihlásiť sa!">Prihlásiť sa! <lord-icon v-if="!isLoading"
                         src="https://cdn.lordicon.com/oqdmuxru.json" trigger="hover" colors="primary:#ffffff"
                         style="width:2em;height:2em;margin-left:1em;">
                     </lord-icon><lord-icon v-else src="https://cdn.lordicon.com/lqxfrxad.json" trigger="loop"
@@ -34,7 +34,7 @@
                     </lord-icon></Button>
             </div>
             <div class="box p-3 text-center" v-if="isFormSubmitted">
-                <h1 class="mt-4">Už iba krôčik !</h1>
+                <h1 class="mt-4">Už iba krôčik!</h1>
                 <lord-icon src="https://cdn.lordicon.com/kddybgok.json" trigger="loop" delay="200"
                     colors="primary:#8b5cf6" style="width:8rem;height:15rem">
                 </lord-icon>
@@ -54,7 +54,9 @@ import Password from 'primevue/password';
 import Button from 'primevue/button';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const password = ref(null)
 const isValidPassword = ref(true);
 const email = ref(null);
@@ -111,7 +113,9 @@ const submitForm = async () => {
             const data = await response.json();
             localStorage.setItem('accessToken', data.accessToken);
             isFormSubmitted.value = true;
-            showSuccess();
+            setTimeout(() => {
+                router.push('/auth');
+            }, 1500);
         }
     }
     isLoading.value = false;
