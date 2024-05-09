@@ -8,10 +8,12 @@ import 'primevue/resources/themes/aura-light-purple/theme.css'
 import 'primevue/resources/primevue.min.css'
 import 'primeicons/primeicons.css'
 import ToastService from 'primevue/toastservice';
+import i18n from "./i18n.js";
 
 const app = createApp(App)
 
 app.use(PrimeVue);
 app.use(router);
 app.use(ToastService);
+app.use(i18n);
 app.mount('#app')
