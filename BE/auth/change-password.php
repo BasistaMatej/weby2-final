@@ -33,10 +33,9 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
                     return;
                 }
                 
-                
+       
                 // Create JWT token for password reset
-                // $token = generate_jwt(['email' => $email, 'scope' => 'password_reset'], 24*60*60); // Token valid for 24 hours
-                $token = generate_jwt($postdata['email'], 24*60);
+                $token = generate_jwt($postdata['email'], 10); // expire in 10 minutes
                 
                 $body = file_get_contents(__DIR__ . "/../html/email-change_password.html");
                 $body = str_replace("{{token}}", $token, $body);
@@ -46,40 +45,27 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
 
                 send_email('Classroom Interact - Password Reset', $body, $email);
                 response(["message" => "Password reset email sent successfully."], 200); 
-                // response(["message" => "Password reset email sent successfully. Token: " . $token], 200); //TODO remove token from response
+                // response(["message" => "Password reset email sent successfully", "token-debug" => $token], 200); //TODO remove token from response
 
             } else {
                 response(["error" => "Email not found"], 404);
             }
         }
-        
-
     
         else if ($endpoint === '/reset-password') {
             $postdata = json_decode(file_get_contents("php://input"), true);
-
-            $email = $postdata['email'] ?? '';
+            $token = $postdata['token'] ?? '';
             $newPassword = $postdata['password'] ?? '';
             
-            // Check if required fields are present
-            if (!$email || !$newPassword) {
-                response(["error" => "Missing required fields"], 400);
+
+            if (!$token || !$newPassword) {
+                response(["error" => "Missing token or new password"], 400);
                 return;
             }
 
-            // Basic validation
-            if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL) || !$newPassword) {
-                response(["error" => "Missing or invalid fields"], 400);
-                return;
-            }
-
-
-            // Check if email exists in the database
-            $checkStmt = $conn->prepare("SELECT 1 FROM users WHERE email = :email");
-            $checkStmt->bindParam(':email', $email);
-            $checkStmt->execute();
-            if ($checkStmt->rowCount() === 0) {
-                response(["error" => "Email does not exist"], 404);
+            $email = verify_jwt($token);
+            if (!$email) {
+                response(["error" => "Invalid or expired token"], 401);
                 return;
             }
             
