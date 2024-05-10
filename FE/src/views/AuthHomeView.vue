@@ -54,7 +54,7 @@ import ColumnGroup from 'primevue/columngroup';
 import Row from 'primevue/row';
 
 const showDialog = ref(false);
-const dialogTitle = ref($t('new_question_creation'));
+const dialogTitle = ref('Vytvorenie novej otázky');
 const dialogQuestion = ref('');
 const dialogSubject = ref('');
 const dialogActive = ref(false);
@@ -75,14 +75,14 @@ const editRow = (event) => {
 
 const editQuestion = (id, question, subject, active, type) => {
   if (id == null) {
-    dialogTitle.value = $t('new_question_creation');
+    dialogTitle.value = 'Vytvorenie novej otázky';
     dialogQuestion.value = '';
     dialogSubject.value = '';
     dialogActive.value = false;
     dialogId.value = null;
     dialogType.value = 1;
   } else {
-    dialogTitle.value = $t('edit_question');
+    dialogTitle.value = 'Úprava otázky';
     dialogQuestion.value = question;
     dialogSubject.value = subject;
     dialogActive.value = active;

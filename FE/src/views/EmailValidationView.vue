@@ -53,7 +53,7 @@ onMounted(async () => {
     dataText.value = data.message;
   } catch (error) {
     isError.value = true;
-    dataText.value = $t('failed_email_validation');
+    dataText.value = 'Nepodarilo sa overiť e-mail. Skúste to prosím neskôr.';
   }
 });
 </script>

@@ -86,15 +86,15 @@ const answers = ref([{ text: '', id: null }]);
 const isActive = ref(false);
 const questionText = ref('');
 const id = ref(null);
-const type = ref({ name: $t('with_open_answer'), value: 1 });
-const options = ref([{ name: $t('with_open_answer'), value: 1 }, { name: $t('with_options'), value: 2 }]);
+const type = ref({ name: 'S otvorenou odpoveďou', value: 1 });
+const options = ref([{ name: 'S otvorenou odpoveďou', value: 1 }, { name: 'S možnosťami', value: 2 }]);
 
 const visible = defineModel();
 const props = defineProps(['title', 'question', 'category', 'isActive', 'id', 'type']);
 
 const deleteOption = (index) => {
   if (answers.value.length <= 2) {
-    toast.add({ severity: 'warn', summary: $t('info'), detail: $t('choose_two_options'), life: 4500 });
+    toast.add({ severity: 'warn', summary: 'Informácia', detail: 'Musíte si vybrať aspoň 2 možnosti.', life: 4500 });
     return;
   }
   answers.value.splice(index, 1);
@@ -105,23 +105,23 @@ const addOption = () => {
 }
 
 const categories = ref([
-  { name: $t('lang'), id: 1 },
-  { name: $t('math'), id: 2 },
-  { name: $t('history'), id: 3 },
-  { name: $t('panda'), id: 4 },
-  { name: $t('kangaroo'), id: 88 },
+  { name: 'Jazyky', id: 1 },
+  { name: 'Matematika', id: 2 },
+  { name: 'História', id: 3 },
+  { name: 'Panda', id: 4 },
+  { name: 'Klokan', id: 88 },
   { name: 'IT', id: 102 }
 ]);
 
 const saveQuestion = () => {
   if (!questionText.value) {
-    toast.add({ severity: 'error', summary: $t('info'), detail: $t('not_empty_question'), life: 4500 });
+    toast.add({ severity: 'error', summary: 'Informácia', detail: 'Otázka nesmie byť prázdna.', life: 4500 });
     return;
   }
 
   if (type.value.value === 2) {
     if (answers.value.length < 2) {
-      toast.add({ severity: 'warn', summary: $t('info'), detail: $t('choose_two_options'), life: 4500 });
+      toast.add({ severity: 'warn', summary: 'Informácia', detail: 'Musíte si vybrať aspoň 2 možnosti.', life: 4500 });
       return;
     }
   }
