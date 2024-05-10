@@ -13,7 +13,7 @@
 
       $email = verify_jwt($_GET['token']);
       if(!$email) {
-        response(["error" => "Invalid token: " . verify_jwt($_GET['token']) ], 401);
+        response(["error" => "Invalid token"], 401);
         return;
       }
 
