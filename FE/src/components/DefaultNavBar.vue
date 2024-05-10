@@ -2,8 +2,9 @@
   <div class="w-100">
     <div class="container">
       <nav class="d-flex justify-content-end p-2">
-        <span class="fw-bold btn-login" v-on:click="$router.push('/login')">Prihlásiť sa</span>
-        <Button class="ml-5" label="Registrácia" @click="registrationShow" />
+        <span class="fw-bold btn-login" v-on:click="$router.push('/login')">{{$t('login')}}</span>
+        <Button class="ml-5" @click="registrationShow">{{$t('registration')}}</Button>
+        <dropdown :options="$i18n.availableLocales" v-model="$i18n.locale" optionKey="locale" class="dropdown"/>
       </nav>
     </div>
   </div>
@@ -14,6 +15,8 @@ import { nextTick } from 'vue';
 import { store } from '@/store';
 import Button from 'primevue/button';
 import { useRouter } from 'vue-router';
+import Dropdown from 'primevue/dropdown';
+
 
 const router = useRouter();
 
@@ -43,5 +46,9 @@ Button {
 .btn-login:hover {
   color: var(--secondary-color);
   cursor: pointer;
+}
+
+.dropdown {
+  margin-left: 1rem;
 }
 </style>
