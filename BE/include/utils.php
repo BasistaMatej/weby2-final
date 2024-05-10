@@ -6,6 +6,7 @@
 
     function response($message, $code = 200) {
       http_response_code($code);
+      $message = json_encode($message);
       die($message);
     }
 

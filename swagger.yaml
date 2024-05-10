@@ -1,0 +1,167 @@
+openapi: 3.0.0
+info:
+  title: User Management API
+  description: This API handles user verification, registration, authentication, and other user-related actions.
+  version: "1.0.0"
+servers:
+  - url: http://localhost/api
+paths:
+  /verify:
+    get:
+      summary: Verify user's email token
+      tags:
+        - Verification
+      parameters:
+        - name: token
+          in: query
+          required: true
+          description: JWT token to verify user's email
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Account successfully verified
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Account verified
+        '400':
+          description: Missing token in request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Missing data
+        '401':
+          description: Invalid or expired token provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid token
+  /register:
+    post:
+      summary: Register a new user and send a verification email
+      tags:
+        - Registration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+                name:
+                  type: string
+                surname:
+                  type: string
+              required:
+                - email
+                - password
+                - name
+                - surname
+      responses:
+        '201':
+          description: User registered successfully, verification email sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User registered successfully
+        '400':
+          description: Validation error for input data or email already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Missing required fields or validation error
+        '500':
+          description: Server error during user registration
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Error while creating the account.
+  /login:
+    post:
+      summary: Authenticate a user
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: Authentication successful, access tokens returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  refreshToken:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        '401':
+          description: Invalid credentials or account issues
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid credentials or account not verified
+  /curl:
+    post:
+      summary: Endpoint to test with cURL
+      tags:
+        - Test
+      responses:
+        '200':
+          description: Test endpoint reached successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  skuska:
+                    type: string
+                    example: Podarilo sa

@@ -28,7 +28,7 @@ services:
       context: .
       dockerfile: ./.docker/vue/Dockerfile
     ports:
-      - "80:80"
+      - "5173:80"
 
   # PhpMyAdmin Service
   phpmyadmin:
@@ -52,6 +52,7 @@ services:
       MYSQL_DATABASE: WEBY2_final
     volumes:
       - ./.docker/mysql/my.cnf:/etc/mysql/my.cnf
+      - ./.database:/docker-entrypoint-initdb.d
     healthcheck:
       test: mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_ROOT_PASSWORD
       interval: 5s
