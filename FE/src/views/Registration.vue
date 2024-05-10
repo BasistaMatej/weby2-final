@@ -5,8 +5,8 @@
         <div>
             <DefaultNavBar />
             <div class="d-flex justify-content-center align-items-center flex-column w-100 p-3 h-100">
-                <h1 class="roboto-black h1 text-center">REGISTRÁCIA</h1>
-                <h4 class="text-center">NOVÝ POUŽÍVATEĽ</h4>
+                <h1 class="roboto-black h1 text-center">{{$t('up_registration')}}</h1>
+                <h4 class="text-center">{{$t('up_new_user')}}</h4>
             </div>
         </div>
 
@@ -16,7 +16,7 @@
                     <InputGroupAddon>
                         <i class="pi pi-user"></i>
                     </InputGroupAddon>
-                    <InputText v-model="name" :invalid="!isNameValid" placeholder="Name" name="name"
+                    <InputText v-model="name" :invalid="!isNameValid" :placeholder="$t('name')" name="name"
                         @click="validateName" />
                 </InputGroup>
 
@@ -25,7 +25,7 @@
                         <i class="pi pi-user"></i>
                     </InputGroupAddon>
                     <InputText v-model="surname" @click="validateSurname" :invalid="!isSurnameValid"
-                        placeholder="Surname" name="surname" />
+                               :placeholder="$t('surname')" name="surname" />
                 </InputGroup>
 
                 <InputGroup>
@@ -41,7 +41,7 @@
                         <i class="pi pi-lock"></i>
                     </InputGroupAddon>
                     <Password v-model="password" @click="checkPasswords" :invalid="!passwordsMatch"
-                        placeholder="Password" toggleMask />
+                              :placeholder="$t('password')" toggleMask />
                 </InputGroup>
 
                 <InputGroup>
@@ -49,9 +49,9 @@
                         <i class="pi pi-lock"></i>
                     </InputGroupAddon>
                     <Password v-model="confirmPassword" @click="checkPasswords" :invalid="!passwordsMatch"
-                        placeholder="Confirm Password" toggleMask />
+                              :placeholder="$t('confirm_password')" toggleMask />
                 </InputGroup>
-                <Button @click="submitForm" type="submit" label="Registrácia">Registrovať <lord-icon v-if="!isLoading"
+                <Button @click="submitForm" type="submit" label="Registrácia">{{$t('register')}} <lord-icon v-if="!isLoading"
                         src="https://cdn.lordicon.com/oqdmuxru.json" trigger="hover" colors="primary:#ffffff"
                         style="width:2em;height:2em;margin-left:1em;">
                     </lord-icon><lord-icon v-else src="https://cdn.lordicon.com/lqxfrxad.json" trigger="loop"
@@ -60,7 +60,7 @@
             </div>
 
             <div class="box p-3 text-center" v-if="isFormSubmitted">
-                <h1 class="mt-4">Potvrdenie registrácie je na vašom e-maily !</h1>
+                <h1 class="mt-4">{{$t('reg_confirm_mail')}}</h1>
                 <lord-icon src="https://cdn.lordicon.com/nzixoeyk.json" trigger="loop" delay="500"
                     colors="primary:#8b5cf6" style="width:8rem;height:15rem">
                 </lord-icon>

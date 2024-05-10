@@ -3,8 +3,8 @@
         <div>
             <DefaultNavBar />
             <div class="d-flex justify-content-center align-items-center flex-column w-100 p-3 h-100">
-                <h1 class="roboto-black h1 text-center">PRIHLÁSENIE</h1>
-                <h4 class="text-center">EXISTUJÚCI POUŽÍVATEĽ</h4>
+                <h1 class="roboto-black h1 text-center">{{$t('up_login')}}</h1>
+                <h4 class="text-center">{{$t('up_ex_user')}}</h4>
             </div>
         </div>
 
@@ -23,13 +23,12 @@
                         <i class="pi pi-lock"></i>
                     </InputGroupAddon>
                     <Password v-model="password" @click="checkPasswords" :invalid="!isValidPassword"
-                        placeholder="Heslo" toggleMask :feedback="false" />
+                              :placeholder="$t('password')" toggleMask :feedback="false" />
                 </InputGroup>
 
                 <div id="button-box" class="d-flex">
-                    <span class="fw-bold btn-login text-center" @click="lostPassword">Zabudnuté
-                        heslo</span>
-                    <Button @click="submitForm" type="submit" label="Registrácia">Prihlásiť <lord-icon v-if="!isLoading"
+                    <span class="fw-bold btn-login text-center" @click="lostPassword">{{$t('forgotten_password')}}</span>
+                    <Button @click="submitForm" type="submit" label="Registrácia">{{$t('login')}} <lord-icon v-if="!isLoading"
                             src="https://cdn.lordicon.com/oqdmuxru.json" trigger="hover" colors="primary:#ffffff"
                             style="width:2em;height:2em;margin-left:1em;">
                         </lord-icon><lord-icon v-else src="https://cdn.lordicon.com/lqxfrxad.json" trigger="loop"
@@ -48,7 +47,7 @@
                 </InputGroup>
 
                 <div id="button-box" class="d-flex">
-                    <Button @click="submitFormPassword" type="submit" label="Registrácia">Odoslať <lord-icon
+                    <Button @click="submitFormPassword" type="submit" label="Registrácia">{{$t('submit')}} <lord-icon
                             v-if="!isLoading" src="https://cdn.lordicon.com/oqdmuxru.json" trigger="hover"
                             colors="primary:#ffffff" style="width:2em;height:2em;margin-left:1em;">
                         </lord-icon><lord-icon v-else src="https://cdn.lordicon.com/lqxfrxad.json" trigger="loop"
@@ -58,7 +57,7 @@
             </div>
 
             <div class="box p-3 text-center" v-if="isFormSubmitted">
-                <h1 class="mt-4">Už iba krôčik!</h1>
+                <h1 class="mt-4">{{$t('one_more_step')}}</h1>
                 <lord-icon src="https://cdn.lordicon.com/kddybgok.json" trigger="loop" delay="200"
                     colors="primary:#8b5cf6" style="width:8rem;height:15rem">
                 </lord-icon>
