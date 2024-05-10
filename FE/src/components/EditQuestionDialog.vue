@@ -3,14 +3,14 @@
     <div class="d-flex flex-column">
       <!-- <span class="p-text-secondary block mb-5"></span> -->
       <div class="flex align-items-center gap-3 mb-2">
-        <label for="question" class="font-semibold w-6rem" style="min-width:15%">Otázka</label>
+        <label for="question" class="font-semibold w-6rem" style="min-width:15%">{{$t('question')}}</label>
         <InputText id="question" class="flex-auto mx-3" autocomplete="off" style="min-width: 80%"
           v-model="questionText" />
       </div>
       <div class="flex align-items-center gap-3 mb-2">
-        <label for="category" class="font-semibold w-6rem" style="min-width:15%">Predmet</label>
+        <label for="category" class="font-semibold w-6rem" style="min-width:15%">{{$t('subject')}}</label>
         <Dropdown v-model="selectedCategory" :options="categories" filter optionLabel="name" id="category"
-          placeholder="Výber kategóriu" class="w-full md:w-14rem mx-3" style="min-width: 80%">
+          :placeholder="$t('select_category')" class="w-full md:w-14rem mx-3" style="min-width: 80%">
           <template #value="slotProps">
             <div v-if="slotProps.value" class="flex align-items-center">
               <div>{{ slotProps.value.name }}</div>
@@ -27,11 +27,11 @@
         </Dropdown>
       </div>
       <div class="flex align-items-center align-content-center gap-3 mb-2">
-        <label for="isActive" class="font-semibold w-6rem" style="min-width:15%">Aktívna?</label>
+        <label for="isActive" class="font-semibold w-6rem" style="min-width:15%">{{$t('active?')}}</label>
         <InputSwitch v-model="isActive" id="isActive" class="mx-3" />
       </div>
       <div class="flex align-items-center align-content-center gap-3 mb-2">
-        <label for="type" class="font-semibold w-6rem" style="min-width:15%">Typ</label>
+        <label for="type" class="font-semibold w-6rem" style="min-width:15%">{{$t('type')}}</label>
         <SelectButton class="d-inline-flex mx-3" v-model="type" :options="options" aria-labelledby="basic" id="type"
           optionLabel="name" />
       </div>
@@ -39,7 +39,7 @@
       <div v-if="type.value === 2" class="mt-3">
         <div v-for=" (option, index) in answers" class="flex align-items-center gap-3 mb-2" :key="index">
           <label :for="'option-' + index" class="font-semibold w-6rem" style="min-width:15%">{{ index + 1 }}.
-            Možnost</label>
+            {{ $t('option') }}</label>
           <InputText :id="'option-' + index" class="flex-auto mx-3" autocomplete="off" style="min-width: 70%"
             v-model="answers[index].text" />
           <div class="d-inline-block p-2 options-button" @click="deleteOption(index)">
@@ -54,14 +54,14 @@
             <lord-icon src="https://cdn.lordicon.com/zrkkrrpl.json" trigger="hover" stroke="bold"
               style="width:2em;height:2em" colors="primary:#121331,secondary:#8b5cf6">
             </lord-icon>
-            <span>Pridať možnosť</span>
+            <span>{{ $t('add_option') }}</span>
           </div>
         </div>
       </div>
 
       <div class="flex justify-content-end gap-2 modal-buttons">
-        <Button type="button" label="Zrušiť" severity="secondary" @click="visible = false"></Button>
-        <Button type="button" label="Uložiť!" @click="saveQuestion" class="mx-3"></Button>
+        <Button type="button" severity="secondary" @click="visible = false">{{$t('cancel')}}</Button>
+        <Button type="button"  @click="saveQuestion" class="mx-3">{{$t('save')}}</Button>
       </div>
     </div>
     <Toast />
@@ -86,15 +86,15 @@ const answers = ref([{ text: '', id: null }]);
 const isActive = ref(false);
 const questionText = ref('');
 const id = ref(null);
-const type = ref({ name: 'S otvorenou odpoveďou', value: 1 });
-const options = ref([{ name: 'S otvorenou odpoveďou', value: 1 }, { name: 'S možnosťami', value: 2 }]);
+const type = ref({ name: $t('with_open_answer'), value: 1 });
+const options = ref([{ name: $t('with_open_answer'), value: 1 }, { name: $t('with_options'), value: 2 }]);
 
 const visible = defineModel();
 const props = defineProps(['title', 'question', 'category', 'isActive', 'id', 'type']);
 
 const deleteOption = (index) => {
   if (answers.value.length <= 2) {
-    toast.add({ severity: 'warn', summary: 'Informácia', detail: 'Musíte zvoliť aspoň 2 možnosti.', life: 4500 });
+    toast.add({ severity: 'warn', summary: $t('info'), detail: $t('choose_two_options'), life: 4500 });
     return;
   }
   answers.value.splice(index, 1);
@@ -105,23 +105,23 @@ const addOption = () => {
 }
 
 const categories = ref([
-  { name: 'Jazyk', id: 1 },
-  { name: 'Matematika', id: 2 },
-  { name: 'Historia', id: 3 },
-  { name: 'Panda', id: 4 },
-  { name: 'Klokan', id: 88 },
+  { name: $t('lang'), id: 1 },
+  { name: $t('math'), id: 2 },
+  { name: $t('history'), id: 3 },
+  { name: $t('panda'), id: 4 },
+  { name: $t('kangaroo'), id: 88 },
   { name: 'IT', id: 102 }
 ]);
 
 const saveQuestion = () => {
   if (!questionText.value) {
-    toast.add({ severity: 'error', summary: 'Informácia', detail: 'Otázka nesmie byť prázdna.', life: 4500 });
+    toast.add({ severity: 'error', summary: $t('info'), detail: $t('not_empty_question'), life: 4500 });
     return;
   }
 
   if (type.value.value === 2) {
     if (answers.value.length < 2) {
-      toast.add({ severity: 'warn', summary: 'Informácia', detail: 'Musíte zvoliť aspoň 2 možnosti.', life: 4500 });
+      toast.add({ severity: 'warn', summary: $t('info'), detail: $t('choose_two_options'), life: 4500 });
       return;
     }
   }

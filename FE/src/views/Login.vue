@@ -28,7 +28,7 @@
 
                 <div id="button-box" class="d-flex">
                     <span class="fw-bold btn-login text-center" @click="lostPassword">{{$t('forgotten_password')}}</span>
-                    <Button @click="submitForm" type="submit" label="Registrácia">{{$t('login')}} <lord-icon v-if="!isLoading"
+                    <Button @click="submitForm" type="submit" label="Registrácia"> {{$t('login')}} <lord-icon v-if="!isLoading"
                             src="https://cdn.lordicon.com/oqdmuxru.json" trigger="hover" colors="primary:#ffffff"
                             style="width:2em;height:2em;margin-left:1em;">
                         </lord-icon><lord-icon v-else src="https://cdn.lordicon.com/lqxfrxad.json" trigger="loop"
@@ -168,11 +168,11 @@ const submitForm = async () => {
 }
 
 const showSuccess = () => {
-    toast.add({ severity: 'success', summary: 'Prihlásenie prebehlo úspešne !', detail: successMessage, life: 5000 });
+    toast.add({ severity: 'success', summary: $t('login_success'), detail: successMessage, life: 5000 });
 };
 
 const showError = (errorMessage) => {
-    toast.add({ severity: 'error', summary: 'Error Message', detail: errorMessage, life: 3000 });
+    toast.add({ severity: 'error', summary: $t('error_msg'), detail: errorMessage, life: 3000 });
 };
 
 const lostPassword = () => {

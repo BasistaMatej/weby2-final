@@ -10,15 +10,13 @@
               <lord-icon src="https://cdn.lordicon.com/zrkkrrpl.json" trigger="hover" stroke="bold"
                 style="width:2em;height:2em" colors="primary:#121331,secondary:#8b5cf6">
               </lord-icon>
-              <span>Vytvoriť otázku</span>
+              <span>{{$t('create_question')}}</span>
             </div>
           </div>
         </div>
-        <span class="d-inline-block" style="margin-top: 2em; font-size: 80%; color: rgba(0,0,0,0.5)">Pri podržaní klávesy
-          Ctrl (prip. CMD) je
-          možné filtrovať
-          viacero stľpov
-          naraz!</span>
+        <span class="d-inline-block" style="margin-top: 2em; font-size: 80%; color: rgba(0,0,0,0.5)">
+          {{$t('filter_several_columns')}}
+        </span>
         <DataTable class="auth-table" stripedRows paginator :rows="50" :rowsPerPageOptions="[50, 100, 200]"
           sortMode="multiple" :value="products" removableSort dataKey="id" selectionMode="single" @rowSelect="editRow">
           <template #empty>
@@ -27,16 +25,16 @@
                 colors="primary:#121331,secondary:#8b5cf6" style="width:250px;height:250px">
               </lord-icon>
               <h4>
-                Neboli nájdene žiadne otázky. Začnite vytvorením!
+                {{$t('no_question_find')}}
               </h4>
             </div>
           </template>
-          <template #loading>Načitávam</template>
-          <Column field="question" header="Otázka" sortable></Column>
-          <Column field="subject" header="Predmet" sortable></Column>
-          <Column field="created" header="Vytvorené" sortable></Column>
-          <Column field="code" header="Kód" sortable></Column>
-          <Column field="tools" header="Nástroje"></Column>
+          <template #loading> {{$t('loading')}} </template>
+          <Column field="question" :header="$t('question')" sortable></Column>
+          <Column field="subject" :header="$t('subject')" sortable></Column>
+          <Column field="created" :header="$t('created')" sortable></Column>
+          <Column field="code" :header="$t('code')" sortable></Column>
+          <Column field="tools" :header="$t('tools')" ></Column>
         </DataTable>
       </div>
     </div>
@@ -56,7 +54,7 @@ import ColumnGroup from 'primevue/columngroup';
 import Row from 'primevue/row';
 
 const showDialog = ref(false);
-const dialogTitle = ref('Vytvorenie novej otázky');
+const dialogTitle = ref($t('new_question_creation'));
 const dialogQuestion = ref('');
 const dialogSubject = ref('');
 const dialogActive = ref(false);
@@ -77,14 +75,14 @@ const editRow = (event) => {
 
 const editQuestion = (id, question, subject, active, type) => {
   if (id == null) {
-    dialogTitle.value = 'Vytvorenie novej otázky';
+    dialogTitle.value = $t('new_question_creation');
     dialogQuestion.value = '';
     dialogSubject.value = '';
     dialogActive.value = false;
     dialogId.value = null;
     dialogType.value = 1;
   } else {
-    dialogTitle.value = 'Upravenie otázky';
+    dialogTitle.value = $t('edit_question');
     dialogQuestion.value = question;
     dialogSubject.value = subject;
     dialogActive.value = active;

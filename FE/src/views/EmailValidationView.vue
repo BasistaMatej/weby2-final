@@ -14,15 +14,15 @@
             <h1 class="roboto-black">{{ dataText }}</h1>
             <div>
               <p v-if="!isError">
-                Now you can log in and enjoy answering all the super questions and polls!
+                {{ $t('success_email_validation') }}
                 <router-link to="/login" class="router-link">Log in</router-link>
               </p>
               <p v-else>
-                Unfortunately, your email could not be validated. Please try again later.
+                {{ $t('error_email_validation') }}
               </p>
             </div>
           </div>
-          <p v-else>Validating your email...</p>
+          <p v-else>{{ $t('email_validation') }}</p>
         </div>
       </div>
     </div>
@@ -53,7 +53,7 @@ onMounted(async () => {
     dataText.value = data.message;
   } catch (error) {
     isError.value = true;
-    dataText.value = "Failed to validate email. Please try again later.";
+    dataText.value = $t('failed_email_validation');
   }
 });
 </script>

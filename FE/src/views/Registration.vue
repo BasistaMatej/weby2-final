@@ -152,11 +152,11 @@ watch(surname, () => {
 })
 
 const showSuccess = (successMessage) => {
-    toast.add({ severity: 'success', summary: 'Success', detail: successMessage, life: 5000 });
+    toast.add({ severity: 'success', summary: $t('success_msg'), detail: successMessage, life: 5000 });
 };
 
 const showError = (errorMessage) => {
-    toast.add({ severity: 'error', summary: 'Error Message', detail: errorMessage, life: 3000 });
+    toast.add({ severity: 'error', summary: $t('error_msg'), detail: errorMessage, life: 3000 });
 };
 
 const submitForm = async () => {
