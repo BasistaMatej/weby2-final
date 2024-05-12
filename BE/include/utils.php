@@ -4,6 +4,8 @@
     use PHPMailer\PHPMailer\PHPMailer;
     use PHPMailer\PHPMailer\Exception;
 
+    use \Firebase\JWT\JWT;
+
     function response($message, $code = 200) {
       http_response_code($code);
       $message = json_encode($message);
@@ -33,33 +35,88 @@
     }
 
     function generate_jwt($email, $expiration_time_minutes) {
-      $key = "w€byF1n4ln3";
-      $header = json_encode(['typ' => 'JWT', 'alg' => 'HS256']);
-      $payload = json_encode(['email' => $email, 'exp' => time() + ($expiration_time_minutes * 60)]);
-      $base64UrlHeader = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($header));
-      $base64UrlPayload = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($payload));
-      $signature = hash_hmac('sha256', $base64UrlHeader . "." . $base64UrlPayload, $key, true);
-      $base64UrlSignature = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($signature));
-      $jwt = $base64UrlHeader . "." . $base64UrlPayload . "." . $base64UrlSignature;
-      return $jwt;
+      $key = "w€byF1n4ln3";  // Use the key directly if not using base64 everywhere
+      $payload = [
+          'email' => $email,
+          'exp' => time() + ($expiration_time_minutes * 60)
+      ];
+      return JWT::encode($payload, $key, 'HS256');
+  }
+  
+  function verify_jwt($jwt) {
+    $key = "w€byF1n4ln3";  // Use the correct key
+    try {
+        // Attempt to decode the token using the same key and algorithm
+        return Firebase\JWT\JWT::decode($jwt, new Firebase\JWT\Key($key, 'HS256'));
+    } catch (Firebase\JWT\ExpiredException $e) {
+        // Token has expired; return a specific error or false
+        return 'expired';  // Indicates token is expired
+    } catch (\DomainException $e) {
+        // This catch block is for corrupted JSON specifically
+        return 'malformed';  // Indicates malformed token
+    } catch (\UnexpectedValueException $e) {
+        // This exception is thrown if the token is otherwise invalid
+        return 'malformed';  // General malformed token catch-all
+    } catch (Exception $e) {
+        // Other errors (e.g., invalid signature, general decoding error)
+        return false;
     }
-    
-    function verify_jwt($jwt) {
-      $key = "w€byF1n4ln3";
-      $jwt_values = explode('.', $jwt);
-      $recieved_signature = $jwt_values[2];
-      $recieved_header_and_payload = $jwt_values[0] . '.' . $jwt_values[1];
-      $expected_signature = hash_hmac('sha256', $recieved_header_and_payload, $key, true);
-      $expected_signature = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($expected_signature));
-      if($recieved_signature == $expected_signature) {
-        $payload = json_decode(base64_decode($jwt_values[1]), true);
-        if(isset($payload['exp']) && $payload['exp'] >= time()) {
-          if(isset($payload['email'])) {
-            return $payload['email'];
-          }
-        }
+}
+
+
+function verify_token($conn, $token = null) {
+  // Check if the token is provided in the function call if not, check the Authorization header
+  if (!$token) {
+      if (!isset($_SERVER['HTTP_AUTHORIZATION'])) {
+          response(['error' => 'Authorization header not found'], 401);
+          return false;
       }
+
+      if (preg_match('/Bearer\s(\S+)/', $_SERVER['HTTP_AUTHORIZATION'], $matches)) {
+          $token = $matches[1];
+      } else {
+          response(['error' => 'Bearer token not found'], 401);
+          return false;
+      }
+  }
+
+  // Verify the token
+  $decoded = verify_jwt($token);
+  switch ($decoded) {
+      case 'expired':
+          response(['error' => 'Token expired'], 401);
+          return false;
+      case 'malformed':
+          response(['error' => 'Malformed token'], 400);
+          return false;
+      case false:
+          response(['error' => 'Invalid token'], 401);
+          return false;
+  }
+
+  // If the token is valid, fetch user details
+  $stmt = $conn->prepare("SELECT user_id, email, valid, auth_level FROM users WHERE email = :email");
+  $stmt->bindParam(':email', $decoded->email);
+  $stmt->execute();
+  $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+  if (!$user) {
+      response(['error' => 'User not found'], 404);
       return false;
-    }
+  }
+
+  if ($user['valid'] == 0) {
+      response(['error' => 'Account not verified'], 401);
+      return false;
+  }
+
+  if ($user['auth_level'] == -1) {
+      response(['error' => 'Account blocked'], 401);
+      return false;
+  }
+
+  return $user;  // return the user array with user details
+}
+
 
 ?>

@@ -3,43 +3,30 @@
 require '../include/db_connect.php';
 require_once '../vendor/autoload.php';
 
-use \Firebase\JWT\JWT;
-use Firebase\JWT\Key;
-
 switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
-  case "GET":
-      if(!isset($_COOKIE['jwt'])) {
-        response(["error" => "Unauthorized"], 401);
-        return;
-      }
+    case "GET":
+        if (!isset($_COOKIE['jwt'])) {
+            response(["error" => "Unauthorized - No token provided"], 401);
+            return;
+        }
 
-      $refreshToken = $_COOKIE['jwt'];
-      try {
-          $decoded = JWT::decode($refreshToken, new Key('R€FR€?H_T0k€N_s€CR€T','HS256'));
+        $refreshToken = $_COOKIE['jwt'];
+        
+        $user = verify_token($conn, $refreshToken);
+        if (!$user) {
+            // The response is already handled within the function
+            exit;  // Stop further execution if the token is invalid
+        }
 
-          // Check validity of user
-          $stmt = $conn->prepare("SELECT user_id, email, valid, auth_level FROM users WHERE email = :email");
-          $stmt->bindParam(':email', $decoded->email);
-          $stmt->execute();
-          $user = $stmt->fetch();
+        // If everything is valid, issue a new access token
+        $accessToken = generate_jwt($user['email'], 10);  // Generate new access token for 10 minutes
 
-          if($stmt->rowCount() == 0 || $user['valid'] == 0 || $user['auth_level'] == -1) {
-              response(["error" => "Unauthorized"], 401);
-              return;
-          }
+        response(["accessToken" => $accessToken], 200);
+        break;
 
-          $accessToken = JWT::encode([
-              'user_id' => $user['user_id'],
-              'email' => $decoded->email
-          ], '&CC€ZZ=v0K€M_S€CReD', 'HS256', 600); // 10 minut
-          
-          response(["accessToken" => $accessToken], 200);
-      } catch (Exception $e) {
-          response(["error" => "Unauthorized"], 401);
-          return;
-      }
-      break;
-  default:
-      response(["error" => "Method not allowed"], 405);
-      break;
-  }
+    default:
+        response(["error" => "Method not allowed"], 405);
+        break;
+}
+
+?>

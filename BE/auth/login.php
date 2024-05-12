@@ -2,66 +2,62 @@
 require '../include/db_connect.php';
 require_once '../vendor/autoload.php';
 
-use \Firebase\JWT\JWT;
-
-
 switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
   case "POST":
-      
-    $postdata = json_decode(file_get_contents("php://input"), true);
+      $postdata = json_decode(file_get_contents("php://input"), true);
 
-    if(!isset($postdata['email']) || !isset($postdata['password'])) {
-        response(["error" => "Missing required fields"], 400);
-        return;
-    }
-
-    $email = $postdata['email'];
-    $password = $postdata['password'];
-    
-    $stmt = $conn->prepare("SELECT user_id, password, valid, auth_level FROM users WHERE email = :email");
-    $stmt->bindParam(':email', $email);
-    $stmt->execute();
-
-    if($stmt->rowCount() == 1) {
-      $user = $stmt->fetch();
-
-      if(!password_verify($password, $user['password'])) {
-        response(["error" => "Invalid credentials"], 401);
-        return;
+      if (!isset($postdata['email']) || !isset($postdata['password'])) {
+          response(["error" => "Missing required fields"], 400);
+          return;
       }
 
-      if($user['valid'] == 0) {
-        response(["error" => "Account not verified"], 401);
-        return;
-      }
+      $email = $postdata['email'];
+      $password = $postdata['password'];
 
-      if($user['auth_level'] == -1) {
-        response(["error" => "Account blocked"], 401);
-        return;
-      }
+      $stmt = $conn->prepare("SELECT user_id, password, valid, auth_level FROM users WHERE email = :email");
+      $stmt->bindParam(':email', $email);
+      $stmt->execute();
 
-      $accessToken = JWT::encode([
-          'user_id' => $user['user_id'],
-          'email' => $email
-      ], '&CC€ZZ=v0K€M_S€CReD', 'HS256', 600); // 10 minut 
-      
-      $refreshToken = JWT::encode([
-          'email' => $email
-      ], 'R€FR€?H_T0k€N_s€CR€T', 'HS256', 86400); // 1 den
-      
-      // HTTP-only cookie
-      setcookie('jwt', $refreshToken, time() + 86400, '/', '', true, true);
-      
-      response(["accessToken" => $accessToken], 200);
-    } else {
-      response(["error" => "Invalid credentials"], 401);
-      return;
-    }
-    
-    break;
+      if ($stmt->rowCount() == 1) {
+          $user = $stmt->fetch();
+
+          if (!password_verify($password, $user['password'])) {
+              response(["error" => "Invalid credentials"], 401);
+              return;
+          }
+
+          if ($user['valid'] == 0) {
+              response(["error" => "Account not verified"], 401);
+              return;
+          }
+
+          if ($user['auth_level'] == -1) {
+              response(["error" => "Account blocked"], 401);
+              return;
+          }
+
+          // Generate a new access token
+          $accessToken = generate_jwt($email, 10); // Access token valid for 10 minutes
+
+          // Generate a new refresh token
+          $refreshToken = generate_jwt($email, 1440); // Refresh token valid for 1 day
+
+          // Set the HTTP-only cookie for the refresh token
+          setcookie('jwt', $refreshToken, time() + 86400, '/', '', true, true);
+
+          response([
+              "accessToken" => $accessToken,
+              "refreshToken" => $refreshToken // Optionally send refresh token back in the response
+          ], 200);
+      } else {
+          response(["error" => "Invalid credentials"], 401);
+      }
+      break;
+
   case "OPTIONS":
       break;
+
   default:
       response(["error" => "Method not allowed"], 405);
       break;
-  }
+}

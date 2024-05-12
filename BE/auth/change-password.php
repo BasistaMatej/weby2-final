@@ -36,7 +36,7 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
        
                 // Create JWT token for password reset
                 $token = generate_jwt($postdata['email'], 10); // expire in 10 minutes
-                
+                echo $token;
                 $body = file_get_contents(__DIR__ . "/../html/email-change_password.html");
                 $body = str_replace("{{token}}", $token, $body);
                 $body = str_replace("{{year}}", date('Y'), $body);
@@ -54,20 +54,20 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
     
         else if ($endpoint === '/reset-password') {
             $postdata = json_decode(file_get_contents("php://input"), true);
-            $token = $postdata['token'] ?? '';
             $newPassword = $postdata['password'] ?? '';
-            
 
-            if (!$token || !$newPassword) {
-                response(["error" => "Missing token or new password"], 400);
+            $user = verify_token($conn);
+            if (!$user) {
+                // The response is already handled within the function
+                exit;  // Stop further execution if the token is invalid
+            }
+
+            if (!$newPassword) {
+                response(["error" => "Missing new password"], 400);
                 return;
             }
 
-            $email = verify_jwt($token);
-            if (!$email) {
-                response(["error" => "Invalid or expired token"], 401);
-                return;
-            }
+            $email = $user['email'];
             
             // Update password
             $stmt = $conn->prepare("UPDATE users SET password = :password WHERE email = :email");

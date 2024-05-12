@@ -9,6 +9,12 @@ $endpoint = isset($_GET['endpoint']) ? $_GET['endpoint'] : '';
 switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
     
     case "GET":
+        $user = verify_token($conn);
+        if (!$user) {
+            // The response is already handled within the function
+            exit;  // Stop further execution if the token is invalid
+        }
+
         try {
             $stmt = $conn->prepare("SELECT subject_name FROM subjects");
             $stmt->execute();
@@ -29,7 +35,13 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
     break;
 
     case "POST":
-        
+        $user = verify_token($conn);
+        if (!$user) {
+            // The response is already handled within the function
+            exit;  // Stop further execution if the token is invalid
+        }
+
+
         $postdata = json_decode(file_get_contents("php://input"), true);
         
 
@@ -62,6 +74,16 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
     break;
 
     case "PUT":
+        $user = verify_token($conn);
+        if (!$user) {
+            // The response is already handled within the function
+            exit;  // Stop further execution if the token is invalid
+        }
+        if ($user['auth_level'] != 2) {
+            response(["error" => "Unauthorized"], 401);
+            return;
+        }
+
         $postdata = json_decode(file_get_contents("php://input"), true);
 
         if (!isset($postdata['old_subject_name']) || !isset($postdata['new_subject_name'])) {
@@ -106,6 +128,16 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
     break;
 
     case "DELETE":
+        $user = verify_token($conn);
+        if (!$user) {
+            // The response is already handled within the function
+            exit;  // Stop further execution if the token is invalid
+        }
+        if ($user['auth_level'] != 2) {
+            response(["error" => "Unauthorized"], 401);
+            return;
+        }
+
         //TODO check if subject is used in any question, if that is the case, return 400
         if ($endpoint == ''){
             response(["error" => "Missing required field: subject_name"], 400);

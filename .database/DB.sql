@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 12, 2024 at 01:10 PM
+-- Generation Time: May 12, 2024 at 06:17 PM
 -- Server version: 8.0.36-0ubuntu0.22.04.1
 -- PHP Version: 8.3.2-1+ubuntu22.04.1+deb.sury.org+1
 
@@ -149,7 +149,8 @@ INSERT INTO `users` (`user_id`, `name`, `surname`, `email`, `password`, `auth_le
 (20, 'skuska', 'skuska', 'melayna.xayla@milkgitter.com', '$argon2id$v=19$m=65536,t=4,p=1$RVNrSGp3S3BIQ0pjS3FjbA$xgjRxDhv14/+QVHWMu6aiG5lfmnMmJUCAksY7pxK0Pg', 1, 0, NULL),
 (21, 'Patrik', 'Pitka Kester', 'melaynaaa.xayla@milkgitter.com', '$argon2id$v=19$m=65536,t=4,p=1$eFpob2h2QWJyU0RIMDM4Ng$IkrNkaevdhqkG4B0wOSk+qIBPBYJVLvONIXaR9FUNe0', 1, 0, NULL),
 (22, 'Samuel', 'Kubala', 'kubalasamuel1a@gmail.com', '$argon2id$v=19$m=65536,t=4,p=1$ckh5eHB0cGNGdngvTDU2Qw$vk/Q3oRc59Gb+pfo1+0cy1wB2C3tFqhG1nthZm9pc0I', 1, 1, NULL),
-(23, 'marcel', 'brandt', 'brandysss@gmail.com', '$argon2id$v=19$m=65536,t=4,p=1$WVBzdURlSXk2c2o0VmxJcQ$nLO7LbHTVGBg4MOEoowngY1g056dOU/K3hy956ru7SY', 1, 0, NULL);
+(23, 'marcel', 'brandt', 'brandysss@gmail.com', '$argon2id$v=19$m=65536,t=4,p=1$WVBzdURlSXk2c2o0VmxJcQ$nLO7LbHTVGBg4MOEoowngY1g056dOU/K3hy956ru7SY', 1, 0, NULL),
+(24, 'Janko', 'korhac', 'pykej13@gmail.com', '$argon2id$v=19$m=65536,t=4,p=1$RjYySTJubU9Qb0d0QlFzRQ$DltIkl/4sdsggbTaTWnBLw0GdI+E8uMmgSkRnWm/qH4', 1, 1, NULL);
 
 --
 -- Indexes for dumped tables
@@ -221,7 +222,7 @@ ALTER TABLE `template_questions`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `user_id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- Constraints for dumped tables
