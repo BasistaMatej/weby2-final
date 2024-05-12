@@ -36,7 +36,6 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
        
                 // Create JWT token for password reset
                 $token = generate_jwt($postdata['email'], 10); // expire in 10 minutes
-                echo $token;
                 $body = file_get_contents(__DIR__ . "/../html/email-change_password.html");
                 $body = str_replace("{{token}}", $token, $body);
                 $body = str_replace("{{year}}", date('Y'), $body);

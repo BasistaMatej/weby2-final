@@ -43,7 +43,7 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
           $refreshToken = generate_jwt($email, 1440); // Refresh token valid for 1 day
 
           // Set the HTTP-only cookie for the refresh token
-          setcookie('jwt', $refreshToken, time() + 86400, '/', '', true, true);
+          setcookie('jwt', $refreshToken, time() + 86400, '/', '', true, true); // cookie is set for 1 day
 
           response([
               "accessToken" => $accessToken,
