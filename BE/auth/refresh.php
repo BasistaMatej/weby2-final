@@ -5,14 +5,8 @@ require_once '../vendor/autoload.php';
 
 switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
     case "GET":
-        if (!isset($_COOKIE['jwt'])) {
-            response(["error" => "Unauthorized - No token provided"], 401);
-            return;
-        }
-
-        $refreshToken = $_COOKIE['jwt'];
         
-        $user = verify_token($conn, $refreshToken);
+        $user = verify_token($conn); // TODO check function if work properly
         if (!$user) {
             // The response is already handled within the function
             exit;  // Stop further execution if the token is invalid
