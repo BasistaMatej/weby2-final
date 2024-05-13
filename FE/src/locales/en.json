@@ -21,7 +21,7 @@
   "question": "Question",
   "subject": "Subject",
   "select_category": "Select a category",
-  "active?": "Active?",
+  "active?": "Active",
   "type": "Type",
   "option": "Option",
   "add_option": "Add option",
@@ -51,6 +51,16 @@
   "filter_several_columns": "By holding down the Ctrl (or CMD) key, it is possible to filter several columns at once!",
   "created": "Created",
   "code": "Code",
-  "tools": "Tools"
+  "tools": "Tools",
+  "lang_id": "en",
+  "hello": "Hello",
+  "email_address": "Email address",
+  "last_activity": "Last activity",
+  "entitlement_level": "Entitlement Level",
+  "up_user": "USER",
+  "up_change_password": "CHANGE OF PASSWORD",
+  "change_password": "Change password",
+  "up_reset_password": "RESET PASSWORD",
+  "change_password_success": "Password changed successfully!"
 
 }

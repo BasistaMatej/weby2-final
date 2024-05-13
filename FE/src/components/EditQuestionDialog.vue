@@ -85,16 +85,34 @@ const selectedCategory = ref(null);
 const answers = ref([{ text: '', id: null }]);
 const isActive = ref(false);
 const questionText = ref('');
+const lang_id = ref('');
 const id = ref(null);
 const type = ref({ name: 'S otvorenou odpoveďou', value: 1 });
 const options = ref([{ name: 'S otvorenou odpoveďou', value: 1 }, { name: 'S možnosťami', value: 2 }]);
 
 const visible = defineModel();
-const props = defineProps(['title', 'question', 'category', 'isActive', 'id', 'type']);
+const props = defineProps(['title', 'question', 'category', 'isActive', 'id', 'type', 'lang_id']);
 
+const setTypeAndOptionsName = (lang_id) => {
+  if (lang_id === "en") {
+    type.value.name = 'With an open answer';
+    options.value[0].name = 'With an open answer';
+    options.value[1].name = 'With options';
+  } else  {
+    type.value.name = 'S otvorenou odpoveďou';
+    options.value[0].name = 'S otvorenou odpoveďou';
+    options.value[1].name = 'S možnosťami';
+  }
+}
+setTypeAndOptionsName(lang_id.value);
 const deleteOption = (index) => {
   if (answers.value.length <= 2) {
-    toast.add({ severity: 'warn', summary: 'Informácia', detail: 'Musíte si vybrať aspoň 2 možnosti.', life: 4500 });
+    if (lang_id.value === "en") {
+      toast.add({ severity: 'warn', summary: 'Information', detail: 'You must choose at least 2 options.', life: 4500 });
+    } else  {
+      toast.add({ severity: 'warn', summary: 'Informácia', detail: 'Musíte si vybrať aspoň 2 možnosti.', life: 4500 });
+    }
+
     return;
   }
   answers.value.splice(index, 1);
@@ -113,15 +131,39 @@ const categories = ref([
   { name: 'IT', id: 102 }
 ]);
 
+const setCategories = (lang_id) => {
+  if (lang_id === "en") {
+    categories.value[0].name = 'Languages';
+    categories.value[1].name = 'Mathematics';
+    categories.value[2].name = 'History';
+    categories.value[4].name = 'Kangaroo';
+  } else  {
+    categories.value[0].name = 'Jazyky';
+    categories.value[1].name = 'Matematika';
+    categories.value[2].name = 'História';
+    categories.value[4].name = 'Klokan';
+  }
+}
+setCategories(lang_id.value);
 const saveQuestion = () => {
   if (!questionText.value) {
-    toast.add({ severity: 'error', summary: 'Informácia', detail: 'Otázka nesmie byť prázdna.', life: 4500 });
+    if (lang_id.value === "en") {
+      toast.add({ severity: 'warn', summary: 'Information', detail: 'The question must not be empty.', life: 4500 });
+    } else  {
+      toast.add({ severity: 'error', summary: 'Informácia', detail: 'Otázka nesmie byť prázdna.', life: 4500 });
+    }
+
     return;
   }
 
   if (type.value.value === 2) {
     if (answers.value.length < 2) {
-      toast.add({ severity: 'warn', summary: 'Informácia', detail: 'Musíte si vybrať aspoň 2 možnosti.', life: 4500 });
+      if (lang_id.value === "en") {
+        toast.add({ severity: 'warn', summary: 'Information', detail: 'You must choose at least 2 options.', life: 4500 });
+      } else  {
+        toast.add({ severity: 'warn', summary: 'Informácia', detail: 'Musíte si vybrať aspoň 2 možnosti.', life: 4500 });
+      }
+
       return;
     }
   }
@@ -144,11 +186,21 @@ watch(
 );
 
 watch(
+    () => props.lang_id,
+    () => {
+      lang_id.value = props.lang_id
+      setTypeAndOptionsName(lang_id.value);
+      setCategories(lang_id.value);
+    }
+);
+
+watch(
   () => props.isActive,
   () => {
     isActive.value = props.isActive
   }
 );
+
 
 watch(
   () => props.category,

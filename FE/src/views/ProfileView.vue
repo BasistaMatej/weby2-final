@@ -13,21 +13,21 @@
 
             </div>
 
-            <h1 class="display-4 text-center mb-1">Ahoj Samuel!</h1>
+            <h1 class="display-4 text-center mb-1">{{ $t('hello') }} Samuel!</h1>
 
             <div class="content-box">
-                <p class="header-p">Level oprávnení</p>
+                <p class="header-p">{{ $t('entitlement_level') }}</p>
                 <p class="content-p">Admin</p>
             </div>
 
 
             <div class="content-box">
-                <p class="header-p">Emailová adresa</p>
+                <p class="header-p">{{ $t('email_address') }}</p>
                 <p class="content-p">kubalasamuel1a@gmail.com</p>
             </div>
 
             <div class="content-box">
-                <p class="header-p">Posledná aktivita</p>
+                <p class="header-p">{{ $t('last_activity') }}</p>
                 <p class="content-p">12-04-2024 16:02</p>
             </div>
 
@@ -44,8 +44,8 @@
     <div class="d-flex align-items-center flex-column" v-if="isForgotten">
 
         <div class="d-flex justify-content-center align-items-center flex-column w-100 p-3 h-100">
-            <h1 id="header-change" class="roboto-black h1 text-center">ZMENA HESLA</h1>
-            <h4 class="text-center">POUŽÍVATEĽ</h4>
+            <h1 id="header-change" class="roboto-black h1 text-center">{{ $t('up_change_password') }}</h1>
+            <h4 class="text-center">{{ $t('up_user') }}</h4>
         </div>
 
         <div class="change-password">
@@ -65,7 +65,7 @@
                     :placeholder="$t('confirm_password')" toggleMask />
             </InputGroup>
 
-            <Button @click="submitForm" type="submit" label="Registrácia">Zmeniť heslo<lord-icon v-if="!isLoading"
+            <Button @click="submitForm" type="submit" label="Registrácia">{{ $t('change_password') }}<lord-icon v-if="!isLoading"
                     src="https://cdn.lordicon.com/oqdmuxru.json" trigger="hover" colors="primary:#ffffff"
                     style="width:2em;height:2em;margin-left:1em;">
                 </lord-icon><lord-icon v-else src="https://cdn.lordicon.com/lqxfrxad.json" trigger="loop" delay="200"

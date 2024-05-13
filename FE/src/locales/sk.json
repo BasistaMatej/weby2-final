@@ -21,7 +21,7 @@
   "question": "Otázka",
   "subject": "Predmet",
   "select_category": "Vyberte kategóriu",
-  "active?": "Aktívna?",
+  "active?": "Aktívna",
   "type": "Typ",
   "option": "Možnosť",
   "add_option": "Pridať možnosť",
@@ -48,9 +48,19 @@
   "loading": "Načítavam",
   "no_question_find": "Neboli nájdene žiadne otázky. Začnite vytvorením!",
   "create_question": "Vytvoriť otázku",
-  "filter_several_columns": "Pri podržaní klávesy\n          Ctrl (prip. CMD) je\n          možné filtrovať\n          viacero stľpov\n          naraz!",
+  "filter_several_columns": "Pri podržaní klávesy Ctrl (prip. CMD) je možné filtrovať viacero stľpov naraz!",
   "created": "Vytvorené",
   "code": "Kód",
-  "tools": "Nástroje"
+  "tools": "Nástroje",
+  "lang_id": "sk",
+  "hello": "Ahoj",
+  "email_address": "Emailová adresa",
+  "last_activity": "Posledná aktivita",
+  "entitlement_level": "Level oprávnení",
+  "up_user": "POUŽÍVATEĽ",
+  "up_change_password": "CHANGE OF PASSWORD",
+  "change_password": "Zmeniť heslo",
+  "up_reset_password": "OBNOVENIE HESLA",
+  "change_password_success": "Heslo úspešne zmenené!"
 
 }

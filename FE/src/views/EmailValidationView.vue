@@ -15,7 +15,7 @@
             <div>
               <p v-if="!isError">
                 {{ $t('success_email_validation') }}
-                <router-link to="/login" class="router-link">Log in</router-link>
+                <router-link to="/login" class="router-link"> {{ $t('login') }}</router-link>
               </p>
               <p v-else>
                 {{ $t('error_email_validation') }}

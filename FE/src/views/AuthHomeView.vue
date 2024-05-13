@@ -5,7 +5,7 @@
       <div class="px-md-5">
         <div>
           <div class="d-inline-block">
-            <div @click="editQuestion(null, null, null, null, null)"
+            <div @click="editQuestion(null, null, null, null, null, null)"
               class="d-flex flex-columns align-items-center align-content-center p-2 table-link">
               <lord-icon src="https://cdn.lordicon.com/zrkkrrpl.json" trigger="hover" stroke="bold"
                 style="width:2em;height:2em" colors="primary:#121331,secondary:#8b5cf6">
@@ -18,7 +18,7 @@
           {{$t('filter_several_columns')}}
         </span>
         <DataTable class="auth-table" stripedRows paginator :rows="50" :rowsPerPageOptions="[50, 100, 200]"
-          sortMode="multiple" :value="products" removableSort dataKey="id" selectionMode="single" @rowSelect="editRow">
+          sortMode="multiple" :value="products" removableSort dataKey="id" selectionMode="single" @rowSelect="(event) => editRow(event, $t('lang_id'))">
           <template #empty>
             <div class="d-flex flex-column align-items-center">
               <lord-icon src="https://cdn.lordicon.com/ribxmuoc.json" trigger="loop" delay="700"
@@ -38,8 +38,8 @@
         </DataTable>
       </div>
     </div>
-    <EditQuestionDialog v-model="showDialog" :title="dialogTitle" :category="dialogSubject" :id="dialogId"
-      :isActive="dialogActive" :question="dialogQuestion" :type="dialogType" />
+    <EditQuestionDialog v-model="showDialog" :title="$t('new_question_creation')" :category="dialogSubject" :id="dialogId"
+      :isActive="dialogActive" :question="dialogQuestion" :type="dialogType" :lang_id="$t('lang_id')" />
   </div>
 </template>
 
@@ -60,6 +60,7 @@ const dialogSubject = ref('');
 const dialogActive = ref(false);
 const dialogId = ref(null);
 const dialogType = ref(1);
+const lang_id = ref('');
 
 const products = ref([]);
 
@@ -69,20 +70,28 @@ const productsSample = ref([
   { id: 66, question: 'Odkiaľ pochádza slovo "káva"?', subject: 'Jazyk', created: '01-03-2024', code: 'JSH15', tools: '', type: 1 },
 ]);
 
-const editRow = (event) => {
-  editQuestion(event.data.id, event.data.question, event.data.category, event.data.active, event.data.type)
+const editRow = (event, lang) => {
+  editQuestion(event.data.id, event.data.question, event.data.category, event.data.active, event.data.type, lang)
 }
 
-const editQuestion = (id, question, subject, active, type) => {
+const editQuestion = (id, question, subject, active, type, lang) => {
   if (id == null) {
-    dialogTitle.value = 'Vytvorenie novej otázky';
+    if (lang === 'sk') {
+      dialogTitle.value = 'Vytvorenie novej otázky';
+    } else if (lang === 'en') {
+      dialogTitle.value = 'Create a question';
+    }
     dialogQuestion.value = '';
     dialogSubject.value = '';
     dialogActive.value = false;
     dialogId.value = null;
     dialogType.value = 1;
   } else {
-    dialogTitle.value = 'Úprava otázky';
+    if (lang === 'sk') {
+      dialogTitle.value = 'Úprava otázky';
+    } else if (lang === 'en') {
+      dialogTitle.value = 'Edit question';
+    }
     dialogQuestion.value = question;
     dialogSubject.value = subject;
     dialogActive.value = active;
