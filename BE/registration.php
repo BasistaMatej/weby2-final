@@ -6,20 +6,16 @@
   switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
     // Na overenie tokenu z emailu (FE posle GET request s tokenom)
     case "GET":
-      if(!isset($_GET['token'])) {
-        response(["error" => "Missing data"], 400);
-        return;
-      }
-
-      $email = verify_jwt($_GET['token']);
-      if(!$email) {
-        response(["error" => "Invalid token"], 401);
-        return;
+      
+      $user = verify_token($conn, null, false);
+      if (!$user) {
+          // The response is already handled within the function
+          exit;  // Stop further execution if the token is invalid
       }
 
 
       $stmt = $conn->prepare("UPDATE users SET valid = 1 WHERE email = :email");
-      $stmt->bindParam(':email', $email);
+      $stmt->bindParam(':email', $user['email']);
       $stmt->execute();
 
       response(["message" => "Account verified"], 200);

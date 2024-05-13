@@ -63,25 +63,8 @@
     }
 }
 
-function refresh_token($conn) {
-  if (!isset($_COOKIE['jwt'])) {
-      response(["error" => "Unauthorized - No token provided"], 401);
-      return;
-  }
 
-  $refreshToken = $_COOKIE['jwt'];
-  $decoded = verify_token($conn, $refreshToken);
-  if (!$decoded) {
-      // The response is already handled within the function
-      exit;  // Stop further execution if the token is invalid
-  }
-
-  $accessToken = generate_jwt($decoded['email'], 10); // Access token valid for 10 minutes
-  response(["accessToken" => $accessToken, "message"=> "Acces token was refreshed, redo the request"], 200);
-  exit;
-}
-
-function verify_token($conn, $token = null) {
+function verify_token($conn, $token = null, $valid = true) {
   // Check if the token is provided in the function call if not, check the Authorization header
   if (!$token) {
       if (!isset($_SERVER['HTTP_AUTHORIZATION'])) {
@@ -101,7 +84,7 @@ function verify_token($conn, $token = null) {
   $decoded = verify_jwt($token);
   switch ($decoded) {
       case 'expired':
-          return refresh_token($conn);
+          response(['error' => 'Token expired'], 401);
       case 'malformed':
           response(['error' => 'Malformed token'], 400);
           return false;
@@ -121,7 +104,7 @@ function verify_token($conn, $token = null) {
       return false;
   }
 
-  if ($user['valid'] == 0) {
+  if ($user['valid'] == 0 && $valid) {
       response(['error' => 'Account not verified'], 401);
       return false;
   }
