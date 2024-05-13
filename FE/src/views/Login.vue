@@ -3,13 +3,13 @@
         <div>
             <DefaultNavBar />
             <div class="d-flex justify-content-center align-items-center flex-column w-100 p-3 h-100">
-                <h1 class="roboto-black h1 text-center">{{$t('up_login')}}</h1>
-                <h4 class="text-center">{{$t('up_ex_user')}}</h4>
+                <h1 class="roboto-black h1 text-center">{{ $t('up_login') }}</h1>
+                <h4 class="text-center">{{ $t('up_ex_user') }}</h4>
             </div>
         </div>
 
         <div class="d-flex align-items-center flex-column">
-            <div class="box" v-if="!isFormSubmitted && !isForgotten">
+            <div class="box" v-if="!isFormSubmitted && !isForgotten && !isEmailFormSubmitted">
                 <InputGroup>
                     <InputGroupAddon>
                         <i class="pi pi-at"></i>
@@ -23,14 +23,15 @@
                         <i class="pi pi-lock"></i>
                     </InputGroupAddon>
                     <Password v-model="password" @click="checkPasswords" :invalid="!isValidPassword"
-                              :placeholder="$t('password')" toggleMask :feedback="false" />
+                        :placeholder="$t('password')" toggleMask :feedback="false" />
                 </InputGroup>
 
                 <div id="button-box" class="d-flex">
-                    <span class="fw-bold btn-login text-center" @click="lostPassword">{{$t('forgotten_password')}}</span>
-                    <Button @click="submitForm" type="submit" label="Registrácia"> {{$t('login')}} <lord-icon v-if="!isLoading"
-                            src="https://cdn.lordicon.com/oqdmuxru.json" trigger="hover" colors="primary:#ffffff"
-                            style="width:2em;height:2em;margin-left:1em;">
+                    <span class="fw-bold btn-login text-center" @click="lostPassword">{{ $t('forgotten_password')
+                        }}</span>
+                    <Button @click="submitForm" type="submit" label="Registrácia"> {{ $t('login') }} <lord-icon
+                            v-if="!isLoading" src="https://cdn.lordicon.com/oqdmuxru.json" trigger="hover"
+                            colors="primary:#ffffff" style="width:2em;height:2em;margin-left:1em;">
                         </lord-icon><lord-icon v-else src="https://cdn.lordicon.com/lqxfrxad.json" trigger="loop"
                             delay="200" colors="primary:#ffffff" style="width:2em;height:2em;margin-left: 1em;">
                         </lord-icon></Button>
@@ -47,7 +48,7 @@
                 </InputGroup>
 
                 <div id="button-box" class="d-flex">
-                    <Button @click="submitFormPassword" type="submit" label="Registrácia">{{$t('submit')}} <lord-icon
+                    <Button @click="submitFormPassword" type="submit" label="Registrácia">{{ $t('submit') }} <lord-icon
                             v-if="!isLoading" src="https://cdn.lordicon.com/oqdmuxru.json" trigger="hover"
                             colors="primary:#ffffff" style="width:2em;height:2em;margin-left:1em;">
                         </lord-icon><lord-icon v-else src="https://cdn.lordicon.com/lqxfrxad.json" trigger="loop"
@@ -56,9 +57,16 @@
                 </div>
             </div>
 
-            <div class="box p-3 text-center" v-if="isFormSubmitted">
-                <h1 class="mt-4">{{$t('one_more_step')}}</h1>
+            <div class="box p-3 text-center" v-if="isFormSubmitted && !isEmailFormSubmitted">
+                <h1 class="mt-4">{{ $t('one_more_step') }}</h1>
                 <lord-icon src="https://cdn.lordicon.com/kddybgok.json" trigger="loop" delay="200"
+                    colors="primary:#8b5cf6" style="width:8rem;height:15rem">
+                </lord-icon>
+            </div>
+
+            <div class="box p-3 text-center" v-if="isEmailFormSubmitted">
+                <h1 class="mt-4">Do schránky vám prišiel potvrdzovací mail na resetovanie hesla</h1>
+                <lord-icon src="https://cdn.lordicon.com/nzixoeyk.json" trigger="loop" delay="500"
                     colors="primary:#8b5cf6" style="width:8rem;height:15rem">
                 </lord-icon>
             </div>
@@ -88,6 +96,7 @@ const toast = useToast();
 const isFormSubmitted = ref(false);
 const isLoading = ref(false);
 const isForgotten = ref(false);
+const isEmailFormSubmitted = ref(false);
 
 watch([email], () => {
     validateEmail();
@@ -122,8 +131,9 @@ const checkPasswords = () => {
 const submitFormPassword = async () => {
     isLoading.value = true;
     if (isEmailValid.value == true) {
-        const response = await fetch('https://node17.webte.fei.stuba.sk/final/auth/login.php', {
+        const response = await fetch('https://node17.webte.fei.stuba.sk/final/auth/change-password/request-reset', {
             method: 'POST',
+
             body: JSON.stringify({
                 email: email.value
             })
@@ -134,6 +144,7 @@ const submitFormPassword = async () => {
             const data = await response.json();
             showError(data.error);
         } else {
+            isEmailFormSubmitted = true;
             showSuccess();
         }
     }

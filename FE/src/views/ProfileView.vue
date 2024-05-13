@@ -133,7 +133,7 @@ const showError = (errorMessage) => {
 const submitForm = async () => {
     isLoading.value = true;
     if (passwordsMatch.value == true) {
-        const response = await fetch('https://node17.webte.fei.stuba.sk/final/registration.php', {
+        const response = await fetch('https://node17.webte.fei.stuba.sk/final/BE/auth/change-password/reset-password', {
             method: 'POST',
             body: JSON.stringify({
                 password: password.value
