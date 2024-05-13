@@ -8,26 +8,28 @@
                 style="background: linear-gradient(to bottom, #8B5CF6ee 0%, #8B5CF6ee 50%, transparent 50%, transparent 100%);">
 
                 <lord-icon id="icon" src="https://cdn.lordicon.com/xcxzayqr.json" trigger="hover"
-                    colors="primary:#692CF3,secondary:#f4c89c" style="width:250px;height:250px;">
+                    colors="primary:#692CF3,secondary:#f4c89c" style="width:14rem;height:14rem;">
                 </lord-icon>
 
             </div>
 
-            <h1 class="display-4 text-center"><lord-icon id="h1-icon" src="https://cdn.lordicon.com/kkvxgpti.json"
-                    trigger="hover" delay="500" colors="primary:#0000004d" style="width:3rem;height:3rem">
-                </lord-icon>SAMUEL KUBALA</h1>
+            <h1 class="display-4 text-center mb-1">Ahoj Samuel!</h1>
 
-            <h2 class="display-6 text-center"><lord-icon id="h2-icon" src="https://cdn.lordicon.com/yxczfiyc.json"
-                    trigger="hover" style="width:2rem;height:2rem">
-                </lord-icon>Level</h2>
+            <div class="content-box">
+                <p class="header-p">Level oprávnení</p>
+                <p class="content-p">Admin</p>
+            </div>
 
-            <h4 class="text-center"> <lord-icon class="icon-small" src="https://cdn.lordicon.com/nzixoeyk.json"
-                    trigger="hover" delay="500" colors="primary:#696969" style="width:25px;height:25px">
-                </lord-icon>kubalasamuel1a@gmail.com</h4>
 
-            <h6 class="text-center"><lord-icon class="icon-small" src="https://cdn.lordicon.com/mwikjdwh.json"
-                    trigger="hover" delay="500" colors="primary:#aaaaaa" style="width:20px;height:20px">
-                </lord-icon>Last login</h6>
+            <div class="content-box">
+                <p class="header-p">Emailová adresa</p>
+                <p class="content-p">kubalasamuel1a@gmail.com</p>
+            </div>
+
+            <div class="content-box">
+                <p class="header-p">Posledná aktivita</p>
+                <p class="content-p">12-04-2024 16:02</p>
+            </div>
 
             <lord-icon src="https://cdn.lordicon.com/xyboiuok.json" trigger="loop" state="morph-heart" delay="1000"
                 colors="primary:#a866ee" style="width:45px;height:45px">
@@ -39,24 +41,30 @@
 
 <script setup>
 import AuthNavBar from '@/components/AuthNavBar.vue';
+
+
+
+
 </script>
 
 <style scoped>
-.icon-small {
-    padding-top: .25rem;
+.content-box {
+    width: 70%;
+    border-bottom: 1px solid #aaaaaa;
+    margin-left: 15%;
+    margin-right: 15%;
+    margin-top: 3%;
 }
 
-#h1-icon {
-    padding-top: .2rem;
+.header-p {
+    color: #a866ee;
+    margin-bottom: 0;
+    font-size: 0.9rem;
 }
 
-#h2-icon {
-    padding-top: .25rem;
-}
-
-h2 {
-    /* color: #696969;*/
-    color: rgba(0, 0, 0, 0.7);
+.content-p {
+    margin-bottom: .5rem;
+    font-size: 1.25rem;
 }
 
 #box-icon {
@@ -64,11 +72,6 @@ h2 {
     padding-top: 2vh;
     border-top-left-radius: 2rem;
     border-top-right-radius: 2rem;
-}
-
-h6 {
-    /*color: #8B5CF6ee;*/
-    color: rgba(0, 0, 0, 0.4);
 }
 
 #icon {
@@ -92,21 +95,20 @@ h1 {
     margin-bottom: 0;
 }
 
-h4 {
-    color: rgba(0, 0, 0, 0.6);
-    /*color: rgb(214, 211, 211);*/
-    text-decoration: underline dotted;
-}
-
 @media (max-width: 768px) {
     #box {
         width: 70%;
     }
 
-    #h1-icon {
-        padding-top: .25rem;
-        width: 2.5rem !important;
-        height: 2.5rem !important;
+    #icon {
+        width: 10rem !important;
+        height: 10rem !important;
+    }
+
+    .content-box {
+        margin-left: 10%;
+        margin-right: 10%;
+        width: 80%;
     }
 }
 
@@ -114,18 +116,16 @@ h4 {
     #box {
         width: 90%;
     }
-
-    #h1-icon {
-        padding-top: .25rem;
-        width: 2rem !important;
-        height: 2rem !important;
-    }
 }
 
 @media (max-width: 480px) {
     #icon {
-        width: 170px !important;
-        height: 170px !important;
+        width: 7rem !important;
+        height: 7rem !important;
+    }
+
+    .content-p {
+        font-size: 1rem;
     }
 }
 </style>
