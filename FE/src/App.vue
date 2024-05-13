@@ -5,21 +5,32 @@ import { store } from './store.js';
 
 <template>
   <div>
-  <!-- <header>
-      <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-      <div class="wrapper">
-        <nav>
-              <RouterLink to="/">Home</RouterLink>
-              <RouterLink to="/about">About</RouterLink>
-            </nav>
-          </div>
-        </header> -->
-
-    <RouterView v-if="store.renderComponent" />
+    <router-view v-slot="{ Component }">
+      <Transition name="fade">
+        <component :is="Component" />
+      </Transition>
+    </router-view>
   </div>
 </template>
 
-<style scoped>
-/* Some scoped style */
+<style>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-to,
+.fade-leave-from {
+  opacity: 1;
+}
+
+.fade-leave-to {
+  width: 100%;
+  position: absolute;
+}
 </style>
