@@ -40,7 +40,12 @@ const isError = ref(false);
 
 onMounted(async () => {
   try {
-    const response = await fetch('https://node17.webte.fei.stuba.sk/final/registration.php?token=' + route.params.token);
+    const response = await fetch('http://node17.webte.fei.stuba.sk:5151/registration', {
+      method: 'GET',
+      headers: {
+        'AUTHORIZATION': 'Bearer ' + route.params.token
+      }
+    });
     const data = await response.json();
 
     if (!response.ok) {

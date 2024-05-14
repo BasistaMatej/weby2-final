@@ -1,6 +1,7 @@
 <!-- POTREBUJEM GETNUT -> Meno, Priezvisko, Email a LastLogin -->
 
 <template>
+  <div>
     <AuthNavBar />
     <div class="d-flex justify-content-center" v-if="!isForgotten">
         <div class="d-flex align-items-center flex-column" id="box">
@@ -65,7 +66,7 @@
                     :placeholder="$t('confirm_password')" toggleMask />
             </InputGroup>
 
-            <Button @click="submitForm" type="submit" label="Registrácia">{{ $t('change_password') }}<lord-icon v-if="!isLoading"
+            <Button @click="resetPassword" type="submit" label="Registrácia">{{ $t('change_password') }}<lord-icon v-if="!isLoading"
                     src="https://cdn.lordicon.com/oqdmuxru.json" trigger="hover" colors="primary:#ffffff"
                     style="width:2em;height:2em;margin-left:1em;">
                 </lord-icon><lord-icon v-else src="https://cdn.lordicon.com/lqxfrxad.json" trigger="loop" delay="200"
@@ -74,14 +75,7 @@
         </div>
         <Toast />
     </div>
-
-
-
-
-
-
-
-
+  </div>
 </template>
 
 <script setup>
@@ -130,10 +124,10 @@ const showError = (errorMessage) => {
     toast.add({ severity: 'error', summary: 'Error Message', detail: errorMessage, life: 3000 });
 };
 
-const submitForm = async () => {
+const resetPassword = async () => {
     isLoading.value = true;
     if (passwordsMatch.value == true) {
-        const response = await fetch('https://node17.webte.fei.stuba.sk/final/BE/auth/change-password/reset-password', {
+        const response = await fetch('http://node17.webte.fei.stuba.sk:5151/change-password/reset-password', {
             method: 'POST',
             body: JSON.stringify({
                 password: password.value

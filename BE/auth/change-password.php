@@ -82,9 +82,9 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
             }
         }
 
-    break;
-    
-
+      break;
+    case "OPTIONS":
+        break;
     default:
         response(["error" => "Method not allowed"], 405);
         break;

@@ -38,7 +38,7 @@
                 </div>
             </div>
 
-            <div class="box" v-if="isForgotten">
+            <div class="box" v-if="isForgotten && !isEmailFormSubmitted">
                 <InputGroup>
                     <InputGroupAddon>
                         <i class="pi pi-at"></i>
@@ -131,7 +131,7 @@ const checkPasswords = () => {
 const submitFormPassword = async () => {
     isLoading.value = true;
     if (isEmailValid.value == true) {
-        const response = await fetch('https://node17.webte.fei.stuba.sk/final/auth/change-password/request-reset', {
+        const response = await fetch('http://node17.webte.fei.stuba.sk:5151/change-password/request-reset', {
             method: 'POST',
 
             body: JSON.stringify({
@@ -144,7 +144,7 @@ const submitFormPassword = async () => {
             const data = await response.json();
             showError(data.error);
         } else {
-            isEmailFormSubmitted = true;
+            isEmailFormSubmitted.value = true;
             showSuccess();
         }
     }
@@ -154,7 +154,7 @@ const submitFormPassword = async () => {
 const submitForm = async () => {
     isLoading.value = true;
     if (isEmailValid.value == true && isValidPassword.value == true) {
-        const response = await fetch('https://node17.webte.fei.stuba.sk/final/auth/login.php', {
+        const response = await fetch('http://node17.webte.fei.stuba.sk:5151/login', {
             method: 'POST',
             body: JSON.stringify({
                 email: email.value,

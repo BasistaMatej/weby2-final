@@ -1,6 +1,7 @@
 <template>
-
+  <div>
     <DefaultNavBar />
+    <Toast />
     <div class="d-flex justify-content-center align-items-center flex-column w-100 p-3 h-100">
         <h1 id="header-change" class="roboto-black h1 text-center">{{ $t('up_reset_password') }}</h1>
         <h4 class="text-center">{{ $t('up_user') }}</h4>
@@ -32,7 +33,7 @@
                     colors="primary:#ffffff" style="width:2em;height:2em;margin-left: 1em;">
                 </lord-icon></Button>
         </div>
-
+      </div>
 
         <div class="box p-3" v-if="everythingOkay">
             <lord-icon src="https://cdn.lordicon.com/utpmnzxz.json" trigger="loop" delay="2000" colors="primary:#7c3aed"
@@ -45,7 +46,6 @@
             </p>
         </div>
 
-
     </div>
 </template>
 
@@ -55,10 +55,12 @@ import InputGroupAddon from 'primevue/inputgroupaddon';
 import Password from 'primevue/password';
 import Button from 'primevue/button';
 import { ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import DefaultNavBar from '../components/DefaultNavBar.vue';
 
+const route = useRoute();
 const isForgotten = ref(false);
 const password = ref(null)
 const confirmPassword = ref(null)
@@ -67,8 +69,6 @@ const isFormSubmitted = ref(false)
 const isLoading = ref(false);
 const toast = useToast();
 const everythingOkay = ref(false);
-
-
 
 const checkPasswords = () => {
     if (password.value !== confirmPassword.value || (!password.value && !confirmPassword.value)) {
@@ -89,24 +89,26 @@ const showError = (errorMessage) => {
 const submitForm = async () => {
     isLoading.value = true;
     if (passwordsMatch.value == true) {
-        const response = await fetch('https://node17.webte.fei.stuba.sk/final/BE/auth/change-password/reset-password', {
+        const response = await fetch('http://node17.webte.fei.stuba.sk:5151/change-password/reset-password', {
             method: 'POST',
             body: JSON.stringify({
                 password: password.value
-                //token: token.value; ASI TREBA POSLAT TOKEN
-            })
+            }),
+            headers: {
+              'AUTHORIZATION': 'Bearer ' + route.params.token
+            }
         });
 
         if (!response.ok) {
             isLoading.value = false;
             const data = await response.json();
+            console.log(data.error);
             showError(data.error);
         } else {
             password.value = null;
             confirmPassword.value = null;
             isFormSubmitted.value = true;
-            const data = await response.json();
-            everythingOkay = true;
+            everythingOkay.value = true;
         }
     }
     isLoading.value = false;

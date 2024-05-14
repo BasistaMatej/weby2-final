@@ -162,7 +162,7 @@ const showError = (errorMessage) => {
 const submitForm = async () => {
     isLoading.value = true;
     if (isEmailValid.value == true && isNameValid.value == true && isSurnameValid.value == true && passwordsMatch.value == true) {
-        const response = await fetch('https://node17.webte.fei.stuba.sk/final/registration.php', {
+        const response = await fetch('http://node17.webte.fei.stuba.sk:5151/registration', {
             method: 'POST',
             body: JSON.stringify({
                 name: name.value,
