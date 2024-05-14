@@ -1,49 +1,51 @@
 <template>
-  <div>
-    <DefaultNavBar />
-    <Toast />
-    <div class="d-flex justify-content-center align-items-center flex-column w-100 p-3 h-100">
-        <h1 id="header-change" class="roboto-black h1 text-center">{{ $t('up_reset_password') }}</h1>
-        <h4 class="text-center">{{ $t('up_user') }}</h4>
-    </div>
-
-    <div class="d-flex align-items-center flex-column" v-if="!isForgotten && !everythingOkay">
-        <div class="change-password">
-
-            <InputGroup>
-                <InputGroupAddon>
-                    <i class="pi pi-lock"></i>
-                </InputGroupAddon>
-                <Password v-model="password" @click="checkPasswords" :invalid="!passwordsMatch"
-                    :placeholder="$t('password')" toggleMask />
-            </InputGroup>
-
-            <InputGroup>
-                <InputGroupAddon>
-                    <i class="pi pi-lock"></i>
-                </InputGroupAddon>
-                <Password v-model="confirmPassword" @click="checkPasswords" :invalid="!passwordsMatch"
-                    :placeholder="$t('confirm_password')" toggleMask />
-            </InputGroup>
-
-            <Button @click="submitForm" type="submit" label="Registrácia">{{ $t('change_password') }}<lord-icon v-if="!isLoading"
-                    src="https://cdn.lordicon.com/oqdmuxru.json" trigger="hover" colors="primary:#ffffff"
-                    style="width:2em;height:2em;margin-left:1em;">
-                </lord-icon><lord-icon v-else src="https://cdn.lordicon.com/lqxfrxad.json" trigger="loop" delay="200"
-                    colors="primary:#ffffff" style="width:2em;height:2em;margin-left: 1em;">
-                </lord-icon></Button>
+    <div>
+        <DefaultNavBar />
+        <Toast />
+        <div class="d-flex justify-content-center align-items-center flex-column w-100 p-3 h-100">
+            <h1 id="header-change" class="roboto-black h1 text-center">{{ $t('up_reset_password') }}</h1>
+            <h4 class="text-center">{{ $t('up_user') }}</h4>
         </div>
-      </div>
 
-        <div class="box p-3" v-if="everythingOkay">
-            <lord-icon src="https://cdn.lordicon.com/utpmnzxz.json" trigger="loop" delay="2000" colors="primary:#7c3aed"
-                style="width:200px;height:200px">
-            </lord-icon>
-            <h1 class="roboto-black text-center"> {{ $t('change_password_success') }}</h1>
-            <p class="text-center">
-                {{ $t('success_email_validation') }}
-                <router-link to="/login" class="router-link">Log in</router-link>
-            </p>
+        <div class="d-flex align-items-center flex-column" v-if="!isForgotten && !everythingOkay">
+            <div class="change-password">
+
+                <InputGroup>
+                    <InputGroupAddon>
+                        <i class="pi pi-lock"></i>
+                    </InputGroupAddon>
+                    <Password v-model="password" @click="checkPasswords" :invalid="!passwordsMatch"
+                        :placeholder="$t('password')" toggleMask />
+                </InputGroup>
+
+                <InputGroup>
+                    <InputGroupAddon>
+                        <i class="pi pi-lock"></i>
+                    </InputGroupAddon>
+                    <Password v-model="confirmPassword" @click="checkPasswords" :invalid="!passwordsMatch"
+                        :placeholder="$t('confirm_password')" toggleMask />
+                </InputGroup>
+
+                <Button @click="submitForm" type="submit" label="Registrácia">{{ $t('change_password') }}<lord-icon
+                        v-if="!isLoading" src="https://cdn.lordicon.com/oqdmuxru.json" trigger="hover"
+                        colors="primary:#ffffff" style="width:2em;height:2em;margin-left:1em;">
+                    </lord-icon><lord-icon v-else src="https://cdn.lordicon.com/lqxfrxad.json" trigger="loop"
+                        delay="200" colors="primary:#ffffff" style="width:2em;height:2em;margin-left: 1em;">
+                    </lord-icon></Button>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-center">
+            <div class="box p-3" v-if="everythingOkay">
+                <lord-icon src="https://cdn.lordicon.com/utpmnzxz.json" trigger="loop" delay="2000"
+                    colors="primary:#7c3aed" style="width:200px;height:200px">
+                </lord-icon>
+                <h1 class="roboto-black text-center"> {{ $t('change_password_success') }}</h1>
+                <p class="text-center">
+                    {{ $t('success_email_validation') }}
+                    <router-link to="/login" class="router-link">Log in</router-link>
+                </p>
+            </div>
         </div>
 
     </div>
@@ -70,6 +72,10 @@ const isLoading = ref(false);
 const toast = useToast();
 const everythingOkay = ref(false);
 
+watch([password, confirmPassword], () => {
+    checkPasswords();
+})
+
 const checkPasswords = () => {
     if (password.value !== confirmPassword.value || (!password.value && !confirmPassword.value)) {
         passwordsMatch.value = false;
@@ -95,7 +101,7 @@ const submitForm = async () => {
                 password: password.value
             }),
             headers: {
-              'AUTHORIZATION': 'Bearer ' + route.params.token
+                'AUTHORIZATION': 'Bearer ' + route.params.token
             }
         });
 
