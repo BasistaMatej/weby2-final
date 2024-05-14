@@ -43,7 +43,7 @@ import { store } from '@/store';
 import Button from 'primevue/button';
 import { useRouter } from 'vue-router';
 import Dropdown from 'primevue/dropdown';
-
+import '@/assets/dropdown.css';
 
 const router = useRouter();
 const isMobile = ref(window.innerWidth < 500);

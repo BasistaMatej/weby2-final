@@ -4,7 +4,7 @@
       <nav v-if="!isMobile" class="d-flex justify-content-end p-2">
         <span class="fw-bold btn-login" v-on:click="$router.push('/profile')">{{ $t('profile') }}</span>
         <Button class="ml-5" @click="registrationShow">{{ $t('logout') }}</Button>
-        <dropdown :options="$i18n.availableLocales" v-model="$i18n.locale" optionKey="locale" class="dropdown" />
+        <Dropdown :options="$i18n.availableLocales" v-model="$i18n.locale" optionKey="locale" class="dropdown" />
       </nav>
 
       <nav v-else class="navbar navbar-expand-lg bg-body-tertiary w-100" id="mainNav">
@@ -22,7 +22,7 @@
                 <span class="nav-link" @click="registrationShow">{{ $t('logout') }}</span>
               </li>
               <li class="nav-item">
-                <dropdown :options="$i18n.availableLocales" v-model="$i18n.locale" optionKey="locale"
+                <Dropdown :options="$i18n.availableLocales" v-model="$i18n.locale" optionKey="locale"
                   class="dropdown" />
               </li>
             </ul>
@@ -39,6 +39,7 @@ import { ref } from 'vue';
 import Button from 'primevue/button';
 import { useRouter } from 'vue-router';
 import Dropdown from "primevue/dropdown";
+import '@/assets/dropdown.css';
 
 const router = useRouter();
 const isMobile = ref(window.innerWidth < 500);
