@@ -65,7 +65,7 @@
             </div>
 
             <div class="box p-3 text-center" v-if="isEmailFormSubmitted">
-                <h1 class="mt-4">Do schránky vám prišiel potvrdzovací mail na resetovanie hesla</h1>
+                <h1 class="mt-4">{{ $t('password_reset_email_confirm') }}</h1>
                 <lord-icon src="https://cdn.lordicon.com/nzixoeyk.json" trigger="loop" delay="500"
                     colors="primary:#8b5cf6" style="width:8rem;height:15rem">
                 </lord-icon>

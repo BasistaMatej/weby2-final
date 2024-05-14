@@ -61,6 +61,7 @@
   "up_change_password": "CHANGE OF PASSWORD",
   "change_password": "Zmeniť heslo",
   "up_reset_password": "OBNOVENIE HESLA",
-  "change_password_success": "Heslo úspešne zmenené!"
+  "change_password_success": "Heslo úspešne zmenené!",
+  "password_reset_email_confirm": "Do schránky vám prišiel potvrdzovací mail na resetovanie hesla."
 
 }

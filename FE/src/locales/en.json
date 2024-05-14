@@ -61,6 +61,7 @@
   "up_change_password": "CHANGE OF PASSWORD",
   "change_password": "Change password",
   "up_reset_password": "RESET PASSWORD",
-  "change_password_success": "Password changed successfully!"
+  "change_password_success": "Password changed successfully!",
+  "password_reset_email_confirm": "A password reset confirmation email has been sent to your inbox."
 
 }
