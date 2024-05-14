@@ -2,7 +2,7 @@
   <div class="w-100">
     <div class="container">
       <nav v-if="!isMobile" class="d-flex justify-content-end p-2">
-        <span class="fw-bold btn-login" v-on:click="$router.push('/login')">{{ $t('login') }}</span>
+        <span class="fw-bold btn-login" v-on:click="loginShow">{{ $t('login') }}</span>
         <Button class="ml-5" @click="registrationShow">{{ $t('registration') }}</Button>
         <dropdown :options="$i18n.availableLocales" v-model="$i18n.locale" optionKey="locale" class="dropdown" />
       </nav>

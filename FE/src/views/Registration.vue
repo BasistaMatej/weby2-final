@@ -5,8 +5,8 @@
         <div>
             <DefaultNavBar />
             <div class="d-flex justify-content-center align-items-center flex-column w-100 p-3 h-100">
-                <h1 class="roboto-black h1 text-center">{{$t('up_registration')}}</h1>
-                <h4 class="text-center">{{$t('up_new_user')}}</h4>
+                <h1 class="roboto-black h1 text-center">{{ $t('up_registration') }}</h1>
+                <h4 class="text-center">{{ $t('up_new_user') }}</h4>
             </div>
         </div>
 
@@ -25,7 +25,7 @@
                         <i class="pi pi-user"></i>
                     </InputGroupAddon>
                     <InputText v-model="surname" @click="validateSurname" :invalid="!isSurnameValid"
-                               :placeholder="$t('surname')" name="surname" />
+                        :placeholder="$t('surname')" name="surname" />
                 </InputGroup>
 
                 <InputGroup>
@@ -41,7 +41,7 @@
                         <i class="pi pi-lock"></i>
                     </InputGroupAddon>
                     <Password v-model="password" @click="checkPasswords" :invalid="!passwordsMatch"
-                              :placeholder="$t('password')" toggleMask />
+                        :placeholder="$t('password')" toggleMask />
                 </InputGroup>
 
                 <InputGroup>
@@ -49,18 +49,18 @@
                         <i class="pi pi-lock"></i>
                     </InputGroupAddon>
                     <Password v-model="confirmPassword" @click="checkPasswords" :invalid="!passwordsMatch"
-                              :placeholder="$t('confirm_password')" toggleMask />
+                        :placeholder="$t('confirm_password')" toggleMask />
                 </InputGroup>
-                <Button @click="submitForm" type="submit" label="Registrácia">{{$t('register')}} <lord-icon v-if="!isLoading"
-                        src="https://cdn.lordicon.com/oqdmuxru.json" trigger="hover" colors="primary:#ffffff"
-                        style="width:2em;height:2em;margin-left:1em;">
+                <Button @click="submitForm" type="submit" label="Registrácia">{{ $t('register') }} <lord-icon
+                        v-if="!isLoading" src="https://cdn.lordicon.com/oqdmuxru.json" trigger="hover"
+                        colors="primary:#ffffff" style="width:2em;height:2em;margin-left:1em;">
                     </lord-icon><lord-icon v-else src="https://cdn.lordicon.com/lqxfrxad.json" trigger="loop"
                         delay="200" colors="primary:#ffffff" style="width:2em;height:2em;margin-left: 1em;">
                     </lord-icon></Button>
             </div>
 
             <div class="box p-3 text-center" v-if="isFormSubmitted">
-                <h1 class="mt-4">{{$t('reg_confirm_mail')}}</h1>
+                <h1 class="mt-4">{{ $t('reg_confirm_mail') }}</h1>
                 <lord-icon src="https://cdn.lordicon.com/nzixoeyk.json" trigger="loop" delay="500"
                     colors="primary:#8b5cf6" style="width:8rem;height:15rem">
                 </lord-icon>
@@ -72,7 +72,7 @@
 </template>
 
 <script setup>
-import {ref, watch} from 'vue';
+import { ref, watch } from 'vue';
 import DefaultNavBar from '../components/DefaultNavBar.vue';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
@@ -126,7 +126,7 @@ const validateEmail = () => {
 }
 
 const validateName = () => {
-    const nameSurnameRegex = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g;
+    const nameSurnameRegex = /^[a-zA-ZáäčďéíľĺňóôŕšťúýžÁÄČĎÉÍĽĹŇÓÔŔŠŤÚÝŽ]+(([',. -][a-zA-ZáäčďéíľĺňóôŕšťúýžÁÄČĎÉÍĽĹŇÓÔŔŠŤÚÝŽ ])?[a-zA-ZáäčďéíľĺňóôŕšťúýžÁÄČĎÉÍĽĹŇÓÔŔŠŤÚÝŽ]*)*$/g;
     if (name.value) {
         isNameValid.value = nameSurnameRegex.test(name.value);
     } else {
@@ -135,13 +135,14 @@ const validateName = () => {
 }
 
 const validateSurname = () => {
-    const nameSurnameRegex = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/g;
+    const nameSurnameRegex = /^[a-zA-ZáäčďéíľĺňóôŕšťúýžÁÄČĎÉÍĽĹŇÓÔŔŠŤÚÝŽ]+(([',. -][a-zA-ZáäčďéíľĺňóôŕšťúýžÁÄČĎÉÍĽĹŇÓÔŔŠŤÚÝŽ ])?[a-zA-ZáäčďéíľĺňóôŕšťúýžÁÄČĎÉÍĽĹŇÓÔŔŠŤÚÝŽ]*)*$/g;
     if (surname.value) {
         isSurnameValid.value = nameSurnameRegex.test(surname.value);
     } else {
         isSurnameValid.value = false;
     }
 }
+
 
 watch(name, () => {
     validateName();
@@ -156,7 +157,7 @@ const showSuccess = (successMessage) => {
 };
 
 const showError = (errorMessage) => {
-  toast.add({ severity: 'error', summary: 'Error Message', detail: errorMessage, life: 3000 });
+    toast.add({ severity: 'error', summary: 'Error Message', detail: errorMessage, life: 3000 });
 };
 
 const submitForm = async () => {
