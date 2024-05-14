@@ -29,6 +29,8 @@
           </div>
         </div>
       </nav>
+
+      <Toast />
     </div>
   </div>
 
@@ -40,17 +42,29 @@ import Button from 'primevue/button';
 import { useRouter } from 'vue-router';
 import Dropdown from "primevue/dropdown";
 import '@/assets/dropdown.css';
+import { removeLocalStorage } from '@/utils';
+import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
 
 const router = useRouter();
 const isMobile = ref(window.innerWidth < 500);
+const toast = useToast();
 
 window.addEventListener('resize', () => {
   isMobile.value = window.innerWidth < 500;
 });
 
 const registrationShow = async () => {
-  // delete token from browser memory
-}
+  removeLocalStorage('accessToken');
+  removeLocalStorage('refreshToken');
+
+  // Show toast for 1-2 seconds
+  toast.add({ severity: 'success', summary: 'Success', detail: 'Používateľ odhlásený!', life: 2000 }); // 2 seconds
+
+  setTimeout(() => {
+    router.push({ path: '/login', query: { message: 'Používateľ odhlásený!' } });
+  }, 1500); // Wait 2 seconds before redirecting
+};
 </script>
 
 <style scoped>

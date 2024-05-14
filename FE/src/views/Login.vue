@@ -8,6 +8,8 @@
             </div>
         </div>
 
+        <Button v-if="isForgotten && !isEmailFormSubmitted" id="back" icon="pi pi-arrow-left" @click="goBack" />
+
         <div class="d-flex align-items-center flex-column">
             <div class="box" v-if="!isFormSubmitted && !isForgotten && !isEmailFormSubmitted">
                 <InputGroup>
@@ -48,12 +50,14 @@
                 </InputGroup>
 
                 <div id="button-box" class="d-flex">
+
                     <Button @click="submitFormPassword" type="submit" label="Registrácia">{{ $t('submit') }} <lord-icon
                             v-if="!isLoading" src="https://cdn.lordicon.com/oqdmuxru.json" trigger="hover"
                             colors="primary:#ffffff" style="width:2em;height:2em;margin-left:1em;">
                         </lord-icon><lord-icon v-else src="https://cdn.lordicon.com/lqxfrxad.json" trigger="loop"
                             delay="200" colors="primary:#ffffff" style="width:2em;height:2em;margin-left: 1em;">
                         </lord-icon></Button>
+
                 </div>
             </div>
 
@@ -76,7 +80,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import DefaultNavBar from '../components/DefaultNavBar.vue';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
@@ -85,7 +89,7 @@ import Password from 'primevue/password';
 import Button from 'primevue/button';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import { setLocalStorage } from '@/utils';
 
 const router = useRouter();
@@ -98,6 +102,8 @@ const isFormSubmitted = ref(false);
 const isLoading = ref(false);
 const isForgotten = ref(false);
 const isEmailFormSubmitted = ref(false);
+const route = useRoute();
+const message = ref(route.query.message);
 
 watch([email], () => {
     validateEmail();
@@ -106,6 +112,13 @@ watch([email], () => {
 watch([password], () => {
     checkPasswords();
 })
+
+const goBack = () => {
+    console.log("clicked!!!");
+    isForgotten.value = false;
+    isEmailFormSubmitted.value = false;
+    isFormSubmitted.value = false;
+}
 
 const validateEmail = () => {
     const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
@@ -127,6 +140,8 @@ const checkPasswords = () => {
         isValidPassword.value = false;
     }
 }
+
+
 
 //WORK-IN-PROGRESS => ZMENA HESLA
 const submitFormPassword = async () => {
@@ -180,7 +195,7 @@ const submitForm = async () => {
     isLoading.value = false;
 }
 
-const showSuccess = () => {
+const showSuccess = (successMessage) => {
     toast.add({ severity: 'success', summary: 'Success', detail: successMessage, life: 5000 });
 };
 
@@ -188,12 +203,28 @@ const showError = (errorMessage) => {
     toast.add({ severity: 'error', summary: 'Error Message', detail: errorMessage, life: 3000 });
 };
 
+//NEROZUMIEM PRECO NEZOBRAZI TOAST SO SPRAVOU :(
+/*if (message.value) {
+    //console.log(message.value);
+    //console.log(message.value);
+    showSuccess(message.value);
+    toast.add({ severity: 'success', summary: 'Success', detail: message.value, life: 5000 });
+    //showSuccess(message.value);
+}*/
+
 const lostPassword = () => {
     isForgotten.value = true;
 }
 </script>
 
 <style scoped>
+#back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: .5rem;
+}
+
 h4 {
     text-decoration: underline dotted #8B5CF6aa;
     color: #8B5CF6ee;
