@@ -17,7 +17,8 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
 
         response(["accessToken" => $accessToken], 200);
         break;
-
+    case "OPTIONS":
+        break;
     default:
         response(["error" => "Method not allowed"], 405);
         break;

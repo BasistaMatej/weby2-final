@@ -86,6 +86,7 @@ import Button from 'primevue/button';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { useRouter } from 'vue-router';
+import { setLocalStorage } from '@/utils';
 
 const router = useRouter();
 const password = ref(null)
@@ -168,7 +169,8 @@ const submitForm = async () => {
             showError(data.error);
         } else {
             const data = await response.json();
-            localStorage.setItem('accessToken', data.accessToken);
+            setLocalStorage('accessToken', data.accessToken);
+            setLocalStorage('refreshToken', data.refreshToken);
             isFormSubmitted.value = true;
             setTimeout(() => {
                 router.push('/auth');

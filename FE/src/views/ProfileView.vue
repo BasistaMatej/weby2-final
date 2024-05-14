@@ -87,6 +87,7 @@ import Button from 'primevue/button';
 import { ref, watch } from 'vue';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
+import { auth_fetch } from '@/utils';
 
 const isForgotten = ref(false);
 const password = ref(null)
@@ -127,12 +128,7 @@ const showError = (errorMessage) => {
 const resetPassword = async () => {
     isLoading.value = true;
     if (passwordsMatch.value == true) {
-        const response = await fetch('http://node17.webte.fei.stuba.sk:5151/change-password/reset-password', {
-            method: 'POST',
-            body: JSON.stringify({
-                password: password.value
-            })
-        });
+        const response = await auth_fetch('/change-password/reset-password', 'POST',{ password: password.value });
 
         if (!response.ok) {
             isLoading.value = false;
