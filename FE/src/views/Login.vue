@@ -186,6 +186,7 @@ const submitForm = async () => {
             const data = await response.json();
             setLocalStorage('accessToken', data.accessToken);
             setLocalStorage('refreshToken', data.refreshToken);
+            setLocalStorage('accessLevel', data.auth_level);
             isFormSubmitted.value = true;
             setTimeout(() => {
                 router.push('/auth');

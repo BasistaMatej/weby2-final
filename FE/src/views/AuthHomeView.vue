@@ -13,6 +13,24 @@
               <span>{{ $t('create_question') }}</span>
             </div>
           </div>
+          <div class="d-inline-block mx-2" v-if="authLevel == 1">
+            <div @click="addNewSubject"
+              class="d-flex flex-columns align-items-center align-content-center p-2 table-link">
+              <lord-icon src="https://cdn.lordicon.com/zrkkrrpl.json" trigger="hover" stroke="bold"
+                style="width:2em;height:2em" colors="primary:#121331,secondary:#8b5cf6">
+              </lord-icon>
+              <span>Pridať predmet</span>
+            </div>
+          </div>
+          <div class="d-inline-block mx-2" v-if="authLevel == 2">
+            <div @click="editSubjectDialog = true"
+              class="d-flex flex-columns align-items-center align-content-center p-2 table-link">
+              <lord-icon src="https://cdn.lordicon.com/wuvorxbv.json" state="hover-line" trigger="hover" stroke="bold"
+                style="width:2em;height:2em" colors="primary:#121331,secondary:#8b5cf6">
+              </lord-icon>
+              <span>Editovať predmety</span>
+            </div>
+          </div>
         </div>
         <span class="d-inline-block" style="margin-top: 2em; font-size: 80%; color: rgba(0,0,0,0.5)">
           {{ $t('filter_several_columns') }}
@@ -67,12 +85,16 @@
     </div>
     <EditQuestionDialog v-model="showDialog" :title="$t('new_question_creation')" :category="dialogSubject"
       :id="dialogId" :isActive="dialogActive" :question="dialogQuestion" :type="dialogType" :lang_id="$t('lang_id')" />
+    <AddSubjectDialog v-model="addNewSubjectDialog" />
+    <EditSubjectDialog v-model="editSubjectDialog" />
   </div>
 </template>
 
 <script setup>
 import { onMounted, ref } from 'vue';
 import AuthNavBar from '@/components/AuthNavBar.vue';
+import AddSubjectDialog from '@/components/AddSubjectDialog.vue';
+import EditSubjectDialog from '@/components/EditSubjectDialog.vue';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import EditQuestionDialog from '@/components/EditQuestionDialog.vue';
@@ -80,8 +102,10 @@ import { FilterMatchMode } from 'primevue/api';
 import ColumnGroup from 'primevue/columngroup';
 import Row from 'primevue/row';
 import Button from 'primevue/button';
-import { auth_fetch } from '@/utils';
+import { auth_fetch, getLocalStorage } from '@/utils';
 
+const addNewSubjectDialog = ref(false);
+const editSubjectDialog = ref(false);
 const showDialog = ref(false);
 const dialogTitle = ref('Vytvorenie novej otázky');
 const dialogQuestion = ref('');
@@ -90,6 +114,7 @@ const dialogActive = ref(false);
 const dialogId = ref(null);
 const dialogType = ref(1);
 const lang_id = ref('');
+const authLevel = ref(1);
 
 const products = ref([]);
 
@@ -99,15 +124,17 @@ const productsSample = ref([
   { id: 66, question: 'Odkiaľ pochádza slovo "káva"?', subject: 'Jazyk', created: '01-03-2024', code: 'JSH15', tools: '', type: 1 },
 ]);
 
-
+const addNewSubject = () => {
+  addNewSubjectDialog.value = true;
+}
 
 onMounted(async () => {
+  authLevel.value = getLocalStorage("accessLevel");
 
   const response = await initialGetFetch();
   console.log(products.value);
 
   if (!response.ok) {
-    isLoading.value = false;
     const data = await response.json();
     //showError(data.error);
   } else {
