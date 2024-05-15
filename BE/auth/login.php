@@ -22,17 +22,17 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
           $user = $stmt->fetch();
 
           if (!password_verify($password, $user['password'])) {
-              response(["error" => "Invalid credentials"], 401);
+              response(["error" => "Invalid credentials"], 3);
               return;
           }
 
           if ($user['valid'] == 0) {
-              response(["error" => "Account not verified"], 401);
+              response(["error" => "Account not verified"], 403);
               return;
           }
 
           if ($user['auth_level'] == -1) {
-              response(["error" => "Account blocked"], 401);
+              response(["error" => "Account blocked"], 403);
               return;
           }
 
@@ -50,7 +50,7 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
               "refreshToken" => $refreshToken // Optionally send refresh token back in the response
           ], 200);
       } else {
-          response(["error" => "Invalid credentials"], 401);
+          response(["error" => "Invalid credentials"], 403);
       }
       break;
 

@@ -24,12 +24,12 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
                 $user = $stmt->fetch();
                 
                 if ($user['auth_level'] == -1) {
-                    response(["error" => "Account blocked"], 401);
+                    response(["error" => "Account blocked"], 403);
                     return;
                 }
                 
                 if ($user['valid'] == 0) {
-                    response(["error" => "Account not verified"], 401);
+                    response(["error" => "Account not verified"], 403);
                     return;
                 }
                 

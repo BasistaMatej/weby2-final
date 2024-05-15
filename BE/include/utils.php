@@ -86,7 +86,7 @@ function verify_token($conn, $token = null, $valid = true) {
       case 'expired':
           response(['error' => 'Token expired'], 401);
       case 'malformed':
-          response(['error' => 'Malformed token'], 400);
+          response(['error' => 'Malformed token'], 401);
           return false;
       case false:
           response(['error' => 'Invalid token'], 401);

@@ -80,7 +80,7 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
             exit;  // Stop further execution if the token is invalid
         }
         if ($user['auth_level'] != 2) {
-            response(["error" => "Unauthorized"], 401);
+            response(["error" => "Unauthorized"], 403);
             return;
         }
 
@@ -134,7 +134,7 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
             exit;  // Stop further execution if the token is invalid
         }
         if ($user['auth_level'] != 2) {
-            response(["error" => "Unauthorized"], 401);
+            response(["error" => "Unauthorized"], 403);
             return;
         }
 
