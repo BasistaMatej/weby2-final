@@ -19,36 +19,43 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
       $stmt->execute();
 
       if ($stmt->rowCount() == 1) {
-          $user = $stmt->fetch();
+            $user = $stmt->fetch();
 
-          if (!password_verify($password, $user['password'])) {
-              response(["error" => "Invalid credentials"], 3);
-              return;
-          }
+            if (!password_verify($password, $user['password'])) {
+                response(["error" => "Invalid credentials"], 3);
+                return;
+            }
 
-          if ($user['valid'] == 0) {
-              response(["error" => "Account not verified"], 403);
-              return;
-          }
+            if ($user['valid'] == 0) {
+                response(["error" => "Account not verified"], 403);
+                return;
+            }
 
-          if ($user['auth_level'] == -1) {
-              response(["error" => "Account blocked"], 403);
-              return;
-          }
+            if ($user['auth_level'] == -1) {
+                response(["error" => "Account blocked"], 403);
+                return;
+            }
 
-          // Generate a new access token
-          $accessToken = generate_jwt($email, 10); // Access token valid for 10 minutes
+            // Generate a new access token
+            $accessToken = generate_jwt($email, 10); // Access token valid for 10 minutes
 
-          // Generate a new refresh token
-          $refreshToken = generate_jwt($email, 1440); // Refresh token valid for 1 day
+            // Generate a new refresh token
+            $refreshToken = generate_jwt($email, 1440); // Refresh token valid for 1 day
 
-          // Set the HTTP-only cookie for the refresh token
-          setcookie('jwt', $refreshToken, time() + 86400, '/', '', true, true); // cookie is set for 1 day
+            // Set the HTTP-only cookie for the refresh token
+            setcookie('jwt', $refreshToken, time() + 86400, '/', '', true, true); // cookie is set for 1 day
 
-          response([
-              "accessToken" => $accessToken,
-              "refreshToken" => $refreshToken // Optionally send refresh token back in the response
-          ], 200);
+            //set to db last_login in table users
+            $stmt = $conn->prepare("UPDATE users SET last_login = NOW() WHERE email = :email");
+            $stmt->bindParam(':email', $email);
+            $stmt->execute();
+            
+
+            response([
+                "accessToken" => $accessToken,
+                "refreshToken" => $refreshToken,
+                "auth_level" => $user['auth_level']
+            ], 200);
       } else {
           response(["error" => "Invalid credentials"], 403);
       }

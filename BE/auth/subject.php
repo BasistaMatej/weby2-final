@@ -181,6 +181,8 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
             response(["error" => "Failed to delete subject"], 500);
         }
 
+    case "OPTIONS":
+        break;
     default:
         response(["error" => "Method not allowed"], 405);
         break;
