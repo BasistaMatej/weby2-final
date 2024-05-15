@@ -32,12 +32,14 @@ export function removeLocalStorage(storageItem) {
 }
 
 export async function auth_fetch(endpoint, method = "GET", body = null) {
+  const bodyContent = body ? {body: JSON.stringify(body)} : null;
+
   const res = await fetch(`http://node17.webte.fei.stuba.sk:5151${endpoint}`, {
       method: method,
-      body: JSON.stringify(body),
       headers: {
         'AUTHORIZATION': 'Bearer ' + getLocalStorage('accessToken')
-      }
+      },
+      ...bodyContent
   });
 
   if (!res.ok) {
@@ -49,9 +51,9 @@ export async function auth_fetch(endpoint, method = "GET", body = null) {
     });
 
     if (!res.ok) {
-      console.log("Relacia vypršala. Log-in now!");
       removeLocalStorage('accessToken');
       removeLocalStorage('refreshToken');
+      setLocalStorage('toast','Relácia vypršala. Prihláste sa znovu.');
       window.location.href = "/login";
       return null;
     } else {
@@ -59,10 +61,10 @@ export async function auth_fetch(endpoint, method = "GET", body = null) {
       setLocalStorage('accessToken', data.accessToken);
       return await fetch(`http://node17.webte.fei.stuba.sk:5151${endpoint}`, {
           method: method,
-          body: JSON.stringify(body),
           headers: {
             'AUTHORIZATION': 'Bearer ' + getLocalStorage('accessToken')
-          }
+          },
+          ...bodyContent
       });
     }
   } else {
