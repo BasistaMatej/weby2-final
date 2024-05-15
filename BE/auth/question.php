@@ -228,6 +228,101 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
             }
 
             break;
+        
+
+
+        case "PUT":
+            if ($endpoint1 === "/set_active"){
+                if (empty($endpoint2)) {
+                    response(["error" => "Missing template question ID"], 400);
+                    exit;
+                }
+                
+                $template_question_id = $endpoint2;
+
+                $user = verify_token($conn);
+                if (!$user) {
+                    exit;  // Stop further execution if the token is invalid
+                }
+                
+                $postdata = json_decode(file_get_contents("php://input"), true);
+                // $setActivity = $postdata['active'];
+               
+                if (isset($postdata['active'])){
+                    $setActivity = $postdata['active'];
+                }
+                else{
+                    response(["error" => "Missing active status"], 400);
+                    exit;
+                }
+                
+                try {
+                    $conn->beginTransaction();
+            
+                    // Check if the template question belongs to the user or if user has higher privilege
+                    $stmt = $conn->prepare("SELECT author_id, code, active FROM template_questions WHERE template_question_id = :template_question_id");
+                    $stmt->bindParam(':template_question_id', $template_question_id);
+                    $stmt->execute();
+                    $question = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+                    if (!$question) {
+                        throw new Exception("Template question not found");
+                    }
+            
+                    if ($question['author_id'] != $user['user_id'] && $user['auth_level'] != 2) {
+                        throw new Exception("Unauthorized to update this question");
+                    }
+
+                    // check if the user set the activity to the same activity
+
+                    if ($question['active'] == $setActivity){
+                        throw new Exception("The activity is already set to the same value");
+                    }
+
+                    if($setActivity == "1"){
+                        // generate new random 5 symbols code
+                        while(true){
+                            // check if is set some code
+                            if (!isset($question['code'])){
+                                // generate new random 5 symbols code
+                                $code = substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 5);
+
+                                // check if the code is unique
+                                $stmt = $conn->prepare("SELECT code FROM template_questions WHERE code = :code");
+                                $stmt->bindParam(':code', $code);
+                                $stmt->execute();
+                                $code_exists = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                                if (!$code_exists){
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    else{
+                        $code = null;
+                    }
+
+                    // Update the active status
+                    $stmt = $conn->prepare("UPDATE template_questions SET active = :active, code = :code WHERE template_question_id = :template_question_id");
+                    $stmt->bindParam(':active', $setActivity);
+                    $stmt->bindParam(':template_question_id', $template_question_id);
+                    $stmt->bindParam(':code', $code);
+                    if (!$stmt->execute()) {
+                        throw new Exception("Failed to update active status");
+                    }
+            
+                    $conn->commit();
+                    response(["message" => "Template question updated successfully"], 200);
+                } catch (Exception $e) {
+                    $conn->rollBack();
+                    response(["error" => $e->getMessage()], 500);
+                }
+                
+            
+            }
+        
+        break;
 
         case "DELETE":
             if ($endpoint1 === "/template_question"){
