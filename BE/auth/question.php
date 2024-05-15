@@ -48,7 +48,7 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
             $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
             
             if (empty($questions)) {
-                response(['message' => 'No questions found'], 404); // Provide a not found status if no results
+                response(['message' => 'No questions found'], 204); // Provide a not found status if no results
             } else {
                 response(['questions' => $questions], 200); // Return questions if found
             }
@@ -224,7 +224,7 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
                 
             }
             else{
-                response(["error" => "Invalid endpoint"], 404);
+                response(["error" => "Invalid endpoint"], 405);
             }
 
             break;
@@ -320,6 +320,9 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
                 }
                 
             
+            }
+            else{
+                response(["error" => "Invalid endpoint"], 405);
             }
         
         break;
@@ -446,6 +449,9 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
                     response(["error" => $e->getMessage()], 500);
                 }
     
+            }
+            else{
+                response(["error" => "Invalid endpoint"], 405);
             }
 
             

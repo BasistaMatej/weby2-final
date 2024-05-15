@@ -100,7 +100,7 @@ function verify_token($conn, $token = null, $valid = true) {
   $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
   if (!$user) {
-      response(['error' => 'User not found'], 404);
+      response(['error' => 'User not found'], 204);
       return false;
   }
 

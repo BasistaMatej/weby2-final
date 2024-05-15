@@ -27,7 +27,7 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
             if ($subjects) {
                 response(['subjects' => $subjects], 200);
             } else {
-                response(['error' => 'No subjects found'], 404);
+                response(['error' => 'No subjects found'], 204);
             }
         } catch (PDOException $e) {
             response(['error' => 'Database error: ' . $e->getMessage()], 500);
@@ -110,7 +110,7 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
         $stmt->execute();
 
         if ($stmt->rowCount() === 0) {
-            response(["error" => "Subject not found"], 404);
+            response(["error" => "Subject not found"], 204);
             return;
         }
 
@@ -153,7 +153,7 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
         $stmt->execute();
 
         if ($stmt->rowCount() === 0) {
-            response(["error" => "Subject not found"], 404);
+            response(["error" => "Subject not found"], 204);
             return;
         }
         else{

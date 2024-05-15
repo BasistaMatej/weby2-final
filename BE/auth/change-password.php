@@ -47,7 +47,7 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
                 // response(["message" => "Password reset email sent successfully", "token-debug" => $token], 200); //TODO remove token from response
 
             } else {
-                response(["error" => "Email not found"], 404);
+                response(["error" => "Email not found"], 204);
             }
         }
     
@@ -80,6 +80,9 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
             } else {
             response(["message" => "Password updated successfully"], 200);
             }
+        }
+        else {
+            response(["error" => "Invalid endpoint"], 405);
         }
 
       break;
