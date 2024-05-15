@@ -7,6 +7,7 @@
   "logout": "Logout",
   "enter_code": "Enter code",
   "up_new_user": "NEW USER",
+  "create_user": "Create new user",
   "up_ex_user": "EXISTING USER",
   "name": "Name",
   "surname": "Surname",
@@ -62,6 +63,7 @@
   "change_password": "Change password",
   "up_reset_password": "RESET PASSWORD",
   "change_password_success": "Password changed successfully!",
-  "password_reset_email_confirm": "A password reset confirmation email has been sent to your inbox."
-
+  "password_reset_email_confirm": "A password reset confirmation email has been sent to your inbox.",
+  "no_user_find": "No users were found. Start by creating one!",
+  "select_status": "Select status"
 }
