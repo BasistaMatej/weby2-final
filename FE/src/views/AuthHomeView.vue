@@ -83,7 +83,7 @@
         </DataTable>
       </div>
     </div>
-    <EditQuestionDialog v-model="showDialog" :title="$t('new_question_creation')" :category="dialogSubject"
+    <EditQuestionDialog v-model="showDialog" :title="dialogTitle" :category="dialogSubject"
       :id="dialogId" :isActive="dialogActive" :question="dialogQuestion" :type="dialogType" :lang_id="$t('lang_id')" />
     <AddSubjectDialog v-model="addNewSubjectDialog" />
     <EditSubjectDialog v-model="editSubjectDialog" />
