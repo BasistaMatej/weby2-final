@@ -69,14 +69,13 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
                 $active = $postdata['active'];
                 $type = $postdata['type'];
                 $answer_text = $postdata['answer_text'];
-                if ($user['auth_level'] == 2) {
+                if ($user['auth_level'] == 2 && isset($postdata['by_user_id'])) {
                     $by_user_id = $postdata['by_user_id'];
                     
                 }
-                if ($user['auth_level'] == 1) {
+                else{
                     $by_user_id = $user['user_id'];
                 }
-
                 try {
                     $conn->beginTransaction();
             
@@ -133,6 +132,101 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
                     response(["error" => $e->getMessage()], 500);
                 }
             }
+            else if ($endpoint1 === "/question_template_copy"){
+                $user = verify_token($conn);
+                if (!$user) {
+                    exit;  // Stop further execution if the token is invalid
+                }
+
+                $template_question_id = $endpoint2;
+
+                try {
+                    $conn->beginTransaction();
+                    
+                    $postdata = json_decode(file_get_contents("php://input"), true);
+                    
+                    // if empty postdata user_id, use the user_id from the token
+                    if ($user['auth_level'] == 2 && isset($postdata['by_user_id'])){
+                        $by_user_id = $postdata['by_user_id'];
+                    }
+                    else{
+                        $by_user_id = $user['user_id'];
+                    }
+
+                    // Get the template question
+                    $stmt = $conn->prepare("SELECT * FROM template_questions WHERE template_question_id = :template_question_id");
+                    $stmt->bindParam(':template_question_id', $template_question_id);
+                    $stmt->execute();
+                    $template_question = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+                    if (!$template_question) {
+                        throw new Exception("Template question not found");
+                    }
+            
+                    if ($template_question['author_id'] != $user['user_id'] && $user['auth_level'] != 2) {
+                        throw new Exception("Unauthorized to copy this question");
+                    }
+
+                    // Insert into template questions
+                    $stmt = $conn->prepare("INSERT INTO template_questions (template_question_text, subject_id, active, type, author_id) VALUES (:template_question_text, :subject_id, :active, :type, :author_id)");
+                    $stmt->bindParam(':template_question_text', $template_question['template_question_text']);
+                    $stmt->bindParam(':subject_id', $template_question['subject_id']);
+                    $stmt->bindParam(':active', $template_question['active']);
+                    $stmt->bindParam(':type', $template_question['type']);
+                    $stmt->bindParam(':author_id', $by_user_id);
+                    if (!$stmt->execute()) {
+                        throw new Exception("Failed to create template question");
+                    }
+
+                    $new_template_question_id = $conn->lastInsertId();
+
+                    // insert into question
+                    $stmt = $conn->prepare("INSERT INTO questions (template_question_id) VALUES (:template_question_id)");
+                    $stmt->bindParam(':template_question_id', $new_template_question_id);
+                    if (!$stmt->execute()) {
+                        throw new Exception("Failed to create question");
+                    }
+
+                    $new_question_id = $conn->lastInsertId();
+
+
+                    if ($template_question['type'] == 1) {
+                        // get question_id from the question table
+                        $stmt = $conn->prepare("SELECT question_id FROM questions WHERE template_question_id = :template_question_id");
+                        $stmt->bindParam(':template_question_id', $template_question_id);
+                        $stmt->execute();
+                        $question_id = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                        // Get all answers associated with the question_id
+                        $stmt = $conn->prepare("SELECT answer_text FROM answers WHERE question_id = :question_id");
+                        $stmt->bindParam(':question_id', $question_id['question_id']);
+                        $stmt->execute();
+                        $answers = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+                        // Insert into answers
+                        $stmt = $conn->prepare("INSERT INTO answers (question_id, answer_text) VALUES (:question_id, :answer_text)");
+                        $stmt->bindParam(':question_id', $new_question_id);
+                        foreach ($answers as $answer) {
+                            $stmt->bindParam(':answer_text', $answer);
+                            if (!$stmt->execute()) {
+                                throw new Exception("Failed to insert answer");
+                            }
+                        }
+                    }
+
+                    $conn->commit();
+                    response(["message" => "Template question coopied successfully"], 200);
+                } catch (Exception $e) {
+                    $conn->rollBack();
+                    response(["error" => $e->getMessage()], 500);
+                }
+
+                
+            }
+            else{
+                response(["error" => "Invalid endpoint"], 404);
+            }
+
             break;
 
         case "DELETE":
@@ -172,9 +266,6 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
                     $stmt->bindParam(':template_question_id', $template_question_id);
                     $stmt->execute();
                     $question_ids = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-                    // echo json_encode($question_ids);
-                    // Now $question_ids is an array of all question_id values associated with the given template_question_id
 
                     // Delete associated answers
                     $stmt = $conn->prepare("DELETE FROM answers WHERE question_id = :question_id");
