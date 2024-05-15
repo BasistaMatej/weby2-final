@@ -180,6 +180,7 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
         } else {
             response(["error" => "Failed to delete subject"], 500);
         }
+    break;
 
     case "OPTIONS":
         break;
