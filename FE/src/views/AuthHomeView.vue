@@ -10,41 +10,68 @@
               <lord-icon src="https://cdn.lordicon.com/zrkkrrpl.json" trigger="hover" stroke="bold"
                 style="width:2em;height:2em" colors="primary:#121331,secondary:#8b5cf6">
               </lord-icon>
-              <span>{{$t('create_question')}}</span>
+              <span>{{ $t('create_question') }}</span>
             </div>
           </div>
         </div>
         <span class="d-inline-block" style="margin-top: 2em; font-size: 80%; color: rgba(0,0,0,0.5)">
-          {{$t('filter_several_columns')}}
+          {{ $t('filter_several_columns') }}
         </span>
         <DataTable class="auth-table" stripedRows paginator :rows="50" :rowsPerPageOptions="[50, 100, 200]"
-          sortMode="multiple" :value="products" removableSort dataKey="id" selectionMode="single" @rowSelect="(event) => editRow(event, $t('lang_id'))">
+          sortMode="multiple" :value="products" removableSort dataKey="id" selectionMode="single"
+          @rowSelect="(event) => editRow(event, $t('lang_id'))">
           <template #empty>
             <div class="d-flex flex-column align-items-center">
               <lord-icon src="https://cdn.lordicon.com/ribxmuoc.json" trigger="loop" delay="700"
                 colors="primary:#121331,secondary:#8b5cf6" style="width:250px;height:250px">
               </lord-icon>
               <h4>
-                {{$t('no_question_find')}}
+                {{ $t('no_question_find') }}
               </h4>
             </div>
           </template>
-          <template #loading> {{$t('loading')}} </template>
+          <template #loading> {{ $t('loading') }} </template>
           <Column field="question" :header="$t('question')" sortable></Column>
           <Column field="subject" :header="$t('subject')" sortable></Column>
           <Column field="created" :header="$t('created')" sortable></Column>
           <Column field="code" :header="$t('code')" sortable></Column>
-          <Column field="tools" :header="$t('tools')" ></Column>
+          <Column field="tools" :header="$t('tools')">
+            <template #body="slotProps">
+              <div class="d-flex">
+                <Button class="row-buttons" @click="deleteItem(slotProps.data)">
+                  <lord-icon src="https://cdn.lordicon.com/nqtddedc.json" trigger="hover"
+                    style="width:25px;height:25px">
+                  </lord-icon>
+                </Button>
+                <Button class="row-buttons" @click="closeItem(slotProps.data)">
+                  <lord-icon src="https://cdn.lordicon.com/mwikjdwh.json" trigger="hover"
+                    style="width:25px;height:25px">
+                  </lord-icon>
+                </Button>
+                <Button class="row-buttons" @click="activateItem(slotProps.data)">
+                  <lord-icon src="https://cdn.lordicon.com/aklfruoc.json" trigger="hover"
+                    style="width:25px;height:25px">
+                  </lord-icon>
+                </Button>
+                <!-- SPRAVIT VIF || MODAL NA QR -->
+                <Button class="row-buttons" @click="copyItem(slotProps.data)">
+                  <lord-icon src="https://cdn.lordicon.com/rmkahxvq.json" trigger="hover"
+                    style="width:25px;height:25px">
+                  </lord-icon>
+                </Button>
+              </div>
+            </template>
+          </Column>
         </DataTable>
       </div>
     </div>
-    <EditQuestionDialog v-model="showDialog" :title="$t('new_question_creation')" :category="dialogSubject" :id="dialogId"
-      :isActive="dialogActive" :question="dialogQuestion" :type="dialogType" :lang_id="$t('lang_id')" />
+    <EditQuestionDialog v-model="showDialog" :title="$t('new_question_creation')" :category="dialogSubject"
+      :id="dialogId" :isActive="dialogActive" :question="dialogQuestion" :type="dialogType" :lang_id="$t('lang_id')" />
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import AuthNavBar from '@/components/AuthNavBar.vue';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
@@ -52,6 +79,8 @@ import EditQuestionDialog from '@/components/EditQuestionDialog.vue';
 import { FilterMatchMode } from 'primevue/api';
 import ColumnGroup from 'primevue/columngroup';
 import Row from 'primevue/row';
+import Button from 'primevue/button';
+import { auth_fetch } from '@/utils';
 
 const showDialog = ref(false);
 const dialogTitle = ref('Vytvorenie novej otázky');
@@ -69,6 +98,61 @@ const productsSample = ref([
   { id: 12, question: 'Koľko je 2+2?', subject: 'Matematika', created: '01-03-2024', code: 'MATH15', tools: '', type: 2 },
   { id: 66, question: 'Odkiaľ pochádza slovo "káva"?', subject: 'Jazyk', created: '01-03-2024', code: 'JSH15', tools: '', type: 1 },
 ]);
+
+
+
+onMounted(async () => {
+
+  const response = await initialGetFetch();
+  console.log(products.value);
+
+  if (!response.ok) {
+    isLoading.value = false;
+    const data = await response.json();
+    //showError(data.error);
+  } else {
+    const data = await response.json();
+    products.value = data.questions;
+    console.log(products.value);
+  }
+});
+
+const initialGetFetch = async () => {
+  return (await auth_fetch('/question'));
+}
+
+const deleteItem = async (row) => {
+  console.log('Delete item clicked!', row.id);
+
+
+  const response = await fetch(``, {
+    method: 'DELETE',
+    body: JSON.stringify({
+      id: row.id
+    })
+  });
+
+  if (!response.ok) {
+    console.error('Failed to delete item', row.id);
+    return;
+  } else {
+    console.log('Item deleted successfully', row.id); //Vymazem
+  }
+};
+
+const activateItem = (row) => {
+  console.log('Activate item clicked!', row);
+};
+
+const copyItem = (row) => {
+  console.log('Copy item clicked!', row);
+};
+
+const closeItem = (row) => {
+  console.log('Close item clicked!', row);
+};
+
+
 
 const editRow = (event, lang) => {
   editQuestion(event.data.id, event.data.question, event.data.category, event.data.active, event.data.type, lang)
@@ -141,5 +225,10 @@ button.p-paginator-page {
   background: #8B5CF666;
   color: #333;
   box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+}
+
+.row-buttons {
+  border-radius: 1rem;
+  background: #8B5CF666;
 }
 </style>

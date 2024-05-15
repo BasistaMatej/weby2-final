@@ -1,5 +1,6 @@
 <template>
     <div>
+        <Toast />
         <div>
             <DefaultNavBar />
             <div class="d-flex justify-content-center align-items-center flex-column w-100 p-3 h-100">
@@ -75,12 +76,12 @@
                 </lord-icon>
             </div>
         </div>
-        <Toast />
+
     </div>
 </template>
 
 <script setup>
-import { ref, watch, computed } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import DefaultNavBar from '../components/DefaultNavBar.vue';
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
@@ -90,7 +91,7 @@ import Button from 'primevue/button';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { useRouter, useRoute } from 'vue-router';
-import { setLocalStorage } from '@/utils';
+import { getLocalStorage, removeLocalStorage, setLocalStorage } from '@/utils';
 
 const router = useRouter();
 const password = ref(null)
@@ -114,7 +115,6 @@ watch([password], () => {
 })
 
 const goBack = () => {
-    console.log("clicked!!!");
     isForgotten.value = false;
     isEmailFormSubmitted.value = false;
     isFormSubmitted.value = false;
@@ -204,17 +204,20 @@ const showError = (errorMessage) => {
 };
 
 //NEROZUMIEM PRECO NEZOBRAZI TOAST SO SPRAVOU :(
-/*if (message.value) {
-    //console.log(message.value);
-    //console.log(message.value);
-    showSuccess(message.value);
-    toast.add({ severity: 'success', summary: 'Success', detail: message.value, life: 5000 });
-    //showSuccess(message.value);
-}*/
+
 
 const lostPassword = () => {
     isForgotten.value = true;
 }
+
+onMounted(() => {
+    const message = getLocalStorage("toast");
+
+    if (message) {
+        showSuccess(message);
+        removeLocalStorage("toast");
+    }
+});
 </script>
 
 <style scoped>

@@ -42,7 +42,7 @@ import Button from 'primevue/button';
 import { useRouter } from 'vue-router';
 import Dropdown from "primevue/dropdown";
 import '@/assets/dropdown.css';
-import { removeLocalStorage } from '@/utils';
+import { removeLocalStorage, setLocalStorage } from '@/utils';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 
@@ -57,13 +57,9 @@ window.addEventListener('resize', () => {
 const registrationShow = async () => {
   removeLocalStorage('accessToken');
   removeLocalStorage('refreshToken');
-
+  setLocalStorage("toast", "Používateľ odhlásený!");
+  router.push("/login");
   // Show toast for 1-2 seconds
-  toast.add({ severity: 'success', summary: 'Success', detail: 'Používateľ odhlásený!', life: 2000 }); // 2 seconds
-
-  setTimeout(() => {
-    router.push({ path: '/login', query: { message: 'Používateľ odhlásený!' } });
-  }, 1500); // Wait 2 seconds before redirecting
 };
 </script>
 
