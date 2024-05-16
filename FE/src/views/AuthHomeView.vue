@@ -61,7 +61,8 @@
                     style="width:25px;height:25px">
                   </lord-icon>
                 </Button>
-                <Button v-if="slotProps.data.active == 1" class="row-buttons" @click="closeItem(slotProps.data)">
+                <Button v-if="slotProps.data.active == 1 && (slotProps.data.code)" class="row-buttons"
+                  @click="closeItem(slotProps.data)">
                   <lord-icon src="https://cdn.lordicon.com/mwikjdwh.json" trigger="hover"
                     style="width:25px;height:25px">
                   </lord-icon>
@@ -71,9 +72,14 @@
                     style="width:25px;height:25px">
                   </lord-icon>
                 </Button>
-                <!-- SPRAVIT VIF || MODAL NA QR -->
                 <Button class="row-buttons" @click="copyItem(slotProps.data)">
                   <lord-icon src="https://cdn.lordicon.com/rmkahxvq.json" trigger="hover"
+                    style="width:25px;height:25px">
+                  </lord-icon>
+                </Button>
+                <Button v-if="slotProps.data.active == 1 && slotProps.data.code != null" class="row-buttons"
+                  @click="viewQr()">
+                  <lord-icon src="https://cdn.lordicon.com/kkvxgpti.json" trigger="hover"
                     style="width:25px;height:25px">
                   </lord-icon>
                 </Button>
@@ -145,6 +151,10 @@ const productsSample = ref([
 
 const addNewSubject = () => {
   addNewSubjectDialog.value = true;
+}
+
+const viewQr = () => {
+  isActiveQr.value = true;
 }
 
 onMounted(async () => {
