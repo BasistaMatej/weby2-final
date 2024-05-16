@@ -354,7 +354,7 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
                         throw new Exception("Template question not found");
                     }
             
-                    if ($question['author_id'] != $user['user_id'] && $user['auth_level'] != 1) {
+                    if ($question['author_id'] != $user['user_id'] && $user['auth_level'] != 2) {
                         throw new Exception("Unauthorized to delete this question");
                     }
 

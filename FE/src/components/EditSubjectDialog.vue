@@ -121,8 +121,6 @@ const fetchAllSubjects = async () => {
     const data = await res.json();
 
     subjectData.value = data.subjects.map(subject => ({ name: subject }));
-
-    console.log(subjectData.value);
   }
 }
 
