@@ -18,22 +18,22 @@
 
                 </div>
 
-                <h1 class="display-4 text-center mb-1">{{ $t('hello') }} Samuel!</h1>
+                <h1 class="display-4 text-center mb-1">{{ $t('hello') }} {{ user.name }}!</h1>
 
                 <div class="content-box">
                     <p class="header-p">{{ $t('entitlement_level') }}</p>
-                    <p class="content-p">Admin</p>
+                    <p class="content-p">{{ userRole }}</p>
                 </div>
 
 
                 <div class="content-box">
                     <p class="header-p">{{ $t('email_address') }}</p>
-                    <p class="content-p">kubalasamuel1a@gmail.com</p>
+                    <p class="content-p">{{ user.email }}</p>
                 </div>
 
                 <div class="content-box">
                     <p class="header-p">{{ $t('last_activity') }}</p>
-                    <p class="content-p">12-04-2024 16:02</p>
+                    <p class="content-p">{{ user.last_login }}</p>
                 </div>
 
                 <span class="fw-bold btn-login text-center" @click="lostPassword">{{ $t('forgotten_password') }}</span>
@@ -88,7 +88,7 @@ import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import Password from 'primevue/password';
 import Button from 'primevue/button';
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch, onMounted, computed } from 'vue';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { auth_fetch } from '@/utils';
@@ -101,6 +101,25 @@ const isFormSubmitted = ref(false)
 const isLoading = ref(false);
 const toast = useToast();
 const userName = ref('');
+const user = ref([]);
+
+const userRole = computed(() => {
+    switch (user.value.auth_level) {
+        case 2:
+            return 'Admin';
+        case 1:
+            return 'Basic';
+        case -1:
+            return 'Blocked';
+        default:
+            return 'Unknown';
+    }
+});
+
+
+
+
+
 
 onMounted(async () => {
     //authLevel.value = getLocalStorage("accessLevel");
@@ -112,13 +131,13 @@ onMounted(async () => {
         //showError(data.error);
     } else {
         const data = await response.json();
-        products.value = data.questions;
-        console.log(products.value);
+        user.value = data.user;
+        console.log(user.value);
     }
 });
 
 const initialGetFetch = async () => {
-    return (await auth_fetch('/profile'));
+    return (await auth_fetch('/user/profile'));
 }
 
 
