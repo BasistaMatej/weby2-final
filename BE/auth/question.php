@@ -23,6 +23,7 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
                         tq.template_question_text, 
                         tq.created, 
                         tq.code, 
+                        tq.active,
                         s.subject_name
                     FROM 
                         template_questions tq
