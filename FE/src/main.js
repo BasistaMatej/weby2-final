@@ -10,6 +10,7 @@ import 'primeicons/primeicons.css'
 import ToastService from 'primevue/toastservice';
 import Tooltip from 'primevue/tooltip';
 import i18n from "./i18n.js";
+import ConfirmationService from 'primevue/confirmationservice';
 
 const app = createApp(App)
 
@@ -18,4 +19,5 @@ app.directive('tooltip', Tooltip);
 app.use(router);
 app.use(ToastService);
 app.use(i18n);
+app.use(ConfirmationService);
 app.mount('#app')
