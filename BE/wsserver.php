@@ -1,8 +1,8 @@
 <?php
-require __DIR__ . '/vendor/autoload.php';
-
 use Workerman\Worker;
 use Workerman\Connection\AsyncTcpConnection;
+
+require __DIR__ . '/vendor/autoload.php';
 
 $ws_worker = new Worker("websocket://0.0.0.0:9191");
 
