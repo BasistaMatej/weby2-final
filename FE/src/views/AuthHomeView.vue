@@ -49,8 +49,8 @@
             </div>
           </template>
           <template #loading> {{ $t('loading') }} </template>
-          <Column field="question" :header="$t('question')" sortable></Column>
-          <Column field="subject" :header="$t('subject')" sortable></Column>
+          <Column field="template_question_text" :header="$t('question')" sortable></Column>
+          <Column field="subject_name" :header="$t('subject')" sortable></Column>
           <Column field="created" :header="$t('created')" sortable></Column>
           <Column field="code" :header="$t('code')" sortable></Column>
           <Column field="tools" :header="$t('tools')">
@@ -61,12 +61,12 @@
                     style="width:25px;height:25px">
                   </lord-icon>
                 </Button>
-                <Button class="row-buttons" @click="closeItem(slotProps.data)">
+                <Button v-if="slotProps.data.active == 1" class="row-buttons" @click="closeItem(slotProps.data)">
                   <lord-icon src="https://cdn.lordicon.com/mwikjdwh.json" trigger="hover"
                     style="width:25px;height:25px">
                   </lord-icon>
                 </Button>
-                <Button class="row-buttons" @click="activateItem(slotProps.data)">
+                <Button v-if="slotProps.data.active == 0" class="row-buttons" @click="activateItem(slotProps.data)">
                   <lord-icon src="https://cdn.lordicon.com/aklfruoc.json" trigger="hover"
                     style="width:25px;height:25px">
                   </lord-icon>
@@ -83,8 +83,8 @@
         </DataTable>
       </div>
     </div>
-    <EditQuestionDialog v-model="showDialog" :title="dialogTitle" :category="dialogSubject"
-      :id="dialogId" :isActive="dialogActive" :question="dialogQuestion" :type="dialogType" :lang_id="$t('lang_id')" />
+    <EditQuestionDialog v-model="showDialog" :title="dialogTitle" :category="dialogSubject" :id="dialogId"
+      :isActive="dialogActive" :question="dialogQuestion" :type="dialogType" :lang_id="$t('lang_id')" />
     <AddSubjectDialog v-model="addNewSubjectDialog" />
     <EditSubjectDialog v-model="editSubjectDialog" />
   </div>
@@ -149,36 +149,94 @@ const initialGetFetch = async () => {
 }
 
 const deleteItem = async (row) => {
-  console.log('Delete item clicked!', row.id);
+  console.log('Delete item clicked!', row.template_question_id);
 
+  const response = await auth_fetch(`/question/template_question/${row.template_question_id}`, "DELETE");
 
-  const response = await fetch(``, {
-    method: 'DELETE',
-    body: JSON.stringify({
-      id: row.id
-    })
-  });
 
   if (!response.ok) {
-    console.error('Failed to delete item', row.id);
+    console.error('Failed to delete item', row.template_question_id);
     return;
   } else {
-    console.log('Item deleted successfully', row.id); //Vymazem
+    console.log('Item deleted successfully', row.template_question_id); //Vymazem
+    const response = await initialGetFetch();
+    if (!response.ok) {
+      const data = await response.json();
+      //showError(data.error);
+    } else {
+      const data = await response.json();
+      products.value = data.questions;
+      console.log(products.value);
+    }
   }
 };
 
-const activateItem = (row) => {
-  console.log('Activate item clicked!', row);
+const activateItem = async (row) => {
+  console.log('Activate item clicked!', row.template_question_id);
+
+  const response = await auth_fetch(`/question/set_active/${row.template_question_id}`, "PUT", { active: 1 });
+
+  if (!response.ok) {
+    console.error('Failed to activate item', row.template_question_id);
+    return;
+  } else {
+    console.log('Item activated successfully', row.template_question_id); //Vymazem
+    const response = await initialGetFetch();
+    if (!response.ok) {
+      const data = await response.json();
+      //showError(data.error);
+    } else {
+      const data = await response.json();
+      products.value = data.questions;
+      console.log(products.value);
+    }
+  }
 };
 
-const copyItem = (row) => {
-  console.log('Copy item clicked!', row);
+const copyItem = async (row) => {
+  console.log('Copy item clicked!', row.template_question_id);
+
+  const response = await auth_fetch(`/question/question_template_copy/${row.template_question_id}`, "POST");
+
+  if (!response.ok) {
+    console.error('Failed to copy item', row.template_question_id);
+    return;
+  } else {
+    console.log('Item copied successfully', row.template_question_id); //Vymazem
+    const response = await initialGetFetch();
+    if (!response.ok) {
+      const data = await response.json();
+      //showError(data.error);
+    } else {
+      const data = await response.json();
+      products.value = data.questions;
+      console.log(products.value);
+    }
+  }
 };
 
-const closeItem = (row) => {
+const closeItem = async (row) => {
   console.log('Close item clicked!', row);
-};
 
+  const response = await auth_fetch(`/question/set_active/${row.template_question_id}`, "PUT", { active: 0 });
+
+  if (!response.ok) {
+    console.error('Failed to activate item', row.template_question_id);
+    return;
+  } else {
+    console.log('Item closed successfully', row.template_question_id); //Vymazem
+    const response = await initialGetFetch();
+    if (!response.ok) {
+      const data = await response.json();
+      //showError(data.error);
+    } else {
+      const data = await response.json();
+      products.value = data.questions;
+      console.log(products.value);
+    }
+  }
+
+};
 
 
 const editRow = (event, lang) => {
