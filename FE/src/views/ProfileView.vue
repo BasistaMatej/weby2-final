@@ -88,7 +88,7 @@ import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import Password from 'primevue/password';
 import Button from 'primevue/button';
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { auth_fetch } from '@/utils';
@@ -100,6 +100,27 @@ const passwordsMatch = ref(true)
 const isFormSubmitted = ref(false)
 const isLoading = ref(false);
 const toast = useToast();
+const userName = ref('');
+
+onMounted(async () => {
+    //authLevel.value = getLocalStorage("accessLevel");
+
+    const response = await initialGetFetch();
+
+    if (!response.ok) {
+        const data = await response.json();
+        //showError(data.error);
+    } else {
+        const data = await response.json();
+        products.value = data.questions;
+        console.log(products.value);
+    }
+});
+
+const initialGetFetch = async () => {
+    return (await auth_fetch('/profile'));
+}
+
 
 watch([password, confirmPassword], () => {
     checkPasswords();
