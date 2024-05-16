@@ -78,9 +78,20 @@
                   </lord-icon>
                 </Button>
               </div>
+              <div class="qr-backdrop" v-if="isActiveQr && isActiveRow == slotProps.data.template_question_id">
+                <div id="qr-box" class="d-flex">
+                  <h1>Pripoj sa do hry</h1>
+                  <QRCodeVue3 :width="200" :height="200" :value="`http://localhost:5173/${slotProps.data.code}`" />
+                  <Button id="button-modal" class="mt-2" @click="isActiveQr = false">Zavrieť</Button>
+                </div>
+              </div>
+
             </template>
           </Column>
+
         </DataTable>
+
+
       </div>
     </div>
     <EditQuestionDialog v-model="showDialog" :title="dialogTitle" :category="dialogSubject" :id="dialogId"
@@ -88,6 +99,8 @@
     <AddSubjectDialog v-model="addNewSubjectDialog" />
     <EditSubjectDialog v-model="editSubjectDialog" />
   </div>
+
+
 </template>
 
 <script setup>
@@ -103,6 +116,11 @@ import ColumnGroup from 'primevue/columngroup';
 import Row from 'primevue/row';
 import Button from 'primevue/button';
 import { auth_fetch, getLocalStorage } from '@/utils';
+//import QrCode from '../components/QrCode.vue'
+import QRCodeVue3 from "qrcode-vue3";
+import Dialog from 'primevue/dialog';
+const slotProps = ref([]);
+
 
 const addNewSubjectDialog = ref(false);
 const editSubjectDialog = ref(false);
@@ -115,8 +133,9 @@ const dialogId = ref(null);
 const dialogType = ref(1);
 const lang_id = ref('');
 const authLevel = ref(1);
-
+const isActiveQr = ref(false);
 const products = ref([]);
+const isActiveRow = ref(0);
 
 const productsSample = ref([
   { id: 0, question: 'Ako sa po čínsky povie "Bryndzové halušky"?', subject: 'Jazyk', created: '01-03-2024', code: 'JSH15', tools: '', type: 1 },
@@ -150,7 +169,6 @@ const initialGetFetch = async () => {
 
 const deleteItem = async (row) => {
   console.log('Delete item clicked!', row.template_question_id);
-
   const response = await auth_fetch(`/question/template_question/${row.template_question_id}`, "DELETE");
 
 
@@ -172,8 +190,6 @@ const deleteItem = async (row) => {
 };
 
 const activateItem = async (row) => {
-  console.log('Activate item clicked!', row.template_question_id);
-
   const response = await auth_fetch(`/question/set_active/${row.template_question_id}`, "PUT", { active: 1 });
 
   if (!response.ok) {
@@ -182,13 +198,16 @@ const activateItem = async (row) => {
   } else {
     console.log('Item activated successfully', row.template_question_id); //Vymazem
     const response = await initialGetFetch();
+    //visible.value = true;
     if (!response.ok) {
       const data = await response.json();
       //showError(data.error);
     } else {
       const data = await response.json();
       products.value = data.questions;
-      console.log(products.value);
+      isActiveQr.value = true;
+      isActiveRow.value = row.template_question_id;
+      //console.log(products.value);
     }
   }
 };
@@ -273,6 +292,41 @@ const editQuestion = (id, question, subject, active, type, lang) => {
 </script>
 
 <style>
+.qr-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+#qr-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+#qr-box h1 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+#qr-box {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
 .auth-table {
   border-radius: 1em;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
