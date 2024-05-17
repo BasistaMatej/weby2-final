@@ -127,10 +127,10 @@ const addOption = () => {
   answers.value.push({ answer_text: '', answer_id: null });
 }
 
-const saveQuestion = () => {
+const saveQuestion = async () => {
   if (!questionText.value) {
     if (lang_id.value === "en") {
-      toast.add({ severity: 'warn', summary: 'Information', detail: 'The question must not be empty.', life: 4500 });
+      toast.add({ severity: 'error', summary: 'Information', detail: 'The question must not be empty.', life: 4500 });
     } else  {
       toast.add({ severity: 'error', summary: 'Informácia', detail: 'Otázka nesmie byť prázdna.', life: 4500 });
     }
@@ -138,7 +138,17 @@ const saveQuestion = () => {
     return;
   }
 
-  if (type.value.value === 2) {
+  if(!selectedCategory.value) {
+    if (lang_id.value === "en") {
+      toast.add({ severity: 'error', summary: 'Information', detail: 'You must choose a category.', life: 4500 });
+    } else  {
+      toast.add({ severity: 'error', summary: 'Informácia', detail: 'Musíte si vybrať kategóriu.', life: 4500 });
+    }
+
+    return;
+  }
+
+  if (type.value.value === 1) {
     if (answers.value.length < 2) {
       if (lang_id.value === "en") {
         toast.add({ severity: 'warn', summary: 'Information', detail: 'You must choose at least 2 options.', life: 4500 });
@@ -150,7 +160,31 @@ const saveQuestion = () => {
     }
   }
 
-  console.log('Save question');
+  if(id.value == null ){
+    const res = await auth_fetch('/question', "POST", 
+    {
+      "template_question_text": questionText.value,
+      "subject_name": selectedCategory.value.name,
+      "active": isActive.value ? 1 : 0,
+      "type": type.value.value,
+      "answer_text": answers.value.map(a => a.answer_text)
+    });
+
+    if (!res.ok) {
+      const data = await res.json();
+      toast.add({ severity: 'error', summary: 'Error', detail: data.error, life: 3000 });
+      return;
+    } else {
+      const data = await res.json();
+      toast.add({ severity: 'success', summary: 'Success', detail: data.message, life: 3000 });
+      questionText.value = '';
+      selectedCategory.value = null;
+      isActive.value = false;
+      answers.value = [{ answer_text: '', answer_id: null }];
+
+      visible.value = false;
+    }
+  }
 }
 
 const fetchAllSubjects = async () => {

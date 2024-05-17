@@ -135,12 +135,6 @@ const isActiveQr = ref(false);
 const products = ref([]);
 const isActiveRow = ref(0);
 
-const productsSample = ref([
-  { id: 0, question: 'Ako sa po čínsky povie "Bryndzové halušky"?', subject: 'Jazyk', created: '01-03-2024', code: 'JSH15', tools: '', type: 1 },
-  { id: 12, question: 'Koľko je 2+2?', subject: 'Matematika', created: '01-03-2024', code: 'MATH15', tools: '', type: 2 },
-  { id: 66, question: 'Odkiaľ pochádza slovo "káva"?', subject: 'Jazyk', created: '01-03-2024', code: 'JSH15', tools: '', type: 1 },
-]);
-
 const addNewSubject = () => {
   addNewSubjectDialog.value = true;
 }
