@@ -122,9 +122,7 @@ import ColumnGroup from 'primevue/columngroup';
 import Row from 'primevue/row';
 import Button from 'primevue/button';
 import { auth_fetch, getLocalStorage } from '@/utils';
-//import QrCode from '../components/QrCode.vue'
 import QRCodeVue3 from "qrcode-vue3";
-import Dialog from 'primevue/dialog';
 const slotProps = ref([]);
 
 
@@ -136,7 +134,7 @@ const dialogQuestion = ref('');
 const dialogSubject = ref('');
 const dialogActive = ref(false);
 const dialogId = ref(null);
-const dialogType = ref(1);
+const dialogType = ref(10);
 const lang_id = ref('');
 const authLevel = ref(1);
 const isActiveQr = ref(false);
@@ -178,7 +176,6 @@ const initialGetFetch = async () => {
 }
 
 const deleteItem = async (row) => {
-  console.log('Delete item clicked!', row.template_question_id);
   const response = await auth_fetch(`/question/template_question/${row.template_question_id}`, "DELETE");
 
 
@@ -269,11 +266,11 @@ const closeItem = async (row) => {
 
 
 const editRow = (event, lang) => {
-  editQuestion(event.data.id, event.data.question, event.data.category, event.data.active, event.data.type, lang)
+  editQuestion(event.data.template_question_id, event.data.template_question_text, event.data.subject_name, event.data.active, event.data.type, lang)
 }
 
 const editQuestion = (id, question, subject, active, type, lang) => {
-  if (id == null) {
+  if (id === null) {
     if (lang === 'sk') {
       dialogTitle.value = 'Vytvorenie novej otázky';
     } else if (lang === 'en') {
@@ -283,7 +280,7 @@ const editQuestion = (id, question, subject, active, type, lang) => {
     dialogSubject.value = '';
     dialogActive.value = false;
     dialogId.value = null;
-    dialogType.value = 1;
+    dialogType.value = 0;
   } else {
     if (lang === 'sk') {
       dialogTitle.value = 'Úprava otázky';
