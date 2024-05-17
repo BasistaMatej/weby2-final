@@ -160,7 +160,7 @@ const saveQuestion = async () => {
     }
   }
 
-  if(id.value == null ){
+  if(id.value == null ) { // Create
     const res = await auth_fetch('/question', "POST", 
     {
       "template_question_text": questionText.value,
@@ -168,6 +168,31 @@ const saveQuestion = async () => {
       "active": isActive.value ? 1 : 0,
       "type": type.value.value,
       "answer_text": answers.value.map(a => a.answer_text)
+    });
+
+    if (!res.ok) {
+      const data = await res.json();
+      toast.add({ severity: 'error', summary: 'Error', detail: data.error, life: 3000 });
+      return;
+    } else {
+      const data = await res.json();
+      toast.add({ severity: 'success', summary: 'Success', detail: data.message, life: 3000 });
+      questionText.value = '';
+      selectedCategory.value = null;
+      isActive.value = false;
+      answers.value = [{ answer_text: '', answer_id: null }];
+
+      visible.value = false;
+    }
+  } else { // Update
+    console.log(questionText.value);
+    const res = await auth_fetch(`/question/template/${id.value}`, "PUT", 
+    {
+      "template_question_text": questionText.value,
+      "subject_name": selectedCategory.value.name,
+      "active": isActive.value ? 1 : 0,
+      "type": type.value.value,
+      "answer_text": answers.value
     });
 
     if (!res.ok) {
@@ -203,14 +228,16 @@ const fetchAllSubjects = async () => {
 watch(
   () => props.question,
   () => {
-    questionText.value = props.question
+    questionText.value = props.question,
+    fetchAnswers();
   }
 );
 
 watch(
   () => props.id,
   () => {
-    id.value = props.id
+    id.value = props.id,
+    fetchAnswers();
   }
 );
 
@@ -268,10 +295,12 @@ const fetchAnswers = async () => {
       answers.value = data.answers;
     } else if(res.status === 204) {
       answers.value = [];
-      if(lang_id.value == "en") {
-        toast.add({ severity: 'info', summary: 'Information', detail: 'No answers found.', life: 4500 });
-      } else {
-        toast.add({ severity: 'info', summary: 'Informácia', detail: 'Nenašli sa žiadne odpovede.', life: 4500 });
+      if(type.value.value == 1) {
+        if(lang_id.value == "en") {
+          toast.add({ severity: 'info', summary: 'Information', detail: 'No answers found.', life: 4500 });
+        } else {
+          toast.add({ severity: 'info', summary: 'Informácia', detail: 'Nenašli sa žiadne odpovede.', life: 4500 });
+        }
       }
     } else {
       if (lang_id.value === "en") {
