@@ -83,6 +83,12 @@
                     style="width:25px;height:25px">
                   </lord-icon>
                 </Button>
+
+                <Button class="row-buttons" @click="viewHistory(slotProps.data)">
+                  <lord-icon src="https://cdn.lordicon.com/whrxobsb.json" trigger="hover"
+                    style="width:25px;height:25px">
+                  </lord-icon>
+                </Button>
               </div>
               <div class="qr-backdrop" v-if="isActiveQr && isActiveRow == slotProps.data.template_question_id">
                 <div id="qr-box" class="d-flex">
@@ -118,7 +124,7 @@ import Row from 'primevue/row';
 import Button from 'primevue/button';
 import { auth_fetch, getLocalStorage } from '@/utils';
 import QRCodeVue3 from "qrcode-vue3";
-
+import { useRouter } from 'vue-router';
 
 const addNewSubjectDialog = ref(false);
 const editSubjectDialog = ref(false);
@@ -134,6 +140,11 @@ const authLevel = ref(1);
 const isActiveQr = ref(false);
 const products = ref([]);
 const isActiveRow = ref(0);
+const router = useRouter();
+
+const viewHistory = (row) => {
+  router.push(`history/${row.template_question_id}/${row.type}`);
+}
 
 const addNewSubject = () => {
   addNewSubjectDialog.value = true;

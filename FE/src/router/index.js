@@ -48,7 +48,12 @@ const router = createRouter({
       path: '/reset/:token',
       name: 'Reset password',
       component: () => import('../views/ResetPasswordView.vue')
-    }
+    },
+    {
+      path: '/history/:id/:type',
+      name: 'History',
+      component: () => import('../views/HistoryView.vue')
+    },
   ]
 })
 
