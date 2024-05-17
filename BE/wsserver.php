@@ -1,6 +1,5 @@
 <?php
 use Workerman\Worker;
-use Workerman\Connection\AsyncTcpConnection;
 use Workerman\Connection\TcpConnection;
 
 require __DIR__ . '/vendor/autoload.php';
@@ -9,54 +8,6 @@ $ws_worker = new Worker("websocket://0.0.0.0:9191");
 $ws_worker->count = 1;
 
 $rooms = [];  // Each room will have its own players and answers
-
-
-/*
- ------- CONNECTION ------- 
-$connection->uuid = uniqid();
-$connection->roomKey = $decoded['roomKey']; //store roomKey in connection
-$connection->admin = true;
-$connection->initialised = true;
-$connection->answer = $answer; //store answer in connection
-
-
- -------------------------- 
-  ------- ROOMS ------- 
-$rooms[$roomKey] = [
-    'connections' => [],
-    'answers' => []
-];
-
-
-
-// Add the connection to the rooms array
-  $rooms[$roomKey]['connections'][$uuid] = $connection;
-
-  $rooms[$roomKey][$connection->uuid]->roomKey,
-
-  $rooms[$roomKey]['answers'] // get all 
-  "answer": {
-        "toto je moja odpovedddd": 1,
-        "toto je moja odpoved": 2
-    },
-
-
-
-// Check if the answer already exists
-    if (isset($rooms[$roomKey]['answers'][$answer])) {
-        // If the answer already exists, increment its count
-        $rooms[$roomKey]['answers'][$answer]['count']++;
-    } else {
-        // If the answer doesn't exist, add it to the array and set its count to 1
-        $rooms[$roomKey]['answers'][$answer] = ['text' => $answer, 'count' => 1];
-    }
-
-
- -------------------------- 
-*/
-
-
-
 
 // CONNECTION
 $ws_worker->onConnect = function (TcpConnection $connection) use ($ws_worker) {
@@ -75,7 +26,6 @@ $ws_worker->onConnect = function (TcpConnection $connection) use ($ws_worker) {
   $connection->send(json_encode($dataToSend));
 
 };
-
 
 // MESSAGE
 $ws_worker->onMessage = function (TcpConnection $connection, $data) use ($ws_worker, &$rooms) {
@@ -105,7 +55,6 @@ $ws_worker->onMessage = function (TcpConnection $connection, $data) use ($ws_wor
       }
 
       $roomKey = $decoded['roomKey'];
-
       
       $connection->admin = true;
       $connection->roomKey = $decoded['roomKey']; //store roomKey in connection
@@ -118,7 +67,6 @@ $ws_worker->onMessage = function (TcpConnection $connection, $data) use ($ws_wor
           'answers' => []
         ];
       }
-
       
       else {
         $connection->send(json_encode(['error' => 'Room already exists']));
@@ -154,7 +102,6 @@ $ws_worker->onMessage = function (TcpConnection $connection, $data) use ($ws_wor
       $roomKey = $decoded['roomKey'];
       $answer = $decoded['answer'];
       
-
       //check if roomkey is valid
       if (!isset($rooms[$roomKey])) {
         $connection->send(json_encode(['error' => 'Room not found']));
@@ -193,11 +140,6 @@ $ws_worker->onMessage = function (TcpConnection $connection, $data) use ($ws_wor
 
     break;
     case 'closeRoom':
-      // if (!isset($decoded['roomKey'])) {
-      //   $connection->send(json_encode(['error' => 'Invalid message format, nessage must contain roomKey']));
-      //   return;
-      // }
-
       //if player is not admin
       if (!$connection->admin) {
         $connection->send(json_encode(['error' => 'Only admin can close the room']));
@@ -211,8 +153,6 @@ $ws_worker->onMessage = function (TcpConnection $connection, $data) use ($ws_wor
         $connection->send(json_encode(['error' => 'Room not found']));
         return;
       }
-
-      
 
       $dataToSend = [
         'type' => 'RESPONSE: closeRoom',
@@ -238,25 +178,6 @@ $ws_worker->onMessage = function (TcpConnection $connection, $data) use ($ws_wor
       }
 
       unset($rooms[$roomKey]);
-      
-
-      // // Close all connections in the room
-      // foreach ($rooms[$roomKey]['connections'] as $conn) {
-      //   // $conn->close();
-
-
-      //   $dataToSend = [
-      //     'type' => 'piseeeeee',
-      //     'roomKey' => $roomKey,
-      //     'all_answers' => $rooms[$roomKey]['answers'],
-      //     'message' => 'Room closed successfully'
-      //   ];
-      //   $connection->send(json_encode($dataToSend));
-
-
-
-      //   $conn->send(json_encode($dataToSend));
-      // }
 
     break;
     default:
@@ -264,77 +185,17 @@ $ws_worker->onMessage = function (TcpConnection $connection, $data) use ($ws_wor
         break;
   }
 
-
-
-
-
-
-
 };
-
-$ws_worker->onClose = function ($connection) use ($ws_worker) {
-  // On connection close
-  // delele himself from room
-
-  // if ($connection->admin) {
-  //   $roomKey = $connection->roomKey;
-  //   if (isset($rooms[$roomKey])) {
-  //     $connection->send(json_encode(['error' => 'Admin left the room, room will be closed']));
-  //     unset($rooms[$roomKey]);
-  //   }
-  // } else {
-  //   $roomKey = $connection->roomKey;
-  //   if (isset($rooms[$roomKey])) {
-  //     unset($rooms[$roomKey][$connection->uuid]);
-  //   }
-  // }
-};
-
-$ws_worker->onWorkerStart = function() use ($ws_worker) {
-  // On worker start
-};
-
-
-
-
-
-
-
-
-
-
-
 
 function broadcast($ws_worker, $connection, $data){
   foreach ($ws_worker->connections as $conn) {
       if ($connection === null || $conn !== $connection) {
         if (isset($conn->initialised) && $conn->initialised == true) {
           $conn->send($data); // Send the data only if the connection is initialised
-      }
-          // $conn->send($data); // Send the data to all other connections
-          // sendDataOfOtherPositions($players, $decoded, $conn); 
+        }
       }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 Worker::runAll();
 
