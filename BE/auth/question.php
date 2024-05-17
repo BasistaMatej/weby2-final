@@ -98,11 +98,20 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
             
             
                 $postdata = json_decode(file_get_contents("php://input"), true);
+
+                if( !isset($postdata['template_question_text']) || !isset($postdata['subject_name']) || 
+                    !isset($postdata['active']) || !isset($postdata['type'])  || !isset($postdata['answer_text']))
+                {
+                    response(['error' => 'Missing required fields'], 400);
+                    exit;
+                }
+
                 $template_question_text = $postdata['template_question_text'];
                 $subject_name = $postdata['subject_name'];
                 $active = $postdata['active'];
                 $type = $postdata['type'];
                 $answer_text = $postdata['answer_text'];
+
                 if ($user['auth_level'] == 2 && isset($postdata['by_user_id'])) {
                     $by_user_id = $postdata['by_user_id'];
                     
