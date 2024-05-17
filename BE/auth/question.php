@@ -85,8 +85,64 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
                 response(['message' => 'No answers found'], 204); 
             } else {
                 response(['answers' => $answers], 200);
+            }
+        
         }
-      }
+        else if ($endpoint1 == "/question_history"){
+            $template_question_id = $endpoint2;
+
+            $user = verify_token($conn);
+            if (!$user) {
+                exit;  // Stop further execution if the token is invalid
+            }
+        
+            try {
+                $conn->beginTransaction();
+        
+                // Check if the template question belongs to the user or if user has higher privilege
+                $stmt = $conn->prepare("SELECT author_id FROM template_questions WHERE template_question_id = :template_question_id");
+                $stmt->bindParam(':template_question_id', $template_question_id);
+                $stmt->execute();
+                $question = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if (!$question) {
+                    throw new Exception("Template question not found");
+                }
+
+                if ($question['author_id'] != $user['user_id'] && $user['auth_level'] != 2) {
+                    throw new Exception("Unauthorized to read this question history");
+                }
+
+
+
+               
+                // show the history of the question
+                $stmt = $conn->prepare("SELECT * FROM questions WHERE template_question_id = :template_question_id");
+                $stmt->bindParam(':template_question_id', $template_question_id);
+                if (!$stmt->execute()) {
+                    throw new Exception("Failed to read question history");
+                }
+
+                // get that whole history
+                $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                if (count($questions) == 0){
+                    throw new Exception("No history found for this question");
+                }
+                
+                $conn->commit();
+                // response(["message" => "Question history read successfully"], 200);
+                response(['questions' => $questions], 200);
+            } catch (Exception $e) {
+                $conn->rollBack();
+                response(["error" => $e->getMessage()], 500);
+         }
+
+
+        }
+        else{
+            response(["error" => "Invalid endpoint"], 405);
+        }
       break;
 
         case "POST":
@@ -133,12 +189,40 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
                     }
                     
                     $subject_id = $subject['subject_id'];
+
+                    $code_exists = null;
+                    $code = null;
+                    // if active is set to 1, generate a random 5 symbols code
+                    if($active == 1){
+                        $attempts = 0;
+                        while($attempts < 1000){
+                            // generate new random 5 symbols code
+                            $code = substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 5);
+
+                            // check if the code is unique
+                            $stmt = $conn->prepare("SELECT code FROM template_questions WHERE code = :code");
+                            $stmt->bindParam(':code', $code);
+                            $stmt->execute();
+                            $code_exists = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                            if (!$code_exists){
+                                break;
+                            }
+                            $attempts++;
+                        }
+                        if ($attempts == 1000) {
+                            throw new Exception("Failed to generate a unique code after 1000 attempts");
+                        }
+
+                       
+                    }
             
                     // Insert into template questions
-                    $stmt = $conn->prepare("INSERT INTO template_questions (template_question_text, subject_id, active, type, author_id) VALUES (:template_question_text, :subject_id, :active, :type, :author_id)");
+                    $stmt = $conn->prepare("INSERT INTO template_questions (template_question_text, subject_id, active, code, type, author_id) VALUES (:template_question_text, :subject_id, :active, :code, :type, :author_id)");
                     $stmt->bindParam(':template_question_text', $template_question_text);
                     $stmt->bindParam(':subject_id', $subject_id);
                     $stmt->bindParam(':active', $active);
+                    $stmt->bindParam(':code', $code);
                     $stmt->bindParam(':type', $type);
                     $stmt->bindParam(':author_id', $by_user_id);
                     if (!$stmt->execute()) {
@@ -568,7 +652,7 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
     
             }
 
-            else if ($endpoint1 === "/question_history"){
+            else if ($endpoint1 == "/question_history"){
                 if (empty($endpoint2)) {
                     response(["error" => "Missing question ID"], 400);
                     exit;
