@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "crypto-js": "^4.2.0",
+    "html2pdf.js": "^0.10.1",
     "primeicons": "^7.0.0",
     "primevue": "^3.51.0",
     "qrcode-vue3": "^1.6.8",

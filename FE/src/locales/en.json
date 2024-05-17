@@ -65,5 +65,9 @@
   "change_password_success": "Password changed successfully!",
   "password_reset_email_confirm": "A password reset confirmation email has been sent to your inbox.",
   "no_user_find": "No users were found. Start by creating one!",
-  "select_status": "Select status"
+  "select_status": "Select status",
+  "user_manual": "User manual",
+  "up_user_manual": "USER MANUAL",
+  "home": "Home",
+  "to_pdf": "Export to PDF"
 }

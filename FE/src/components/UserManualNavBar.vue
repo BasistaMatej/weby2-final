@@ -2,9 +2,7 @@
   <div class="w-100">
     <div class="container">
       <nav v-if="!isMobile" class="d-flex justify-content-end p-2">
-        <span class="fw-bold btn-login" v-on:click="$router.push('/login')">{{ $t('login') }}</span>
-        <Button class="ml-5" @click="registrationShow" >{{ $t('registration') }}</Button>
-        <Button class="ml-5 btn-manual" @click="$router.push('/manual')" outlined  >{{ $t('user_manual') }}</Button>
+        <span class="fw-bold btn-manual" v-on:click="$router.push('/')">{{$t('home')}}</span>
         <dropdown :options="$i18n.availableLocales" v-model="$i18n.locale" optionKey="locale" class="dropdown" />
       </nav>
 
@@ -18,29 +16,25 @@
           <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
               <li class="nav-item">
-                <Router-link class="nav-link" to="/login">{{ $t('login') }}</Router-link>
-              </li>
-              <li class="nav-item">
-                <span class="nav-link" @click="registrationShow">{{ $t('registration') }}</span>
+                <Router-link class="nav-link" to="/">{{$t('home')}}</Router-link>
               </li>
               <li class="nav-item">
                 <dropdown :options="$i18n.availableLocales" v-model="$i18n.locale" optionKey="locale"
                   class="dropdown" />
               </li>
-              <li class="nav-item">
-                <Router-link class="nav-link" to="/manual">{{ $t('user_manual') }}</Router-link>
-              </li>
             </ul>
           </div>
         </div>
       </nav>
+
+
+
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, nextTick } from 'vue';
-import { store } from '@/store';
+import { ref } from 'vue';
 import Button from 'primevue/button';
 import { useRouter } from 'vue-router';
 import Dropdown from 'primevue/dropdown';
@@ -52,18 +46,6 @@ const isMobile = ref(window.innerWidth < 500);
 window.addEventListener('resize', () => {
   isMobile.value = window.innerWidth < 500;
 });
-
-
-const registrationShow = async () => {
-  const currentRoute = router.currentRoute.value;
-  if (currentRoute.path === '/registration') {
-    store.renderComponent = false;
-    await nextTick();
-    store.renderComponent = true;
-  } else {
-    router.push('/registration');
-  }
-}
 </script>
 
 <style scoped>
@@ -86,13 +68,13 @@ Button {
   border-radius: 1em;
 }
 
-.btn-login {
+.btn-manual {
   transition: 0.3s ease;
   padding: 0.5rem 1rem;
   color: var(--primary-color)
 }
 
-.btn-login:hover {
+.btn-manual:hover {
   color: var(--secondary-color);
   cursor: pointer;
 }
