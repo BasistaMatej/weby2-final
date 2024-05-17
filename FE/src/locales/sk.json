@@ -71,6 +71,24 @@
   "add_subject": "Pridať predmet",
   "edit_subject": "Upraviť predmety",
   "join_question": "Pripoj sa na otázku!",
-  "close": "Zavrieť"
+  "close": "Zavrieť",
+
+  "instructions_for_non_logged_in_user": "Návod pre neprihláseného používateľa",
+  "up_instructions_for_non_logged_in_user": "NÁVOD PRE NEPRIHLÁSENÉHO POUŽÍVATEĽA",
+  "main_page": "Hlavná stránka",
+  "main_page_text": "Hlavná stránka umožňuje používateľovi zadať päť znakový vstupný kód na zobrazenie hlasovacej otázky. Otázku je možné zobraziť aj načítaním zverejneného QR kódu alebo zadaním adresy do prehliadača v tvare http://node17.webte.fei.stuba.sk:5151/abcde, kde abcde predstavuje päť znakový vsupný kód. Hlasovaciu otázku je možné zodpovedať výberom odpovede z ponuky alebo napísať odpoveď do miesta na to určeného. Taktiež ak neprihlásený používateľ nemá ešte vytvorený používateľský účet môže sa zaregistrovať na stránku pomocou tlačidla „Registrácia“, ktoré ho presmeruje na registračnú stránku. ",
+  "registration_page": "Registračná stránka",
+  "registration_page_text": "Neprihlásený používateľ sa zaregistruje na stránku vyplnením a odoslaním registračného formulára tlačidlom „Registrovať“. Následne používateľovi bude zaslaný konfirmačný email s aktivačným odkazom na ktorý treba kliknúť v nasledujúcich 24 hodinách.",
+  "instructions_for_logged_in_user": "Návod pre prihláseného používateľa",
+  "up_instructions_for_logged_in_user": "NÁVOD PRE PRIHLÁSENÉHO POUŽÍVATEĽA",
+  "instructions_for_logged_in_user_text": "Po registrácii sa používateľ prihlási na stránku pomocou tlačidla „Prihlásiť sa“, ktoré ho presmeruje na stránku s prihlasovacím formulárom, kde treba zadať používateľove prihlasovacie údaje, t.j. e-mail a heslo, a odoslať formulár pomocou tlačidla „Prihlásiť sa“ na konci formulára.",
+  "user_home_page": "Domovská stránka používateľa",
+  "user_home_page_text": "Na domácej stránke používateľ môže vytvoriť novú otázku buď s otvorenou odpoveďou alebo s výberom správnej odpovede. Zadefinuje či je otázka aktívna a vyberie predmet z existujúcich kategórií. V prípade, že požadovaný predmet ešte neexistuje používateľ má možnosť zadefinovať nový predmet pomocou tlačidla „Pridať predmet“. Všetky existujúce otázky sú v tabuľke, ktorú môže používateľ filtrovať podľa predmetu alebo dátumu vytvorenia a taktiež upravovať, mazať alebo kopírovať už definované otázky. Používateľ vie pre každú otázku vygenerovať QR kód a jedinečný päť znakový kód, ktoré slúžia na zobrazenie otázky a uzatvoriť aktuálne hlasovanie na danú otázku. Rovnako používateľ si vie zobraziť výsledky aktuálnych aj archivovaných hlasovaní a pri otázkach s výberom správnej odpovede zobraziť porovnanie aktuálneho hlasovania s historickým hlasovaním. Nakoniec otázky a odpovede si používateľ môže pomocou tlačidla „Export“ exportnúť do externého súboru. Domáca stránka v pravom hornom rohu obsahuje tlačidlo „Profil“ pomocou ktorého je používateľ presmerovaný na profilovú stránku.",
+  "profile_page": "Profilová stránka",
+  "profile_page_text": "Profilová stránka obsahuje podrobnosti o prihlásenom používateľovi, ako level oprávnení, emailovú adresu a poslednú aktivitu používateľa. Pomocou tlačidla „Zmeniť heslo“ je používateľovi umožnená zmena hesla.",
+  "instructions_for_administrator": "Návod pre administrátora",
+  "up_instructions_for_administrator": "NÁVOD PRE ADMINISTRÁTORA",
+  "instructions_for_administrator_text": "Administrátor môže vykonávať rovnaké operácie ako prihlásený používateľ s tým rozdieľom, že má k dispozícii na používateľskej domovskej stránke otázky všetkých prihlásených používateľov s možnosťou filtrovania nad vybraným používateľom. Pri tvorbe novej otázky má administrátor možnosť vytvoriť otázku vo svojom mene, ale aj v mene iného používateľa. Okrem toho má administrátor prístup na stránku s tabuľkou všetkých prihlásenýh používateľov, kde môže pridávať nových používateľov, upravovať existujúcich používateľov, meniť im role alebo resetovať heslo a vymazávať používateľov."
+
 
 }

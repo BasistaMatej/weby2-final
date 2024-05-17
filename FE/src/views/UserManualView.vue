@@ -4,22 +4,36 @@
       <UserManualNavBar />
       <div class="d-flex justify-content-center align-items-center flex-column w-100 p-3 h-100">
         <h1 class="roboto-black h1 text-center" >{{ $t('up_user_manual') }}</h1>
-<!--        <h4 class="text-center">{{ $t('up_ex_user') }}</h4>-->
       </div>
     </div>
 
-    <div class="manual-container d-flex justify-content-center align-items-center">
-      <div class="button-container d-flex justify-content-end w-100">
-        <Button class="ml-5" @click="generatePDF">{{$t('to_pdf')}}</Button>
-      </div>
-      <div ref="manualContent" class="manual-content">
-        <section>
-          <h3 class="roboto-black">{{$t('lang_id')}}</h3>
-          {{$t('lang_id')}}
-        </section>
-        <section>
-          {{$t('lang_id')}}
-        </section>
+    <div class="d-flex justify-content-center align-items-center">
+      <div class="manual-container">
+        <div class="button-container d-flex justify-content-end w-100">
+          <Button class="ml-5" @click="generatePDF">{{$t('to_pdf')}}</Button>
+        </div>
+        <div ref="manualContent" class="d-flex align-items-center flex-column">
+          <section>
+            <h4 >{{$t('up_instructions_for_non_logged_in_user')}}</h4>
+            <h5 >{{$t('main_page')}}</h5>
+            {{$t('main_page_text')}}
+            <h5 class="h-padding">{{$t('registration_page')}}</h5>
+            {{$t('registration_page_text')}}
+          </section>
+          <section>
+            <h4>{{$t('up_instructions_for_logged_in_user')}}</h4>
+            {{$t('instructions_for_logged_in_user_text')}}
+            <h5 class="h-padding">{{$t('user_home_page')}}</h5>
+            {{$t('user_home_page_text')}}
+            <h5 class="h-padding">{{$t('profile_page')}}</h5>
+            {{$t('profile_page_text')}}
+          </section>
+          <section>
+            <h4>{{$t('up_instructions_for_administrator')}}</h4>
+            {{$t('instructions_for_administrator_text')}}
+          </section>
+          <br><br>
+        </div>
       </div>
     </div>
 
@@ -60,20 +74,31 @@ const generatePDF = () => {
 h4 {
   text-decoration: underline dotted #8B5CF6aa;
   color: #8B5CF6ee;
+  padding-bottom: 0.25rem;
+}
+
+.h-padding{
+  padding-top: 0.75rem;
+}
+
+section{
+  padding-bottom: 1.7rem;
+
+}
+
+.section{
+  page-break-inside: avoid;
+
 }
 
 .manual-container {
-  width: 85%;
+  width: 65%;
   height: 100%;
   padding: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-.manual-content {
   text-align: left;
-  width: 70%;
 }
 
 .button-container {
