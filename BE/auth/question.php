@@ -23,6 +23,7 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
                         tq.template_question_text, 
                         tq.created, 
                         tq.code, 
+                        tq.active,
                         s.subject_name
                     FROM 
                         template_questions tq
@@ -354,7 +355,7 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
                         throw new Exception("Template question not found");
                     }
             
-                    if ($question['author_id'] != $user['user_id'] && $user['auth_level'] != 1) {
+                    if ($question['author_id'] != $user['user_id'] && $user['auth_level'] != 2) {
                         throw new Exception("Unauthorized to delete this question");
                     }
 

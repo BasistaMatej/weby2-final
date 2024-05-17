@@ -22,7 +22,7 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
             $user = $stmt->fetch();
 
             if (!password_verify($password, $user['password'])) {
-                response(["error" => "Invalid credentials"], 3);
+                response(["error" => "Invalid credentials"], 403);
                 return;
             }
 

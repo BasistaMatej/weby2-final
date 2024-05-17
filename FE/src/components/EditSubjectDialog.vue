@@ -55,12 +55,15 @@
           </Column>
         </DataTable>
       </div>
+    <ConfirmDialog></ConfirmDialog>
     <Toast />
   </Dialog>
 </template>
 
 <script setup>
 import { ref, defineModel, onMounted } from 'vue';
+import ConfirmDialog from 'primevue/confirmdialog';
+import { useConfirm } from "primevue/useconfirm";
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
@@ -71,6 +74,7 @@ import { useToast } from "primevue/usetoast";
 import { auth_fetch } from '@/utils';
 
 const toast = useToast();
+const confirm = useConfirm();
 
 const subjectText = ref('');
 const subjectData = ref([]);
@@ -117,21 +121,30 @@ const fetchAllSubjects = async () => {
     const data = await res.json();
 
     subjectData.value = data.subjects.map(subject => ({ name: subject }));
-
-    console.log(subjectData.value);
   }
 }
 
 const deleteItem = async (name) => {
-  const res = await auth_fetch('/subject/'+name, 'DELETE');
-  if (!res.ok) {
-    const data = await res.json();
-    toast.add({ severity: 'error', summary: 'Error', detail: data.error, life: 3000 });
-    return;
-  } else {
-    toast.add({ severity: 'success', summary: 'Success', detail: 'Subject deleted', life: 3000 });
-    fetchAllSubjects();
-  }
+  confirm.require({
+      message: 'Naozaj chceš odstrániť predmet?',
+      header: 'Si si istý?',
+      icon: 'pi pi-exclamation-triangle',
+      rejectClass: 'p-button-secondary p-button-outlined',
+      rejectLabel: 'Zrušiť',
+      acceptLabel: 'Áno',
+      accept: async () => {
+        const res = await auth_fetch('/subject/'+name, 'DELETE');
+        if (!res.ok) {
+          const data = await res.json();
+          toast.add({ severity: 'error', summary: 'Error', detail: data.error, life: 3000 });
+          return;
+        } else {
+          toast.add({ severity: 'success', summary: 'Success', detail: 'Subject deleted', life: 3000 });
+          fetchAllSubjects();
+        }
+      },
+      reject: () => {}
+  });
 }
 
 const saveSubject = async () => {
@@ -169,6 +182,10 @@ const saveSubject = async () => {
 .tools-buttons button {
   background: transparent;
   border: none;
+}
+
+.p-dialog-footer button{
+  border-radius: 0.7em;
 }
 </style>
 

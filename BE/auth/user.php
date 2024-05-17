@@ -10,40 +10,71 @@ $endpoint1 = isset($_GET['endpoint1']) ? $_GET['endpoint1'] : '';
 
 switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
     case "GET":
-        $user = verify_token($conn);
-        if (!$user) {
-            // The response is already handled within the function
-            exit;  // Stop further execution if the token is invalid
-        }
-
-        // if the user is not an admin, return 403
-        if ($user['auth_level'] != 2) {
-            response(["error" => "Unauthorized"], 403);
-            exit;
-        }
-
-        try {
-           // get all user from the database
-            $stmt = $conn->prepare("SELECT * FROM users");
-            $stmt->execute();
-
-            $users = [];
-
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                $users[] = $row;
+        if ($endpoint1 == ''){
+            $user = verify_token($conn);
+            if (!$user) {
+                // The response is already handled within the function
+                exit;  // Stop further execution if the token is invalid
             }
-
-            if ($users) {
-                response(['users' => $users], 200);
-            } else {
-                response(['error' => 'No users found'], 204);
+    
+            // if the user is not an admin, return 403
+            if ($user['auth_level'] != 2) {
+                response(["error" => "Unauthorized"], 403);
+                exit;
             }
-
-            
-        } catch (PDOException $e) {
-            response(['error' => 'Database error: ' . $e->getMessage()], 500);
+    
+            try {
+               // get all user from the database
+                $stmt = $conn->prepare("SELECT * FROM users");
+                $stmt->execute();
+    
+                $users = [];
+    
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $users[] = $row;
+                }
+    
+                if ($users) {
+                    response(['users' => $users], 200);
+                } else {
+                    response(['error' => 'No users found'], 204);
+                }
+    
+                
+            } catch (PDOException $e) {
+                response(['error' => 'Database error: ' . $e->getMessage()], 500);
+            }
         }
-
+       
+        else if ($endpoint1 == "profile"){
+            $user = verify_token($conn);
+            if (!$user) {
+                // The response is already handled within the function
+                exit;  // Stop further execution if the token is invalid
+            }
+    
+            try {
+                // get the user from the database
+                $stmt = $conn->prepare("SELECT * FROM users WHERE user_id = :user_id");
+                $stmt->bindParam(':user_id', $user['user_id']);
+                $stmt->execute();
+    
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+                if ($user) {
+                    response(['user' => $user], 200);
+                } else {
+                    response(['error' => 'User not found'], 204);
+                }
+    
+                
+            } catch (PDOException $e) {
+                response(['error' => 'Database error: ' . $e->getMessage()], 500);
+            }
+        }
+        else {
+            response(["error" => "Invalid endpoint"], 400);
+        }
     break;
 
     case "PUT":

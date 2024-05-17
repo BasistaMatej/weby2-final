@@ -1,0 +1,12 @@
+2024-05-16 19:56:31 pid:7 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-16 19:58:18 pid:7 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-16 19:59:05 pid:7 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-16 19:59:13 pid:7 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-16 20:02:16 pid:7 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-16 20:03:29 pid:6 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-16 20:04:28 pid:7 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-16 20:10:13 pid:7 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-16 20:16:13 pid:6 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-16 20:16:35 pid:76623 Workerman[./wsserver.php] start in DEBUG mode
+2024-05-16 20:17:08 pid:76623 Workerman[wsserver.php] stopping ...
+2024-05-16 20:17:08 pid:76623 Workerman[wsserver.php] has been stopped

@@ -49,8 +49,8 @@
             </div>
           </template>
           <template #loading> {{ $t('loading') }} </template>
-          <Column field="question" :header="$t('question')" sortable></Column>
-          <Column field="subject" :header="$t('subject')" sortable></Column>
+          <Column field="template_question_text" :header="$t('question')" sortable></Column>
+          <Column field="subject_name" :header="$t('subject')" sortable></Column>
           <Column field="created" :header="$t('created')" sortable></Column>
           <Column field="code" :header="$t('code')" sortable></Column>
           <Column field="tools" :header="$t('tools')">
@@ -61,33 +61,52 @@
                     style="width:25px;height:25px">
                   </lord-icon>
                 </Button>
-                <Button class="row-buttons" @click="closeItem(slotProps.data)">
+                <Button v-if="slotProps.data.active == 1 && (slotProps.data.code)" class="row-buttons"
+                  @click="closeItem(slotProps.data)">
                   <lord-icon src="https://cdn.lordicon.com/mwikjdwh.json" trigger="hover"
                     style="width:25px;height:25px">
                   </lord-icon>
                 </Button>
-                <Button class="row-buttons" @click="activateItem(slotProps.data)">
+                <Button v-if="slotProps.data.active == 0" class="row-buttons" @click="activateItem(slotProps.data)">
                   <lord-icon src="https://cdn.lordicon.com/aklfruoc.json" trigger="hover"
                     style="width:25px;height:25px">
                   </lord-icon>
                 </Button>
-                <!-- SPRAVIT VIF || MODAL NA QR -->
                 <Button class="row-buttons" @click="copyItem(slotProps.data)">
                   <lord-icon src="https://cdn.lordicon.com/rmkahxvq.json" trigger="hover"
                     style="width:25px;height:25px">
                   </lord-icon>
                 </Button>
+                <Button v-if="slotProps.data.active == 1 && slotProps.data.code != null" class="row-buttons"
+                  @click="viewQr()">
+                  <lord-icon src="https://cdn.lordicon.com/kkvxgpti.json" trigger="hover"
+                    style="width:25px;height:25px">
+                  </lord-icon>
+                </Button>
               </div>
+              <div class="qr-backdrop" v-if="isActiveQr && isActiveRow == slotProps.data.template_question_id">
+                <div id="qr-box" class="d-flex">
+                  <h1>Pripoj sa do hry</h1>
+                  <QRCodeVue3 :width="200" :height="200" :value="`http://localhost:5173/${slotProps.data.code}`" />
+                  <Button id="button-modal" class="mt-2" @click="isActiveQr = false">Zavrieť</Button>
+                </div>
+              </div>
+
             </template>
           </Column>
+
         </DataTable>
+
+
       </div>
     </div>
-    <EditQuestionDialog v-model="showDialog" :title="dialogTitle" :category="dialogSubject"
-      :id="dialogId" :isActive="dialogActive" :question="dialogQuestion" :type="dialogType" :lang_id="$t('lang_id')" />
+    <EditQuestionDialog v-model="showDialog" :title="dialogTitle" :category="dialogSubject" :id="dialogId"
+      :isActive="dialogActive" :question="dialogQuestion" :type="dialogType" :lang_id="$t('lang_id')" />
     <AddSubjectDialog v-model="addNewSubjectDialog" />
     <EditSubjectDialog v-model="editSubjectDialog" />
   </div>
+
+
 </template>
 
 <script setup>
@@ -103,6 +122,11 @@ import ColumnGroup from 'primevue/columngroup';
 import Row from 'primevue/row';
 import Button from 'primevue/button';
 import { auth_fetch, getLocalStorage } from '@/utils';
+//import QrCode from '../components/QrCode.vue'
+import QRCodeVue3 from "qrcode-vue3";
+import Dialog from 'primevue/dialog';
+const slotProps = ref([]);
+
 
 const addNewSubjectDialog = ref(false);
 const editSubjectDialog = ref(false);
@@ -115,8 +139,9 @@ const dialogId = ref(null);
 const dialogType = ref(1);
 const lang_id = ref('');
 const authLevel = ref(1);
-
+const isActiveQr = ref(false);
 const products = ref([]);
+const isActiveRow = ref(0);
 
 const productsSample = ref([
   { id: 0, question: 'Ako sa po čínsky povie "Bryndzové halušky"?', subject: 'Jazyk', created: '01-03-2024', code: 'JSH15', tools: '', type: 1 },
@@ -126,6 +151,10 @@ const productsSample = ref([
 
 const addNewSubject = () => {
   addNewSubjectDialog.value = true;
+}
+
+const viewQr = () => {
+  isActiveQr.value = true;
 }
 
 onMounted(async () => {
@@ -149,36 +178,94 @@ const initialGetFetch = async () => {
 }
 
 const deleteItem = async (row) => {
-  console.log('Delete item clicked!', row.id);
+  console.log('Delete item clicked!', row.template_question_id);
+  const response = await auth_fetch(`/question/template_question/${row.template_question_id}`, "DELETE");
 
-
-  const response = await fetch(``, {
-    method: 'DELETE',
-    body: JSON.stringify({
-      id: row.id
-    })
-  });
 
   if (!response.ok) {
-    console.error('Failed to delete item', row.id);
+    console.error('Failed to delete item', row.template_question_id);
     return;
   } else {
-    console.log('Item deleted successfully', row.id); //Vymazem
+    console.log('Item deleted successfully', row.template_question_id); //Vymazem
+    const response = await initialGetFetch();
+    if (!response.ok) {
+      const data = await response.json();
+      //showError(data.error);
+    } else {
+      const data = await response.json();
+      products.value = data.questions;
+      console.log(products.value);
+    }
   }
 };
 
-const activateItem = (row) => {
-  console.log('Activate item clicked!', row);
+const activateItem = async (row) => {
+  const response = await auth_fetch(`/question/set_active/${row.template_question_id}`, "PUT", { active: 1 });
+
+  if (!response.ok) {
+    console.error('Failed to activate item', row.template_question_id);
+    return;
+  } else {
+    console.log('Item activated successfully', row.template_question_id); //Vymazem
+    const response = await initialGetFetch();
+    //visible.value = true;
+    if (!response.ok) {
+      const data = await response.json();
+      //showError(data.error);
+    } else {
+      const data = await response.json();
+      products.value = data.questions;
+      isActiveQr.value = true;
+      isActiveRow.value = row.template_question_id;
+      //console.log(products.value);
+    }
+  }
 };
 
-const copyItem = (row) => {
-  console.log('Copy item clicked!', row);
+const copyItem = async (row) => {
+  console.log('Copy item clicked!', row.template_question_id);
+
+  const response = await auth_fetch(`/question/question_template_copy/${row.template_question_id}`, "POST");
+
+  if (!response.ok) {
+    console.error('Failed to copy item', row.template_question_id);
+    return;
+  } else {
+    console.log('Item copied successfully', row.template_question_id); //Vymazem
+    const response = await initialGetFetch();
+    if (!response.ok) {
+      const data = await response.json();
+      //showError(data.error);
+    } else {
+      const data = await response.json();
+      products.value = data.questions;
+      console.log(products.value);
+    }
+  }
 };
 
-const closeItem = (row) => {
+const closeItem = async (row) => {
   console.log('Close item clicked!', row);
-};
 
+  const response = await auth_fetch(`/question/set_active/${row.template_question_id}`, "PUT", { active: 0 });
+
+  if (!response.ok) {
+    console.error('Failed to activate item', row.template_question_id);
+    return;
+  } else {
+    console.log('Item closed successfully', row.template_question_id); //Vymazem
+    const response = await initialGetFetch();
+    if (!response.ok) {
+      const data = await response.json();
+      //showError(data.error);
+    } else {
+      const data = await response.json();
+      products.value = data.questions;
+      console.log(products.value);
+    }
+  }
+
+};
 
 
 const editRow = (event, lang) => {
@@ -215,6 +302,41 @@ const editQuestion = (id, question, subject, active, type, lang) => {
 </script>
 
 <style>
+.qr-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+#qr-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+#qr-box h1 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+#qr-box {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
 .auth-table {
   border-radius: 1em;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
