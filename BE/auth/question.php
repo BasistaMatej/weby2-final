@@ -22,6 +22,7 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
                         tq.template_question_id, 
                         tq.template_question_text, 
                         tq.created, 
+                        tq.type,
                         tq.code, 
                         tq.active,
                         s.subject_name
@@ -53,8 +54,40 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
             } else {
                 response(['questions' => $questions], 200); // Return questions if found
             }
+        } else if($endpoint1 == '/answers') {
+            if (empty($endpoint2) || !is_numeric($endpoint2)) {
+              response(["error" => "Missing question ID"], 400);
+              exit;
+            }
+
+            $user = verify_token($conn);
+            if (!$user) {
+                // The response is already handled within the function
+                exit;  // Stop further execution if the token is invalid
+            }
+    
+            $stmt = $conn->prepare("
+            SELECT a.*
+              FROM answers a
+              JOIN questions q ON a.question_id = q.question_id
+              JOIN template_questions tq ON q.template_question_id = tq.template_question_id
+              WHERE tq.template_question_id = :template_question_id
+              AND q.closed IS NULL
+              AND tq.type = 1
+            ");
+
+            $stmt->bindParam(':template_question_id', $endpoint2, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $answers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+            if (empty($answers)) {
+                response(['message' => 'No answers found'], 204); 
+            } else {
+                response(['answers' => $answers], 200);
         }
-        break;
+      }
+      break;
 
         case "POST":
             if ($endpoint1 == ""){
