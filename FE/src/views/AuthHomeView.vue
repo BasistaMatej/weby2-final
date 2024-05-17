@@ -1,10 +1,19 @@
 <template>
-  <div>
+  <div class="pb-5">
     <AuthNavBar />
     <div class="container">
       <div class="px-md-5">
         <div>
-          <div class="d-inline-block">
+          <div class="d-inline-block" v-if="authLevel == 2">
+            <router-link to="/users"
+              class="d-flex flex-columns align-items-center align-content-center p-2 table-link" style="background: #8B5CF6AA">
+              <lord-icon src="https://cdn.lordicon.com/bjbmvfnr.json" trigger="hover" stroke="bold"
+                style="width:2em;height:2em" colors="primary:#121331,secondary:#d0bdfb">
+              </lord-icon>
+              <span>Použivatelia</span>
+            </router-link>
+          </div>
+          <div class="d-inline-block mx-2">
             <div @click="editQuestion(null, null, null, null, null, $t('lang_id'))"
               class="d-flex flex-columns align-items-center align-content-center p-2 table-link">
               <lord-icon src="https://cdn.lordicon.com/zrkkrrpl.json" trigger="hover" stroke="bold"
@@ -13,7 +22,7 @@
               <span>{{ $t('create_question') }}</span>
             </div>
           </div>
-          <div class="d-inline-block mx-2" v-if="authLevel == 1">
+          <div class="d-inline-block" v-if="authLevel == 1">
             <div @click="addNewSubject"
               class="d-flex flex-columns align-items-center align-content-center p-2 table-link">
               <lord-icon src="https://cdn.lordicon.com/zrkkrrpl.json" trigger="hover" stroke="bold"
@@ -22,7 +31,7 @@
               <span>Pridať predmet</span>
             </div>
           </div>
-          <div class="d-inline-block mx-2" v-if="authLevel == 2">
+          <div class="d-inline-block" v-if="authLevel == 2">
             <div @click="editSubjectDialog = true"
               class="d-flex flex-columns align-items-center align-content-center p-2 table-link">
               <lord-icon src="https://cdn.lordicon.com/wuvorxbv.json" state="hover-line" trigger="hover" stroke="bold"
@@ -83,12 +92,18 @@
                     style="width:25px;height:25px">
                   </lord-icon>
                 </Button>
+
+                <Button class="row-buttons" @click="viewHistory(slotProps.data)">
+                  <lord-icon src="https://cdn.lordicon.com/whrxobsb.json" trigger="hover"
+                    style="width:25px;height:25px">
+                  </lord-icon>
+                </Button>
               </div>
               <div class="qr-backdrop" v-if="isActiveQr && isActiveRow == slotProps.data.template_question_id">
                 <div id="qr-box" class="d-flex">
-                  <h1>Pripoj sa do hry</h1>
+                  <h1>Pripoj sa na otázku!</h1>
                   <QRCodeVue3 :width="200" :height="200" :value="`http://localhost:5173/${slotProps.data.code}`" />
-                  <Button id="button-modal" class="mt-2" @click="isActiveQr = false">Zavrieť</Button>
+                  <Button id="button-modal" class="mt-2" @click="isActiveQr = false" style="border-radius: 0.7em">Zavrieť</Button>
                 </div>
               </div>
             </template>
@@ -105,7 +120,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import AuthNavBar from '@/components/AuthNavBar.vue';
 import AddSubjectDialog from '@/components/AddSubjectDialog.vue';
 import EditSubjectDialog from '@/components/EditSubjectDialog.vue';
@@ -118,7 +133,7 @@ import Row from 'primevue/row';
 import Button from 'primevue/button';
 import { auth_fetch, getLocalStorage } from '@/utils';
 import QRCodeVue3 from "qrcode-vue3";
-
+import { useRouter } from 'vue-router';
 
 const addNewSubjectDialog = ref(false);
 const editSubjectDialog = ref(false);
@@ -134,6 +149,26 @@ const authLevel = ref(1);
 const isActiveQr = ref(false);
 const products = ref([]);
 const isActiveRow = ref(0);
+const router = useRouter();
+
+const viewHistory = (row) => {
+  router.push(`history/${row.template_question_id}/${row.type}`);
+}
+
+watch(
+  () => showDialog.value,
+  async () => {
+    if(!showDialog.value) {
+      const response = await initialGetFetch();
+      if (!response.ok) {
+        const data = await response.json();
+      } else {
+        const data = await response.json();
+        products.value = data.questions;
+      }
+    }
+  }
+);
 
 const addNewSubject = () => {
   addNewSubjectDialog.value = true;
@@ -172,7 +207,6 @@ const deleteItem = async (row) => {
     } else {
       const data = await response.json();
       products.value = data.questions;
-      console.log(products.value);
     }
   }
 };

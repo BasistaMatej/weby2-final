@@ -2,7 +2,9 @@
   <div class="w-100">
     <div class="container">
       <nav v-if="!isMobile" class="d-flex justify-content-end p-2">
-        <span class="fw-bold btn-manual" v-on:click="$router.push('/')">{{$t('home')}}</span>
+        <span class="fw-bold btn-login" v-on:click="$router.push('/login')">{{ $t('login') }}</span>
+        <Button class="ml-5" @click="registrationShow" >{{ $t('registration') }}</Button>
+        <Button class="ml-5 btn-home" @click="$router.push('/')" outlined  >{{$t('home')}}</Button>
         <dropdown :options="$i18n.availableLocales" v-model="$i18n.locale" optionKey="locale" class="dropdown" />
       </nav>
 
@@ -34,11 +36,12 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import {nextTick, ref} from 'vue';
 import Button from 'primevue/button';
 import { useRouter } from 'vue-router';
 import Dropdown from 'primevue/dropdown';
 import '@/assets/dropdown.css';
+import {store} from "@/store.js";
 
 const router = useRouter();
 const isMobile = ref(window.innerWidth < 500);
@@ -46,6 +49,17 @@ const isMobile = ref(window.innerWidth < 500);
 window.addEventListener('resize', () => {
   isMobile.value = window.innerWidth < 500;
 });
+
+const registrationShow = async () => {
+  const currentRoute = router.currentRoute.value;
+  if (currentRoute.path === '/registration') {
+    store.renderComponent = false;
+    await nextTick();
+    store.renderComponent = true;
+  } else {
+    router.push('/registration');
+  }
+}
 </script>
 
 <style scoped>
@@ -68,18 +82,18 @@ Button {
   border-radius: 1em;
 }
 
-.btn-manual {
+.btn-login {
   transition: 0.3s ease;
   padding: 0.5rem 1rem;
   color: var(--primary-color)
 }
 
-.btn-manual:hover {
+.btn-login:hover {
   color: var(--secondary-color);
   cursor: pointer;
 }
 
-.dropdown,.btn-manual {
+.dropdown,.btn-home {
   margin-left: 1rem;
 }
 

@@ -42,7 +42,7 @@ export async function auth_fetch(endpoint, method = "GET", body = null) {
       ...bodyContent
   });
 
-  if (!res.ok) {
+  if (res.status === 401) {
     const res = await fetch(`http://node17.webte.fei.stuba.sk:5151/refresh`, {
       method: "GET",
       headers: {
@@ -50,7 +50,7 @@ export async function auth_fetch(endpoint, method = "GET", body = null) {
       }
     });
 
-    if (!res.ok) {
+    if (res.status === 401) {
       removeLocalStorage('accessToken');
       removeLocalStorage('refreshToken');
       setLocalStorage('toast','Relácia vypršala. Prihláste sa znovu.');
