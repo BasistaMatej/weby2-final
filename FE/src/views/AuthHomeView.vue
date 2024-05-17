@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="pb-5">
     <AuthNavBar />
     <div class="container">
       <div class="px-md-5">
@@ -86,9 +86,9 @@
               </div>
               <div class="qr-backdrop" v-if="isActiveQr && isActiveRow == slotProps.data.template_question_id">
                 <div id="qr-box" class="d-flex">
-                  <h1>Pripoj sa do hry</h1>
+                  <h1>Pripoj sa na otázku!</h1>
                   <QRCodeVue3 :width="200" :height="200" :value="`http://localhost:5173/${slotProps.data.code}`" />
-                  <Button id="button-modal" class="mt-2" @click="isActiveQr = false">Zavrieť</Button>
+                  <Button id="button-modal" class="mt-2" @click="isActiveQr = false" style="border-radius: 0.7em">Zavrieť</Button>
                 </div>
               </div>
             </template>
@@ -105,7 +105,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import AuthNavBar from '@/components/AuthNavBar.vue';
 import AddSubjectDialog from '@/components/AddSubjectDialog.vue';
 import EditSubjectDialog from '@/components/EditSubjectDialog.vue';
@@ -134,6 +134,21 @@ const authLevel = ref(1);
 const isActiveQr = ref(false);
 const products = ref([]);
 const isActiveRow = ref(0);
+
+watch(
+  () => showDialog.value,
+  async () => {
+    if(!showDialog.value) {
+      const response = await initialGetFetch();
+      if (!response.ok) {
+        const data = await response.json();
+      } else {
+        const data = await response.json();
+        products.value = data.questions;
+      }
+    }
+  }
+);
 
 const addNewSubject = () => {
   addNewSubjectDialog.value = true;
@@ -172,7 +187,6 @@ const deleteItem = async (row) => {
     } else {
       const data = await response.json();
       products.value = data.questions;
-      console.log(products.value);
     }
   }
 };
