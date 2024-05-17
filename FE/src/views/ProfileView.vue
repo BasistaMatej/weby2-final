@@ -18,31 +18,45 @@
 
                 </div>
 
-                <h1 class="display-4 text-center mb-1">{{ $t('hello') }} {{ user.name }}!</h1>
+                <div class="w-100" v-if="!isFetchingData">
+                  <h1 class="display-4 text-center mb-1">{{ $t('hello') }} {{ user.name }}!</h1>
 
-                <div class="content-box">
-                    <p class="header-p">{{ $t('entitlement_level') }}</p>
-                    <p class="content-p">{{ userRole }}</p>
+                  <div class="content-box">
+                      <p class="header-p">{{ $t('entitlement_level') }}</p>
+                      <p class="content-p">{{ userRole }}</p>
+                  </div>
+
+
+                  <div class="content-box">
+                      <p class="header-p">{{ $t('email_address') }}</p>
+                      <p class="content-p">{{ user.email }}</p>
+                  </div>
+
+                  <div class="content-box">
+                      <p class="header-p">{{ $t('last_activity') }}</p>
+                      <p class="content-p">{{ user.last_login }}</p>
+                  </div>
+
+                  <div class="d-flex flex-column justify-content-center">
+                    <span class="fw-bold btn-login text-center" @click="lostPassword">{{ $t('forgotten_password') }}</span>
+
+
+                    <lord-icon src="https://cdn.lordicon.com/xyboiuok.json" trigger="loop" state="morph-heart" delay="1000"
+                        colors="primary:#a866ee" style="width:100%;height:45px">
+                    </lord-icon>
+                  </div>
                 </div>
 
-
-                <div class="content-box">
-                    <p class="header-p">{{ $t('email_address') }}</p>
-                    <p class="content-p">{{ user.email }}</p>
+                <div v-else class="mt-5">
+                  <lord-icon
+                      src="https://cdn.lordicon.com/unukghxb.json"
+                      trigger="loop"
+                      stroke="bold"
+                      state="loop-spin"
+                      colors="primary:#ffffff,secondary:#7c3aed"
+                      style="width:8em;height:8em">
+                  </lord-icon>
                 </div>
-
-                <div class="content-box">
-                    <p class="header-p">{{ $t('last_activity') }}</p>
-                    <p class="content-p">{{ user.last_login }}</p>
-                </div>
-
-                <span class="fw-bold btn-login text-center" @click="lostPassword">{{ $t('forgotten_password') }}</span>
-
-
-                <lord-icon src="https://cdn.lordicon.com/xyboiuok.json" trigger="loop" state="morph-heart" delay="1000"
-                    colors="primary:#a866ee" style="width:45px;height:45px">
-                </lord-icon>
-
             </div>
         </div>
 
@@ -102,6 +116,7 @@ const isLoading = ref(false);
 const toast = useToast();
 const userName = ref('');
 const user = ref([]);
+const isFetchingData = ref(false);
 
 const userRole = computed(() => {
     switch (user.value.auth_level) {
@@ -124,7 +139,9 @@ const userRole = computed(() => {
 onMounted(async () => {
     //authLevel.value = getLocalStorage("accessLevel");
 
+    isFetchingData.value = true;
     const response = await initialGetFetch();
+    isFetchingData.value = false;
 
     if (!response.ok) {
         const data = await response.json();
