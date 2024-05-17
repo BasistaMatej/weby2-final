@@ -78,7 +78,7 @@
                   </lord-icon>
                 </Button>
                 <Button v-if="slotProps.data.active == 1 && slotProps.data.code != null" class="row-buttons"
-                  @click="viewQr()">
+                  @click="viewQr(slotProps.data)">
                   <lord-icon src="https://cdn.lordicon.com/kkvxgpti.json" trigger="hover"
                     style="width:25px;height:25px">
                   </lord-icon>
@@ -91,13 +91,9 @@
                   <Button id="button-modal" class="mt-2" @click="isActiveQr = false">Zavrieť</Button>
                 </div>
               </div>
-
             </template>
           </Column>
-
         </DataTable>
-
-
       </div>
     </div>
     <EditQuestionDialog v-model="showDialog" :title="dialogTitle" :category="dialogSubject" :id="dialogId"
@@ -105,7 +101,6 @@
     <AddSubjectDialog v-model="addNewSubjectDialog" />
     <EditSubjectDialog v-model="editSubjectDialog" />
   </div>
-
 
 </template>
 
@@ -122,10 +117,7 @@ import ColumnGroup from 'primevue/columngroup';
 import Row from 'primevue/row';
 import Button from 'primevue/button';
 import { auth_fetch, getLocalStorage } from '@/utils';
-//import QrCode from '../components/QrCode.vue'
 import QRCodeVue3 from "qrcode-vue3";
-import Dialog from 'primevue/dialog';
-const slotProps = ref([]);
 
 
 const addNewSubjectDialog = ref(false);
@@ -136,40 +128,31 @@ const dialogQuestion = ref('');
 const dialogSubject = ref('');
 const dialogActive = ref(false);
 const dialogId = ref(null);
-const dialogType = ref(1);
+const dialogType = ref(10);
 const lang_id = ref('');
 const authLevel = ref(1);
 const isActiveQr = ref(false);
 const products = ref([]);
 const isActiveRow = ref(0);
 
-const productsSample = ref([
-  { id: 0, question: 'Ako sa po čínsky povie "Bryndzové halušky"?', subject: 'Jazyk', created: '01-03-2024', code: 'JSH15', tools: '', type: 1 },
-  { id: 12, question: 'Koľko je 2+2?', subject: 'Matematika', created: '01-03-2024', code: 'MATH15', tools: '', type: 2 },
-  { id: 66, question: 'Odkiaľ pochádza slovo "káva"?', subject: 'Jazyk', created: '01-03-2024', code: 'JSH15', tools: '', type: 1 },
-]);
-
 const addNewSubject = () => {
   addNewSubjectDialog.value = true;
 }
 
-const viewQr = () => {
+const viewQr = (row) => {
   isActiveQr.value = true;
+  isActiveRow.value = row.template_question_id;
 }
 
 onMounted(async () => {
   authLevel.value = getLocalStorage("accessLevel");
-
   const response = await initialGetFetch();
-  console.log(products.value);
 
   if (!response.ok) {
     const data = await response.json();
-    //showError(data.error);
   } else {
     const data = await response.json();
     products.value = data.questions;
-    console.log(products.value);
   }
 });
 
@@ -178,19 +161,14 @@ const initialGetFetch = async () => {
 }
 
 const deleteItem = async (row) => {
-  console.log('Delete item clicked!', row.template_question_id);
   const response = await auth_fetch(`/question/template_question/${row.template_question_id}`, "DELETE");
 
-
   if (!response.ok) {
-    console.error('Failed to delete item', row.template_question_id);
     return;
   } else {
-    console.log('Item deleted successfully', row.template_question_id); //Vymazem
     const response = await initialGetFetch();
     if (!response.ok) {
       const data = await response.json();
-      //showError(data.error);
     } else {
       const data = await response.json();
       products.value = data.questions;
@@ -203,77 +181,59 @@ const activateItem = async (row) => {
   const response = await auth_fetch(`/question/set_active/${row.template_question_id}`, "PUT", { active: 1 });
 
   if (!response.ok) {
-    console.error('Failed to activate item', row.template_question_id);
     return;
   } else {
-    console.log('Item activated successfully', row.template_question_id); //Vymazem
     const response = await initialGetFetch();
-    //visible.value = true;
     if (!response.ok) {
       const data = await response.json();
-      //showError(data.error);
     } else {
       const data = await response.json();
       products.value = data.questions;
       isActiveQr.value = true;
       isActiveRow.value = row.template_question_id;
-      //console.log(products.value);
     }
   }
 };
 
 const copyItem = async (row) => {
-  console.log('Copy item clicked!', row.template_question_id);
-
   const response = await auth_fetch(`/question/question_template_copy/${row.template_question_id}`, "POST");
 
   if (!response.ok) {
-    console.error('Failed to copy item', row.template_question_id);
     return;
   } else {
-    console.log('Item copied successfully', row.template_question_id); //Vymazem
     const response = await initialGetFetch();
     if (!response.ok) {
       const data = await response.json();
-      //showError(data.error);
     } else {
       const data = await response.json();
       products.value = data.questions;
-      console.log(products.value);
     }
   }
 };
 
 const closeItem = async (row) => {
-  console.log('Close item clicked!', row);
-
   const response = await auth_fetch(`/question/set_active/${row.template_question_id}`, "PUT", { active: 0 });
 
   if (!response.ok) {
-    console.error('Failed to activate item', row.template_question_id);
     return;
   } else {
-    console.log('Item closed successfully', row.template_question_id); //Vymazem
     const response = await initialGetFetch();
     if (!response.ok) {
       const data = await response.json();
-      //showError(data.error);
     } else {
       const data = await response.json();
       products.value = data.questions;
       console.log(products.value);
     }
   }
-
 };
 
-
 const editRow = (event, lang) => {
-  editQuestion(event.data.id, event.data.question, event.data.category, event.data.active, event.data.type, lang)
+  editQuestion(event.data.template_question_id, event.data.template_question_text, event.data.subject_name, event.data.active, event.data.type, lang)
 }
 
 const editQuestion = (id, question, subject, active, type, lang) => {
-  if (id == null) {
+  if (id === null) {
     if (lang === 'sk') {
       dialogTitle.value = 'Vytvorenie novej otázky';
     } else if (lang === 'en') {
@@ -283,7 +243,7 @@ const editQuestion = (id, question, subject, active, type, lang) => {
     dialogSubject.value = '';
     dialogActive.value = false;
     dialogId.value = null;
-    dialogType.value = 1;
+    dialogType.value = 0;
   } else {
     if (lang === 'sk') {
       dialogTitle.value = 'Úprava otázky';

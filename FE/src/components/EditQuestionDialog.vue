@@ -36,12 +36,12 @@
           optionLabel="name" />
       </div>
 
-      <div v-if="type.value === 2" class="mt-3">
+      <div v-if="type.value === 1" class="mt-3">
         <div v-for=" (option, index) in answers" class="flex align-items-center gap-3 mb-2" :key="index">
           <label :for="'option-' + index" class="font-semibold w-6rem" style="min-width:15%">{{ index + 1 }}.
             {{ $t('option') }}</label>
           <InputText :id="'option-' + index" class="flex-auto mx-3" autocomplete="off" style="min-width: 70%"
-            v-model="answers[index].text" />
+            v-model="answers[index].answer_text" />
           <div class="d-inline-block p-2 options-button" @click="deleteOption(index)">
             <lord-icon src="https://cdn.lordicon.com/drxwpfop.json" trigger="hover" style="width:2em;height:2em"
               colors="primary:#121331,secondary:#8b5cf6" stroke="bold" class="pt-2">
@@ -78,17 +78,20 @@ import InputSwitch from 'primevue/inputswitch';
 import SelectButton from 'primevue/selectbutton';
 import Toast from 'primevue/toast';
 import { useToast } from "primevue/usetoast";
+import { auth_fetch } from '@/utils';
 
 const toast = useToast();
 
 const selectedCategory = ref(null);
-const answers = ref([{ text: '', id: null }]);
+const answers = ref([{ answer_text: '', answer_id: null }]);
 const isActive = ref(false);
 const questionText = ref('');
 const lang_id = ref('');
 const id = ref(null);
 const type = ref({ name: 'S otvorenou odpoveďou', value: 1 });
-const options = ref([{ name: 'S otvorenou odpoveďou', value: 1 }, { name: 'S možnosťami', value: 2 }]);
+const options = ref([{ name: 'S otvorenou odpoveďou', value: 0 }, { name: 'S možnosťami', value: 1 }]);
+
+const categories = ref([]);
 
 const visible = defineModel();
 const props = defineProps(['title', 'question', 'category', 'isActive', 'id', 'type', 'lang_id']);
@@ -104,7 +107,9 @@ const setTypeAndOptionsName = (lang_id) => {
     options.value[1].name = 'S možnosťami';
   }
 }
+
 setTypeAndOptionsName(lang_id.value);
+
 const deleteOption = (index) => {
   if (answers.value.length <= 2) {
     if (lang_id.value === "en") {
@@ -119,36 +124,13 @@ const deleteOption = (index) => {
 }
 
 const addOption = () => {
-  answers.value.push({ text: '', id: null });
+  answers.value.push({ answer_text: '', answer_id: null });
 }
 
-const categories = ref([
-  { name: 'Jazyky', id: 1 },
-  { name: 'Matematika', id: 2 },
-  { name: 'História', id: 3 },
-  { name: 'Panda', id: 4 },
-  { name: 'Klokan', id: 88 },
-  { name: 'IT', id: 102 }
-]);
-
-const setCategories = (lang_id) => {
-  if (lang_id === "en") {
-    categories.value[0].name = 'Languages';
-    categories.value[1].name = 'Mathematics';
-    categories.value[2].name = 'History';
-    categories.value[4].name = 'Kangaroo';
-  } else  {
-    categories.value[0].name = 'Jazyky';
-    categories.value[1].name = 'Matematika';
-    categories.value[2].name = 'História';
-    categories.value[4].name = 'Klokan';
-  }
-}
-setCategories(lang_id.value);
-const saveQuestion = () => {
+const saveQuestion = async () => {
   if (!questionText.value) {
     if (lang_id.value === "en") {
-      toast.add({ severity: 'warn', summary: 'Information', detail: 'The question must not be empty.', life: 4500 });
+      toast.add({ severity: 'error', summary: 'Information', detail: 'The question must not be empty.', life: 4500 });
     } else  {
       toast.add({ severity: 'error', summary: 'Informácia', detail: 'Otázka nesmie byť prázdna.', life: 4500 });
     }
@@ -156,7 +138,17 @@ const saveQuestion = () => {
     return;
   }
 
-  if (type.value.value === 2) {
+  if(!selectedCategory.value) {
+    if (lang_id.value === "en") {
+      toast.add({ severity: 'error', summary: 'Information', detail: 'You must choose a category.', life: 4500 });
+    } else  {
+      toast.add({ severity: 'error', summary: 'Informácia', detail: 'Musíte si vybrať kategóriu.', life: 4500 });
+    }
+
+    return;
+  }
+
+  if (type.value.value === 1) {
     if (answers.value.length < 2) {
       if (lang_id.value === "en") {
         toast.add({ severity: 'warn', summary: 'Information', detail: 'You must choose at least 2 options.', life: 4500 });
@@ -168,20 +160,84 @@ const saveQuestion = () => {
     }
   }
 
-  console.log('Save question');
+  if(id.value == null ) { // Create
+    const res = await auth_fetch('/question', "POST", 
+    {
+      "template_question_text": questionText.value,
+      "subject_name": selectedCategory.value.name,
+      "active": isActive.value ? 1 : 0,
+      "type": type.value.value,
+      "answer_text": answers.value.map(a => a.answer_text)
+    });
+
+    if (!res.ok) {
+      const data = await res.json();
+      toast.add({ severity: 'error', summary: 'Error', detail: data.error, life: 3000 });
+      return;
+    } else {
+      const data = await res.json();
+      toast.add({ severity: 'success', summary: 'Success', detail: data.message, life: 3000 });
+      questionText.value = '';
+      selectedCategory.value = null;
+      isActive.value = false;
+      answers.value = [{ answer_text: '', answer_id: null }];
+
+      visible.value = false;
+    }
+  } else { // Update
+    console.log(questionText.value);
+    const res = await auth_fetch(`/question/template/${id.value}`, "PUT", 
+    {
+      "template_question_text": questionText.value,
+      "subject_name": selectedCategory.value.name,
+      "active": isActive.value ? 1 : 0,
+      "type": type.value.value,
+      "answer_text": answers.value
+    });
+
+    if (!res.ok) {
+      const data = await res.json();
+      toast.add({ severity: 'error', summary: 'Error', detail: data.error, life: 3000 });
+      return;
+    } else {
+      const data = await res.json();
+      toast.add({ severity: 'success', summary: 'Success', detail: data.message, life: 3000 });
+      questionText.value = '';
+      selectedCategory.value = null;
+      isActive.value = false;
+      answers.value = [{ answer_text: '', answer_id: null }];
+
+      visible.value = false;
+    }
+  }
+}
+
+const fetchAllSubjects = async () => {
+  const res = await auth_fetch('/subject');
+  if (!res.ok) {
+    const data = await res.json();
+    toast.add({ severity: 'error', summary: 'Error', detail: data.error, life: 3000 });
+    return;
+  } else {
+    const data = await res.json();
+
+    categories.value = data.subjects.map(subject => ({ name: subject }));
+  }
 }
 
 watch(
   () => props.question,
   () => {
-    questionText.value = props.question
+    questionText.value = props.question,
+    fetchAnswers();
   }
 );
 
 watch(
   () => props.id,
   () => {
-    id.value = props.id
+    id.value = props.id,
+    fetchAnswers();
   }
 );
 
@@ -197,7 +253,7 @@ watch(
 watch(
   () => props.isActive,
   () => {
-    isActive.value = props.isActive
+    isActive.value = props.isActive === 1 ? true : false;
   }
 );
 
@@ -205,43 +261,55 @@ watch(
 watch(
   () => props.category,
   () => {
-    selectedCategory.value = props.category
+    categories.value.map(option => {
+      if (option.name === props.category) {
+        selectedCategory.value = option;
+      }
+    });
   }
 );
 
 watch(
   () => props.type,
   () => {
-    console.log('Type', type.value)
     options.value.map(option => {
       if (option.value === props.type) {
         type.value = option;
-        fetchAnswers();
+        if(option.value == 1)
+          fetchAnswers();
       }
     });
   }
 );
 
 onMounted(() => {
-  fetchCategories();
+  fetchAllSubjects();
 });
 
-const fetchAnswers = () => {
+const fetchAnswers = async () => {
   if (id.value !== null) {
-    // fetch('https://api.example.com/answers/' + id.value)
-    //   .then(response => response.json())
-    //   .then(data => {
-    //     answers.value = data;
-    //   });
-  }
-}
+    const res = await auth_fetch(`/question/answers/${id.value}`)
 
-const fetchCategories = () => {
-  // fetch('https://api.example.com/categories')
-  //   .then(response => response.json())
-  //   .then(data => {
-  //     categories.value = data;
-  //   });
+    if (res.status === 200) {
+      const data = await res.json();
+      answers.value = data.answers;
+    } else if(res.status === 204) {
+      answers.value = [];
+      if(type.value.value == 1) {
+        if(lang_id.value == "en") {
+          toast.add({ severity: 'info', summary: 'Information', detail: 'No answers found.', life: 4500 });
+        } else {
+          toast.add({ severity: 'info', summary: 'Informácia', detail: 'Nenašli sa žiadne odpovede.', life: 4500 });
+        }
+      }
+    } else {
+      if (lang_id.value === "en") {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'An error occurred while fetching answers.', life: 4500 });
+      } else  {
+        toast.add({ severity: 'error', summary: 'Chyba', detail: 'Pri načítavaní odpovedí sa vyskytla chyba.', life: 4500 });
+      }
+    }
+  }
 }
 
 </script>
