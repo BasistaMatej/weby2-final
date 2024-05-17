@@ -447,6 +447,133 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
                 }
                 
             
+            } else if ($endpoint1 == '/template' && !empty($endpoint2) && is_numeric($endpoint2)) {
+              $user = verify_token($conn);
+              if (!$user) {
+                  exit;  // Stop further execution if the token is invalid
+              }
+          
+              $template_question_id = $endpoint2;
+              $postdata = json_decode(file_get_contents("php://input"), true);
+
+              if( !isset($postdata['template_question_text']) || !isset($postdata['subject_name']) || 
+                  !isset($postdata['active']) || !isset($postdata['type'])  || !isset($postdata['answer_text']))
+              {
+                  response(['error' => 'Missing required fields'], 400);
+                  exit;
+              }
+
+              $template_question_text = $postdata['template_question_text'];
+              $subject_name = $postdata['subject_name'];
+              $active = $postdata['active'];
+              $type = $postdata['type'];
+              $answer_text = $postdata['answer_text'];
+
+              try {
+                  $conn->beginTransaction();
+          
+                  // Check if the template question belongs to the user or if user has higher privilege
+                  $stmt = $conn->prepare("SELECT author_id FROM template_questions WHERE template_question_id = :template_question_id");
+                  $stmt->bindParam(':template_question_id', $template_question_id);
+                  $stmt->execute();
+                  $question = $stmt->fetch(PDO::FETCH_ASSOC);
+          
+                  if (!$question) {
+                      throw new Exception("Template question not found");
+                  }
+          
+                  if ($question['author_id'] != $user['user_id'] && $user['auth_level'] != 2) {
+                      throw new Exception("Unauthorized to update this question");
+                  }
+
+                  if($active == 1) {
+                    $code = substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 5);
+                  } else {
+                    $code = null;
+                  }
+
+                  // Get subject id by name 
+                  $stmt = $conn->prepare("SELECT subject_id FROM subjects WHERE subject_name = :subject_name");
+                  $stmt->bindParam(':subject_name', $subject_name);
+                  $stmt->execute();
+                  $subject = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                  if (!$subject) {
+                      throw new Exception("Subject not found");
+                  }
+          
+                  // Update the template question
+                  $stmt = $conn->prepare("UPDATE template_questions SET template_question_text = :template_question_text, active = :active, type = :type, code = :code, subject_id = :subject_id WHERE template_question_id = :template_question_id");
+                  $stmt->bindParam(':template_question_text', $template_question_text);
+                  $stmt->bindParam(':active', $active);
+                  $stmt->bindParam(':type', $type);
+                  $stmt->bindParam(':subject_id', $subject['subject_id']);
+                  $stmt->bindParam(':template_question_id', $template_question_id);
+                  $stmt->bindParam(':code', $code);
+                  if (!$stmt->execute()) {
+                      throw new Exception("Failed to update template question");
+                  }
+
+                  if($type == 1) {
+                    // Get the question_id
+                    $stmt = $conn->prepare("SELECT question_id FROM questions WHERE template_question_id = :template_question_id AND closed is NULL");
+                    $stmt->bindParam(':template_question_id', $template_question_id);
+                    $stmt->execute();
+                    $question_id = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                    // Get all answers
+                    $stmt = $conn->prepare("SELECT answer_id, answer_text FROM answers WHERE question_id = :question_id");
+                    $stmt->bindParam(':question_id', $question_id['question_id']);
+                    $stmt->execute();
+                    $answersDB = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                    // Update the answers
+                    $stmt = $conn->prepare("UPDATE answers SET answer_text = :answer_text WHERE answer_id = :answer_id");
+                    foreach($answer_text as $key => $answer) {
+                      $stmt->bindParam(':answer_id', $answer['answer_id']);
+                      $stmt->bindParam(':answer_text', $answer['answer_text']);
+                      if (!$stmt->execute()) {
+                        throw new Exception("Failed to update answer");
+                      }
+                      
+                      // delete $answer from $answersDB
+                      foreach($answersDB as $key2 => $answerDB) {
+                        if($answerDB['answer_id'] == $answer['answer_id']) {
+                          unset($answersDB[$key2]);
+                        }
+                      }
+                    }
+
+                    // Insert new ansers
+                    $stmt = $conn->prepare("INSERT INTO answers (question_id, answer_text) VALUES (:question_id, :answer_text)");
+                    foreach($answer_text as $key => $answer) {
+                      if($answer['answer_id'] == null)  {
+                        $stmt->bindParam(':question_id', $question_id['question_id']);
+                        $stmt->bindParam(':answer_text', $answer['answer_text']);
+                        if (!$stmt->execute()) {
+                          throw new Exception("Failed to insert answer");
+                        }
+                        unset($answer_text[$key]);
+                      }
+                    }
+
+                    // delete unuseed answers
+                    $stmt = $conn->prepare("DELETE FROM answers WHERE answer_id = :answer_id");
+                    foreach($answersDB as $answer) {
+                      $stmt->bindParam(':answer_id', $answer['answer_id']);
+                      if (!$stmt->execute()) {
+                        throw new Exception("Failed to delete answer");
+                      }
+                    }
+                  }
+          
+                  $conn->commit();
+                  response(["message" => "Template question updated successfully"], 200);
+              } catch (Exception $e) {
+                  $conn->rollBack();
+                  response(["error" => $e->getMessage()], 500);
+                  response(["error" => "Server error"], 500);
+              }
             }
             else{
                 response(["error" => "Invalid endpoint"], 405);

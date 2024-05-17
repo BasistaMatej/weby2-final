@@ -5,7 +5,7 @@
       <div class="px-md-5">
         <div>
           <div class="d-inline-block">
-            <div @click="editQuestion(null, null, null, null, null, null)"
+            <div @click="editQuestion(null, null, null, null, null, $t('lang_id'))"
               class="d-flex flex-columns align-items-center align-content-center p-2 table-link">
               <lord-icon src="https://cdn.lordicon.com/zrkkrrpl.json" trigger="hover" stroke="bold"
                 style="width:2em;height:2em" colors="primary:#121331,secondary:#8b5cf6">
