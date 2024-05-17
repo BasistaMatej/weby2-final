@@ -37,31 +37,50 @@
       </div>
 
       <div v-if="type.value === 1" class="mt-3">
-        <div v-for=" (option, index) in answers" class="flex align-items-center gap-3 mb-2" :key="index">
-          <label :for="'option-' + index" class="font-semibold w-6rem" style="min-width:15%">{{ index + 1 }}.
-            {{ $t('option') }}</label>
-          <InputText :id="'option-' + index" class="flex-auto mx-3" autocomplete="off" style="min-width: 70%"
-            v-model="answers[index].answer_text" />
-          <div class="d-inline-block p-2 options-button" @click="deleteOption(index)">
-            <lord-icon src="https://cdn.lordicon.com/drxwpfop.json" trigger="hover" style="width:2em;height:2em"
-              colors="primary:#121331,secondary:#8b5cf6" stroke="bold" class="pt-2">
-            </lord-icon>
+        <div v-if="!isLoadingAnswers">
+          <div v-for=" (option, index) in answers" class="flex align-items-center gap-3 mb-2" :key="index">
+            <label :for="'option-' + index" class="font-semibold w-6rem" style="min-width:15%">{{ index + 1 }}.
+              {{ $t('option') }}</label>
+            <InputText :id="'option-' + index" class="flex-auto mx-3" autocomplete="off" style="min-width: 70%"
+              v-model="answers[index].answer_text" />
+            <div class="d-inline-block p-2 options-button" @click="deleteOption(index)">
+              <lord-icon src="https://cdn.lordicon.com/drxwpfop.json" trigger="hover" style="width:2em;height:2em"
+                colors="primary:#121331,secondary:#8b5cf6" stroke="bold" class="pt-2">
+              </lord-icon>
+            </div>
+          </div>
+          <div class="d-flex mb-3 button">
+            <div style="min-width: 15%"></div>
+            <div class="d-flex flex-columns align-items-center align-content-center p-2 table-link mx-3" @click="addOption">
+              <lord-icon src="https://cdn.lordicon.com/zrkkrrpl.json" trigger="hover" stroke="bold"
+                style="width:2em;height:2em" colors="primary:#121331,secondary:#8b5cf6">
+              </lord-icon>
+              <span>{{ $t('add_option') }}</span>
+            </div>
           </div>
         </div>
-        <div class="d-flex mb-3 button">
-          <div style="min-width: 15%"></div>
-          <div class="d-flex flex-columns align-items-center align-content-center p-2 table-link mx-3" @click="addOption">
-            <lord-icon src="https://cdn.lordicon.com/zrkkrrpl.json" trigger="hover" stroke="bold"
-              style="width:2em;height:2em" colors="primary:#121331,secondary:#8b5cf6">
-            </lord-icon>
-            <span>{{ $t('add_option') }}</span>
-          </div>
+        <div v-else class="d-flex justify-content-center" >
+          <lord-icon
+              src="https://cdn.lordicon.com/unukghxb.json"
+              trigger="loop"
+              stroke="bold"
+              state="loop-spin"
+              colors="primary:#ffffff,secondary:#7c3aed"
+              style="width:5em;height:5em">
+          </lord-icon>
         </div>
       </div>
 
       <div class="flex justify-content-end gap-2 modal-buttons">
         <Button type="button" severity="secondary" @click="visible = false">{{$t('cancel')}}</Button>
-        <Button type="button"  @click="saveQuestion" class="mx-3">{{$t('save')}}</Button>
+        <Button type="button"  @click="saveQuestion" class="mx-3">
+          <div v-if="!isSending">
+            {{$t('save')}}
+          </div>
+          <lord-icon v-else src="https://cdn.lordicon.com/lqxfrxad.json" trigger="loop"
+            delay="200" colors="primary:#ffffff" style="width:2em;height:2em;margin-left: 1em;">
+        </lord-icon>
+        </Button>
       </div>
     </div>
     <Toast />
@@ -92,6 +111,8 @@ const type = ref({ name: 'S otvorenou odpoveďou', value: 1 });
 const options = ref([{ name: 'S otvorenou odpoveďou', value: 0 }, { name: 'S možnosťami', value: 1 }]);
 
 const categories = ref([]);
+const isSending = ref(false);
+const isLoadingAnswers = ref(false);
 
 const visible = defineModel();
 const props = defineProps(['title', 'question', 'category', 'isActive', 'id', 'type', 'lang_id']);
@@ -160,6 +181,7 @@ const saveQuestion = async () => {
     }
   }
 
+  isSending.value = true;
   if(id.value == null ) { // Create
     const res = await auth_fetch('/question', "POST", 
     {
@@ -173,6 +195,7 @@ const saveQuestion = async () => {
     if (!res.ok) {
       const data = await res.json();
       toast.add({ severity: 'error', summary: 'Error', detail: data.error, life: 3000 });
+      isSending.value = false;
       return;
     } else {
       const data = await res.json();
@@ -182,10 +205,10 @@ const saveQuestion = async () => {
       isActive.value = false;
       answers.value = [{ answer_text: '', answer_id: null }];
 
+      isSending.value = false;
       visible.value = false;
     }
   } else { // Update
-    console.log(questionText.value);
     const res = await auth_fetch(`/question/template/${id.value}`, "PUT", 
     {
       "template_question_text": questionText.value,
@@ -198,6 +221,7 @@ const saveQuestion = async () => {
     if (!res.ok) {
       const data = await res.json();
       toast.add({ severity: 'error', summary: 'Error', detail: data.error, life: 3000 });
+      isSending.value = false;
       return;
     } else {
       const data = await res.json();
@@ -207,6 +231,7 @@ const saveQuestion = async () => {
       isActive.value = false;
       answers.value = [{ answer_text: '', answer_id: null }];
 
+      isSending.value = false;
       visible.value = false;
     }
   }
@@ -246,7 +271,6 @@ watch(
     () => {
       lang_id.value = props.lang_id
       setTypeAndOptionsName(lang_id.value);
-      setCategories(lang_id.value);
     }
 );
 
@@ -287,6 +311,7 @@ onMounted(() => {
 });
 
 const fetchAnswers = async () => {
+  isLoadingAnswers.value = true;
   if (id.value !== null) {
     const res = await auth_fetch(`/question/answers/${id.value}`)
 
@@ -297,9 +322,9 @@ const fetchAnswers = async () => {
       answers.value = [];
       if(type.value.value == 1) {
         if(lang_id.value == "en") {
-          toast.add({ severity: 'info', summary: 'Information', detail: 'No answers found.', life: 4500 });
+          // toast.add({ severity: 'info', summary: 'Information', detail: 'No answers found.', life: 4500 });
         } else {
-          toast.add({ severity: 'info', summary: 'Informácia', detail: 'Nenašli sa žiadne odpovede.', life: 4500 });
+          // toast.add({ severity: 'info', summary: 'Informácia', detail: 'Nenašli sa žiadne odpovede.', life: 4500 });
         }
       }
     } else {
@@ -310,6 +335,7 @@ const fetchAnswers = async () => {
       }
     }
   }
+  isLoadingAnswers.value = false;
 }
 
 </script>
