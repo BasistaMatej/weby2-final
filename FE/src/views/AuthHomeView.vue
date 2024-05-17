@@ -4,7 +4,16 @@
     <div class="container">
       <div class="px-md-5">
         <div>
-          <div class="d-inline-block">
+          <div class="d-inline-block" v-if="authLevel == 2">
+            <router-link to="/users"
+              class="d-flex flex-columns align-items-center align-content-center p-2 table-link" style="background: #8B5CF6AA">
+              <lord-icon src="https://cdn.lordicon.com/bjbmvfnr.json" trigger="hover" stroke="bold"
+                style="width:2em;height:2em" colors="primary:#121331,secondary:#d0bdfb">
+              </lord-icon>
+              <span>Použivatelia</span>
+            </router-link>
+          </div>
+          <div class="d-inline-block mx-2">
             <div @click="editQuestion(null, null, null, null, null, $t('lang_id'))"
               class="d-flex flex-columns align-items-center align-content-center p-2 table-link">
               <lord-icon src="https://cdn.lordicon.com/zrkkrrpl.json" trigger="hover" stroke="bold"
@@ -13,7 +22,7 @@
               <span>{{ $t('create_question') }}</span>
             </div>
           </div>
-          <div class="d-inline-block mx-2" v-if="authLevel == 1">
+          <div class="d-inline-block" v-if="authLevel == 1">
             <div @click="addNewSubject"
               class="d-flex flex-columns align-items-center align-content-center p-2 table-link">
               <lord-icon src="https://cdn.lordicon.com/zrkkrrpl.json" trigger="hover" stroke="bold"
@@ -22,7 +31,7 @@
               <span>Pridať predmet</span>
             </div>
           </div>
-          <div class="d-inline-block mx-2" v-if="authLevel == 2">
+          <div class="d-inline-block" v-if="authLevel == 2">
             <div @click="editSubjectDialog = true"
               class="d-flex flex-columns align-items-center align-content-center p-2 table-link">
               <lord-icon src="https://cdn.lordicon.com/wuvorxbv.json" state="hover-line" trigger="hover" stroke="bold"
