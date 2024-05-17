@@ -28,7 +28,7 @@
               <lord-icon src="https://cdn.lordicon.com/zrkkrrpl.json" trigger="hover" stroke="bold"
                 style="width:2em;height:2em" colors="primary:#121331,secondary:#8b5cf6">
               </lord-icon>
-              <span>Pridať predmet</span>
+              <span>{{ $t('add_subject') }}</span>
             </div>
           </div>
           <div class="d-inline-block" v-if="authLevel == 2">
@@ -37,7 +37,7 @@
               <lord-icon src="https://cdn.lordicon.com/wuvorxbv.json" state="hover-line" trigger="hover" stroke="bold"
                 style="width:2em;height:2em" colors="primary:#121331,secondary:#8b5cf6">
               </lord-icon>
-              <span>Editovať predmety</span>
+              <span>{{ $t('edit_subject') }}</span>
             </div>
           </div>
         </div>
@@ -101,9 +101,9 @@
               </div>
               <div class="qr-backdrop" v-if="isActiveQr && isActiveRow == slotProps.data.template_question_id">
                 <div id="qr-box" class="d-flex">
-                  <h1>Pripoj sa na otázku!</h1>
+                  <h1>{{ $t('join_question') }}</h1>
                   <QRCodeVue3 :width="200" :height="200" :value="`http://localhost:5173/${slotProps.data.code}`" />
-                  <Button id="button-modal" class="mt-2" @click="isActiveQr = false" style="border-radius: 0.7em">Zavrieť</Button>
+                  <Button id="button-modal" class="mt-2" @click="isActiveQr = false" style="border-radius: 0.7em">{{ $t('close') }}</Button>
                 </div>
               </div>
             </template>

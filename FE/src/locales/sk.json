@@ -36,8 +36,6 @@
   "lang": "Jazyky",
   "math": "Matematika",
   "history": "História",
-  "panda": "Panda",
-  "kangaroo": "Klokan",
   "error_msg": "Error Message",
   "success_msg": "Operácia prebehla úspešne",
   "success_email_validation": "Teraz sa môžete prihlásiť a užiť si zodpovedanie na všetky super otázky a ankety!",
@@ -59,7 +57,7 @@
   "last_activity": "Posledná aktivita",
   "entitlement_level": "Level oprávnení",
   "up_user": "POUŽÍVATEĽ",
-  "up_change_password": "CHANGE OF PASSWORD",
+  "up_change_password": "ZMENA HESLA",
   "change_password": "Zmeniť heslo",
   "up_reset_password": "OBNOVENIE HESLA",
   "change_password_success": "Heslo úspešne zmenené!",
@@ -69,6 +67,10 @@
   "user_manual": "Používateľská príručka",
   "up_user_manual": "POUŽÍVATEĽSKÁ PRÍRUČKA",
   "home": "Domov",
-  "to_pdf": "Export do PDF"
+  "to_pdf": "Export do PDF",
+  "add_subject": "Pridať predmet",
+  "edit_subject": "Upraviť predmety",
+  "join_question": "Pripoj sa na otázku!",
+  "close": "Zavrieť"
 
 }

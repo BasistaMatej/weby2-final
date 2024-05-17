@@ -36,8 +36,6 @@
   "lang": "Languages",
   "math": "Mathematics",
   "history": "History",
-  "panda": "Panda",
-  "kangaroo": "Kangaroo",
   "error_msg": "Error Message",
   "success_msg": "Success",
   "success_email_validation": "Now you can log in and enjoy answering all the super questions and polls!",
@@ -69,5 +67,10 @@
   "user_manual": "User manual",
   "up_user_manual": "USER MANUAL",
   "home": "Home",
-  "to_pdf": "Export to PDF"
+  "to_pdf": "Export to PDF",
+  "add_subject": "Add a subject",
+  "edit_subject": "Edit subject",
+  "join_question": "Join in the question!",
+  "close": "Close"
+
 }
