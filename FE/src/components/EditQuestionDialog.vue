@@ -271,7 +271,6 @@ watch(
     () => {
       lang_id.value = props.lang_id
       setTypeAndOptionsName(lang_id.value);
-      setCategories(lang_id.value);
     }
 );
 
