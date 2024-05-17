@@ -112,9 +112,6 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
                 if ($question['author_id'] != $user['user_id'] && $user['auth_level'] != 2) {
                     throw new Exception("Unauthorized to read this question history");
                 }
-
-
-
                
                 // show the history of the question
                 $stmt = $conn->prepare("SELECT * FROM questions WHERE template_question_id = :template_question_id");
@@ -130,14 +127,25 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
                     throw new Exception("No history found for this question");
                 }
                 
+                // to every question in the history, get the answers
+                foreach ($questions as $key => $question) {
+                    $stmt = $conn->prepare("SELECT answer_id, answer_text, count FROM answers WHERE question_id = :question_id");
+                    $stmt->bindParam(':question_id', $question['question_id']);
+                    if (!$stmt->execute()) {
+                        throw new Exception("Failed to read answers");
+                    }
+                    $answers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $questions[$key]['answers'] = $answers;
+                }
+
                 $conn->commit();
                 // response(["message" => "Question history read successfully"], 200);
                 response(['questions' => $questions], 200);
+
             } catch (Exception $e) {
                 $conn->rollBack();
                 response(["error" => $e->getMessage()], 500);
-         }
-
+            }
 
         }
         else{
