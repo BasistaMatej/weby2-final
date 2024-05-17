@@ -5,8 +5,8 @@
       <div class="px-md-5">
         <div>
           <div class="d-inline-block" v-if="authLevel == 2">
-            <router-link to="/users"
-              class="d-flex flex-columns align-items-center align-content-center p-2 table-link" style="background: #8B5CF6AA">
+            <router-link to="/users" class="d-flex flex-columns align-items-center align-content-center p-2 table-link"
+              style="background: #8B5CF6AA">
               <lord-icon src="https://cdn.lordicon.com/bjbmvfnr.json" trigger="hover" stroke="bold"
                 style="width:2em;height:2em" colors="primary:#121331,secondary:#d0bdfb">
               </lord-icon>
@@ -28,7 +28,7 @@
               <lord-icon src="https://cdn.lordicon.com/zrkkrrpl.json" trigger="hover" stroke="bold"
                 style="width:2em;height:2em" colors="primary:#121331,secondary:#8b5cf6">
               </lord-icon>
-              <span>Pridať predmet</span>
+              <span>{{ $t('add_subject') }}</span>
             </div>
           </div>
           <div class="d-inline-block" v-if="authLevel == 2">
@@ -37,7 +37,7 @@
               <lord-icon src="https://cdn.lordicon.com/wuvorxbv.json" state="hover-line" trigger="hover" stroke="bold"
                 style="width:2em;height:2em" colors="primary:#121331,secondary:#8b5cf6">
               </lord-icon>
-              <span>Editovať predmety</span>
+              <span>{{ $t('edit_subject') }}</span>
             </div>
           </div>
         </div>
@@ -101,9 +101,10 @@
               </div>
               <div class="qr-backdrop" v-if="isActiveQr && isActiveRow == slotProps.data.template_question_id">
                 <div id="qr-box" class="d-flex">
-                  <h1>Pripoj sa na otázku!</h1>
+                  <h1>{{ $t('join_question') }}</h1>
                   <QRCodeVue3 :width="200" :height="200" :value="`http://localhost:5173/${slotProps.data.code}`" />
-                  <Button id="button-modal" class="mt-2" @click="isActiveQr = false" style="border-radius: 0.7em">Zavrieť</Button>
+                  <Button id="button-modal" class="mt-2" @click="isActiveQr = false" style="border-radius: 0.7em">{{
+            $t('close') }}</Button>
                 </div>
               </div>
             </template>
@@ -111,6 +112,8 @@
         </DataTable>
       </div>
     </div>
+    <Toast />
+
     <EditQuestionDialog v-model="showDialog" :title="dialogTitle" :category="dialogSubject" :id="dialogId"
       :isActive="dialogActive" :question="dialogQuestion" :type="dialogType" :lang_id="$t('lang_id')" />
     <AddSubjectDialog v-model="addNewSubjectDialog" />
@@ -134,7 +137,11 @@ import Button from 'primevue/button';
 import { auth_fetch, getLocalStorage } from '@/utils';
 import QRCodeVue3 from "qrcode-vue3";
 import { useRouter } from 'vue-router';
+import QuestionWithAnsvers from '@/components/QuestionWithAnsvers.vue';
+import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
 
+const toast = useToast();
 const addNewSubjectDialog = ref(false);
 const editSubjectDialog = ref(false);
 const showDialog = ref(false);
@@ -158,7 +165,7 @@ const viewHistory = (row) => {
 watch(
   () => showDialog.value,
   async () => {
-    if(!showDialog.value) {
+    if (!showDialog.value) {
       const response = await initialGetFetch();
       if (!response.ok) {
         const data = await response.json();
@@ -169,6 +176,14 @@ watch(
     }
   }
 );
+
+const showSuccess = () => {
+  toast.add({ severity: 'success', summary: 'Success', detail: "Operácia vykonaná úspešne!", life: 5000 });
+};
+
+const showError = (errorMessage) => {
+  toast.add({ severity: 'error', summary: 'Error Message', detail: errorMessage, life: 3000 });
+};
 
 const addNewSubject = () => {
   addNewSubjectDialog.value = true;
@@ -199,9 +214,11 @@ const deleteItem = async (row) => {
   const response = await auth_fetch(`/question/template_question/${row.template_question_id}`, "DELETE");
 
   if (!response.ok) {
-    return;
+    const data = await response.json();
+    showError(data.error);
   } else {
     const response = await initialGetFetch();
+    showSuccess();
     if (!response.ok) {
       const data = await response.json();
     } else {
@@ -215,9 +232,11 @@ const activateItem = async (row) => {
   const response = await auth_fetch(`/question/set_active/${row.template_question_id}`, "PUT", { active: 1 });
 
   if (!response.ok) {
-    return;
+    const data = await response.json();
+    showError(data.error);
   } else {
     const response = await initialGetFetch();
+    showSuccess();
     if (!response.ok) {
       const data = await response.json();
     } else {
@@ -233,9 +252,12 @@ const copyItem = async (row) => {
   const response = await auth_fetch(`/question/question_template_copy/${row.template_question_id}`, "POST");
 
   if (!response.ok) {
+    const data = await response.json();
+    showError(data.error);
     return;
   } else {
     const response = await initialGetFetch();
+    showSuccess();
     if (!response.ok) {
       const data = await response.json();
     } else {
@@ -249,9 +271,12 @@ const closeItem = async (row) => {
   const response = await auth_fetch(`/question/set_active/${row.template_question_id}`, "PUT", { active: 0 });
 
   if (!response.ok) {
+    const data = await response.json();
+    showError(data.error);
     return;
   } else {
     const response = await initialGetFetch();
+    showSuccess();
     if (!response.ok) {
       const data = await response.json();
     } else {
