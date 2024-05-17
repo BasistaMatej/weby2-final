@@ -358,10 +358,90 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
 
                 
             }
-            else{
+            else if ($endpoint1 == '/answers') {
+                if (empty($endpoint2) || !is_numeric($endpoint2)) {
+                    response(["error" => "Missing or invalid question ID"], 400);
+                    exit;
+                }
+            
+                $user = verify_token($conn);
+                if (!$user) {
+                    exit;  // Stop further execution if the token is invalid
+                }
+            
+                $postdata = json_decode(file_get_contents("php://input"), true);
+                if (!isset($postdata['all_answers']) || !is_array($postdata['all_answers'])) {
+                    response(['error' => 'Missing or invalid "all_answers" field'], 400);
+                    exit;
+                }
+            
+                $question_id = $endpoint2;
+                $answer_array = $postdata['all_answers'];
+                $note = $postdata['note'];
+                // $template_question_id = $postdata['template_question_id'];
+            
+                try {
+                    $conn->beginTransaction();
+                    
+                    // Check if the question belongs to the user or if the user has higher privileges
+                    $stmt = $conn->prepare("SELECT tq.author_id FROM template_questions tq JOIN questions q ON tq.template_question_id = q.template_question_id WHERE q.question_id = :question_id");
+                    $stmt->bindParam(':question_id', $question_id);
+                    $stmt->execute();
+                    $question = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    if (!$question) {
+                        throw new Exception("Question not found");
+                    }
+                    
+                    if ($question['author_id'] != $user['user_id'] && $user['auth_level'] != 2) {
+                        throw new Exception("Unauthorized to add answers to this question");
+                    }
+            
+                    // Insert each answer into the answers table
+                    $stmt = $conn->prepare("INSERT INTO answers (question_id, answer_text, count) VALUES (:question_id, :answer_text, :count)");
+                    foreach ($answer_array as $answer_text => $count) {
+                        $stmt->bindParam(':question_id', $question_id);
+                        $stmt->bindParam(':answer_text', $answer_text);
+                        $stmt->bindParam(':count', $count);
+                        if (!$stmt->execute()) {
+                            throw new Exception("Failed to insert answer: $answer_text");
+                        }
+                    }
+
+                    // set question to closed
+                    $stmt = $conn->prepare("UPDATE questions SET closed = NOW(), note = :note WHERE question_id = :question_id");
+                    $stmt->bindParam(':question_id', $question_id);
+                    $stmt->bindParam(':note', $note);
+                    if (!$stmt->execute()) {
+                        throw new Exception("Failed to close the question");
+                    }
+
+                    //get the template_question_id
+                    $stmt = $conn->prepare("SELECT template_question_id FROM questions WHERE question_id = :question_id");
+                    $stmt->bindParam(':question_id', $question_id);
+                    $stmt->execute();
+                    $template_question_id = $stmt->fetch(PDO::FETCH_COLUMN);
+
+                    // echo $template_question_id;
+
+                    // // insert new question
+                    $stmt = $conn->prepare("INSERT INTO questions (template_question_id) VALUES (:template_question_id)");
+                    $stmt->bindParam(':template_question_id', $template_question_id);
+                    if (!$stmt->execute()) {
+                        throw new Exception("Failed to create question");
+                    }
+
+                    
+                    $conn->commit();
+                    response(["message" => "Answers added successfully"], 201);
+                } catch (Exception $e) {
+                    $conn->rollBack();
+                    response(["error" => $e->getMessage()], 500);
+                }
+            }
+            else {
                 response(["error" => "Invalid endpoint"], 405);
             }
-
             break;
         
 
