@@ -5,10 +5,10 @@
     <AuthNavBar />
     <div id="history-box" class="mt-5">
         <!-- <h1>History ID: {{ template_question_id }}</h1> -->
-        <h1 class="mt-3">Štatistika</h1>
-        <h2>História</h2>
+        <h1 class="mt-3">{{ $t('stats') }}</h1>
+        <h2>{{ $t('history') }}</h2>
         <div v-if="template_question_type == 0">
-            <p>Toto je otvorené odpovede</p>
+            <p>Toto su otvorené odpovede</p>
             <canvas id="my-chart"></canvas>
         </div>
 

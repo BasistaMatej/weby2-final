@@ -7,7 +7,7 @@
                 <label :for="ansver.id">{{ ansver.name }}</label>
             </div>
         </div>
-        <Button @click="submitAnsver" type="submit" label="submit">Potvrdiť <lord-icon
+        <Button @click="submitAnsver" type="submit" label="submit">{{ $t('confirm') }} <lord-icon
                 src="https://cdn.lordicon.com/oqdmuxru.json" trigger="hover" colors="primary:#ffffff"
                 style="width:2em;height:2em;margin-left:1em;">
             </lord-icon></Button>

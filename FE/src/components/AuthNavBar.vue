@@ -3,7 +3,7 @@
     <div class="container">
       <nav v-if="!isMobile" class="d-flex justify-content-end p-2">
         <span class="fw-bold btn-login" v-on:click="$router.push('/profile')">{{ $t('profile') }}</span>
-        <Button class="ml-5" @click="registrationShow">{{ $t('logout') }}</Button>
+        <Button class="ml-5" @click="registrationShow($t('lang_id'))">{{ $t('logout') }}</Button>
         <Dropdown :options="$i18n.availableLocales" v-model="$i18n.locale" optionKey="locale" class="dropdown" />
       </nav>
 
@@ -19,7 +19,7 @@
                 <Router-link class="nav-link" to="/profile">{{ $t('profile') }}</Router-link>
               </li>
               <li class="nav-item">
-                <span class="nav-link" @click="registrationShow">{{ $t('logout') }}</span>
+                <span class="nav-link" @click="registrationShow($t('lang_id'))">{{ $t('logout') }}</span>
               </li>
               <li class="nav-item">
                 <Dropdown :options="$i18n.availableLocales" v-model="$i18n.locale" optionKey="locale"
@@ -54,10 +54,14 @@ window.addEventListener('resize', () => {
   isMobile.value = window.innerWidth < 500;
 });
 
-const registrationShow = async () => {
+const registrationShow = async (lang) => {
   removeLocalStorage('accessToken');
   removeLocalStorage('refreshToken');
-  setLocalStorage("toast", "Používateľ odhlásený!");
+  if (lang === 'sk') {
+    setLocalStorage("toast", "Používateľ odhlásený!");
+  } else if (lang === 'en') {
+    setLocalStorage("toast", "User logged out!");
+  }
   router.push("/login");
   // Show toast for 1-2 seconds
 };

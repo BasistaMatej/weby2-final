@@ -3,16 +3,16 @@
     <div class="d-flex flex-column">
 
       <div class="flex align-items-center gap-3 mb-2  modal-buttons">
-        <label for="question" class="font-semibold w-6rem" style="min-width:15%">Názov</label>
+        <label for="question" class="font-semibold w-6rem" style="min-width:15%">{{ $t('title') }}</label>
         <InputText id="question" class="flex-auto mx-3" autocomplete="off" style="min-width: 65%"
           v-model="subjectText" />
-        <Button type="button"  @click="saveSubject" class="mx-3">Pridať</Button>
+        <Button type="button"  @click="saveSubject" class="mx-3">{{ $t('add') }}</Button>
       </div>
 
       <DataTable class="auth-table" stripedRows paginator :rows="50" :rowsPerPageOptions="[50, 100, 200]"
           sortMode="multiple" :value="subjectData" removableSort dataKey="name" selectionMode="single">
           <template #loading> {{ $t('loading') }} </template>
-          <Column field="name" header="Názov" sortable >
+          <Column field="name" :header="$t('title')" sortable >
             <template #body="slotProps" :data-rowIndex="slotProps.rowIndex">
               <InputText v-if="slotProps.data.name == editingRowName" v-model="editingRowNew" />
               <span  v-else >
@@ -23,7 +23,7 @@
           <Column field="tools" :header="$t('tools')">
             <template #body="slotProps">
               <div class="d-flex tools-buttons">
-                <Button @click="updateItem()"  v-if="slotProps.data.name == editingRowName">
+                <Button @click="updateItem($t('lang_id'))"  v-if="slotProps.data.name == editingRowName">
                   <lord-icon
                     src="https://cdn.lordicon.com/cgzlioyf.json"
                     trigger="hover"
@@ -41,7 +41,7 @@
                     style="width: 1.3em;height: 1.3em">
                   </lord-icon>
                 </Button>
-                <Button @click="deleteItem(slotProps.data.name)">
+                <Button @click="deleteItem(slotProps.data.name, $t('lang_id'))">
                   <lord-icon
                     src="https://cdn.lordicon.com/drxwpfop.json"
                     trigger="hover"
@@ -92,9 +92,13 @@ const editItem = (name) => {
   editingRowNew.value = name;
 }
 
-const updateItem = async () => {
+const updateItem = async (lang) => {
   if(editingRowName.value === editingRowNew.value) {
-    toast.add({ severity: 'warn', summary: 'Warning', detail: 'No changes made', life: 3000 });
+    if (lang === 'sk') {
+      toast.add({ severity: 'warn', summary: 'Warning', detail: 'Neboli vykonané žiadne zmeny', life: 3000 });
+    } else if (lang === 'en') {
+      toast.add({ severity: 'warn', summary: 'Warning', detail: 'No changes made', life: 3000 });
+    }
     editingRowName.value = '';
     return;
   }
@@ -124,8 +128,9 @@ const fetchAllSubjects = async () => {
   }
 }
 
-const deleteItem = async (name) => {
-  confirm.require({
+const deleteItem = async (name, lang) => {
+  if (lang === 'sk') {
+    confirm.require({
       message: 'Naozaj chceš odstrániť predmet?',
       header: 'Si si istý?',
       icon: 'pi pi-exclamation-triangle',
@@ -136,7 +141,28 @@ const deleteItem = async (name) => {
         const res = await auth_fetch('/subject/'+name, 'DELETE');
         if (!res.ok) {
           const data = await res.json();
-          toast.add({ severity: 'error', summary: 'Error', detail: data.error, life: 3000 });
+          toast.add({ severity: 'error', summary: 'Error', detail: 'Niekde sa stala chyba', life: 3000 });
+          return;
+        } else {
+          toast.add({ severity: 'success', summary: 'Success', detail: 'Predmet odstránený', life: 3000 });
+          fetchAllSubjects();
+        }
+      },
+      reject: () => {}
+    });
+  } else if (lang === 'en') {
+    confirm.require({
+      message: 'Do you really want to remove the subject?',
+      header: 'Are you sure?',
+      icon: 'pi pi-exclamation-triangle',
+      rejectClass: 'p-button-secondary p-button-outlined',
+      rejectLabel: 'Cancel',
+      acceptLabel: 'Yes',
+      accept: async () => {
+        const res = await auth_fetch('/subject/'+name, 'DELETE');
+        if (!res.ok) {
+          const data = await res.json();
+          toast.add({ severity: 'error', summary: 'Error', detail: 'Something went wrong', life: 3000 });
           return;
         } else {
           toast.add({ severity: 'success', summary: 'Success', detail: 'Subject deleted', life: 3000 });
@@ -144,7 +170,9 @@ const deleteItem = async (name) => {
         }
       },
       reject: () => {}
-  });
+    });
+  }
+
 }
 
 const saveSubject = async () => {

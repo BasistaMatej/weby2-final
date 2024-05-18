@@ -2,9 +2,9 @@
     <div class="card">
         <h1 class="text-center">Aká farba je tvoja oblúbená ?</h1>
         <div id="box-input" class="flex flex-column gap-3">
-            <InputText v-model="selectedAnsvers" placeholder="Odpoveď" name="ansver" />
+            <InputText v-model="selectedAnsvers" :placeholder="$t('answer')" name="ansver" />
         </div>
-        <Button @click="submitAnsver" type="submit" label="submit">Potvrdiť <lord-icon
+        <Button @click="submitAnsver" type="submit" label="submit"> {{ $t('confirm') }}<lord-icon
                 src="https://cdn.lordicon.com/oqdmuxru.json" trigger="hover" colors="primary:#ffffff"
                 style="width:2em;height:2em;margin-left:1em;">
             </lord-icon></Button>

@@ -10,7 +10,7 @@
               <lord-icon src="https://cdn.lordicon.com/bjbmvfnr.json" trigger="hover" stroke="bold"
                 style="width:2em;height:2em" colors="primary:#121331,secondary:#d0bdfb">
               </lord-icon>
-              <span>Použivatelia</span>
+              <span>{{ $t('users') }}</span>
             </router-link>
           </div>
           <div class="d-inline-block mx-2">
@@ -46,7 +46,8 @@
         </span>
         <DataTable class="auth-table" stripedRows paginator :rows="50" :rowsPerPageOptions="[50, 100, 200]"
           sortMode="multiple" :value="products" removableSort dataKey="id" selectionMode="single"
-          @rowSelect="(event) => editRow(event, $t('lang_id'))">
+          @rowSelect="(event) => editRow(event, $t('lang_id'))"
+          filterDisplay="menu" v-model:filters="filters" :globalFilterFields="['subject_name', 'created']">
           <template #empty>
             <div class="d-flex flex-column align-items-center">
               <lord-icon src="https://cdn.lordicon.com/ribxmuoc.json" trigger="loop" delay="700"
@@ -58,30 +59,39 @@
             </div>
           </template>
           <template #loading> {{ $t('loading') }} </template>
-          <Column field="template_question_text" :header="$t('question')" sortable></Column>
-          <Column field="subject_name" :header="$t('subject')" sortable></Column>
-          <Column field="created" :header="$t('created')" sortable></Column>
-          <Column field="code" :header="$t('code')" sortable></Column>
+          <Column field="template_question_text" :header="$t('question')"></Column>
+          <Column field="subject_name" :header="$t('subject')"  sortable>
+            <template #filter="{ filterModel }">
+              <InputText v-model="filterModel.value" type="text" class="p-column-filter" :placeholder=" $t('search_subject') " />
+            </template>
+          </Column>
+          <Column field="created" :header="$t('created')"  dataType="date" sortable>
+            <template #filter="{ filterModel }">
+              <Calendar v-model="filterModel.value" dateFormat="yy-mm-dd" placeholder="yy-mm-dd" mask="9999-99-99" />
+            </template>
+          </Column>
+
+          <Column field="code" :header="$t('code')" ></Column>
           <Column field="tools" :header="$t('tools')">
             <template #body="slotProps">
               <div class="d-flex">
-                <Button class="row-buttons" @click="deleteItem(slotProps.data)">
+                <Button class="row-buttons" @click="deleteItem(slotProps.data, $t('lang_id'))">
                   <lord-icon src="https://cdn.lordicon.com/nqtddedc.json" trigger="hover"
                     style="width:25px;height:25px">
                   </lord-icon>
                 </Button>
                 <Button v-if="slotProps.data.active == 1 && (slotProps.data.code)" class="row-buttons"
-                  @click="closeItem(slotProps.data)">
+                  @click="closeItem(slotProps.data, $t('lang_id'))">
                   <lord-icon src="https://cdn.lordicon.com/mwikjdwh.json" trigger="hover"
                     style="width:25px;height:25px">
                   </lord-icon>
                 </Button>
-                <Button v-if="slotProps.data.active == 0" class="row-buttons" @click="activateItem(slotProps.data)">
+                <Button v-if="slotProps.data.active == 0" class="row-buttons" @click="activateItem(slotProps.data, $t('lang_id'))">
                   <lord-icon src="https://cdn.lordicon.com/aklfruoc.json" trigger="hover"
                     style="width:25px;height:25px">
                   </lord-icon>
                 </Button>
-                <Button class="row-buttons" @click="copyItem(slotProps.data)">
+                <Button class="row-buttons" @click="copyItem(slotProps.data, $t('lang_id'))">
                   <lord-icon src="https://cdn.lordicon.com/rmkahxvq.json" trigger="hover"
                     style="width:25px;height:25px">
                   </lord-icon>
@@ -104,7 +114,7 @@
                   <h1>{{ $t('join_question') }}</h1>
                   <QRCodeVue3 :width="200" :height="200" :value="`http://localhost:5173/${slotProps.data.code}`" />
                   <Button id="button-modal" class="mt-2" @click="isActiveQr = false" style="border-radius: 0.7em">{{
-            $t('close') }}</Button>
+                    $t('close') }}</Button>
                 </div>
               </div>
             </template>
@@ -130,7 +140,9 @@ import EditSubjectDialog from '@/components/EditSubjectDialog.vue';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import EditQuestionDialog from '@/components/EditQuestionDialog.vue';
-import { FilterMatchMode } from 'primevue/api';
+import {FilterMatchMode, FilterOperator} from 'primevue/api';
+import InputText from 'primevue/inputtext';
+import Calendar from 'primevue/calendar';
 import ColumnGroup from 'primevue/columngroup';
 import Row from 'primevue/row';
 import Button from 'primevue/button';
@@ -177,8 +189,34 @@ watch(
   }
 );
 
-const showSuccess = () => {
-  toast.add({ severity: 'success', summary: 'Success', detail: "Operácia vykonaná úspešne!", life: 5000 });
+const filters = ref();
+
+const initFilters = () => {
+  filters.value = {
+    subject_name: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+    created: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] }
+  };
+};
+initFilters();
+
+const clearFilter = () => {
+  initFilters();
+};
+
+const formatDate = (value) => {
+  return value.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  });
+};
+
+const showSuccess = (lang) => {
+  if (lang === 'sk') {
+    toast.add({ severity: 'success', summary: 'Success', detail: "Operácia vykonaná úspešne!", life: 5000 });
+  } else if (lang === 'en') {
+    toast.add({ severity: 'success', summary: 'Success', detail: "Operation done successfully!", life: 5000 });
+  }
 };
 
 const showError = (errorMessage) => {
@@ -210,7 +248,7 @@ const initialGetFetch = async () => {
   return (await auth_fetch('/question'));
 }
 
-const deleteItem = async (row) => {
+const deleteItem = async (row, lang) => {
   const response = await auth_fetch(`/question/template_question/${row.template_question_id}`, "DELETE");
 
   if (!response.ok) {
@@ -218,7 +256,7 @@ const deleteItem = async (row) => {
     showError(data.error);
   } else {
     const response = await initialGetFetch();
-    showSuccess();
+    showSuccess(lang);
     if (!response.ok) {
       const data = await response.json();
     } else {
@@ -228,7 +266,7 @@ const deleteItem = async (row) => {
   }
 };
 
-const activateItem = async (row) => {
+const activateItem = async (row, lang) => {
   const response = await auth_fetch(`/question/set_active/${row.template_question_id}`, "PUT", { active: 1 });
 
   if (!response.ok) {
@@ -236,7 +274,7 @@ const activateItem = async (row) => {
     showError(data.error);
   } else {
     const response = await initialGetFetch();
-    showSuccess();
+    showSuccess(lang);
     if (!response.ok) {
       const data = await response.json();
     } else {
@@ -248,7 +286,7 @@ const activateItem = async (row) => {
   }
 };
 
-const copyItem = async (row) => {
+const copyItem = async (row, lang) => {
   const response = await auth_fetch(`/question/question_template_copy/${row.template_question_id}`, "POST");
 
   if (!response.ok) {
@@ -257,7 +295,7 @@ const copyItem = async (row) => {
     return;
   } else {
     const response = await initialGetFetch();
-    showSuccess();
+    showSuccess(lang);
     if (!response.ok) {
       const data = await response.json();
     } else {
@@ -267,7 +305,7 @@ const copyItem = async (row) => {
   }
 };
 
-const closeItem = async (row) => {
+const closeItem = async (row, lang) => {
   const response = await auth_fetch(`/question/set_active/${row.template_question_id}`, "PUT", { active: 0 });
 
   if (!response.ok) {
@@ -276,7 +314,7 @@ const closeItem = async (row) => {
     return;
   } else {
     const response = await initialGetFetch();
-    showSuccess();
+    showSuccess(lang);
     if (!response.ok) {
       const data = await response.json();
     } else {
