@@ -54,7 +54,7 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
             } else {
                 response(['questions' => $questions], 200); // Return questions if found
             }
-        } else if($endpoint1 == '/answers') {
+        } else if($endpoint1 == '/answers') { 
             if (empty($endpoint2) || !is_numeric($endpoint2)) {
               response(["error" => "Missing question ID"], 400);
               exit;
@@ -80,9 +80,9 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
             $stmt->execute();
 
             $answers = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
+
             if (empty($answers)) {
-                response(['message' => 'No answers found'], 204); 
+                response(['message' => 'No answers found'], 204);
             } else {
                 response(['answers' => $answers], 200);
             }
@@ -114,7 +114,7 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
                 }
                
                 // show the history of the question
-                $stmt = $conn->prepare("SELECT * FROM questions WHERE template_question_id = :template_question_id");
+                $stmt = $conn->prepare("SELECT * FROM questions WHERE template_question_id = :template_question_id  AND closed IS NOT NULL");
                 $stmt->bindParam(':template_question_id', $template_question_id);
                 if (!$stmt->execute()) {
                     throw new Exception("Failed to read question history");
@@ -382,9 +382,9 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
             
                 try {
                     $conn->beginTransaction();
-                    
-                    // Check if the question belongs to the user or if the user has higher privileges
-                    $stmt = $conn->prepare("SELECT tq.author_id FROM template_questions tq JOIN questions q ON tq.template_question_id = q.template_question_id WHERE q.question_id = :question_id");
+
+                    // Check if the question belongs to the user or if the user has higher privileges and get type of the question
+                    $stmt = $conn->prepare("SELECT tq.author_id, tq.type FROM template_questions tq JOIN questions q ON tq.template_question_id = q.template_question_id WHERE q.question_id = :question_id");
                     $stmt->bindParam(':question_id', $question_id);
                     $stmt->execute();
                     $question = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -397,16 +397,35 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
                         throw new Exception("Unauthorized to add answers to this question");
                     }
             
-                    // Insert each answer into the answers table
-                    $stmt = $conn->prepare("INSERT INTO answers (question_id, answer_text, count) VALUES (:question_id, :answer_text, :count)");
-                    foreach ($answer_array as $answer_text => $count) {
-                        $stmt->bindParam(':question_id', $question_id);
-                        $stmt->bindParam(':answer_text', $answer_text);
-                        $stmt->bindParam(':count', $count);
-                        if (!$stmt->execute()) {
-                            throw new Exception("Failed to insert answer: $answer_text");
+                    // Insert each answer into the answers table if the question type is 0
+
+                    if ($question['type'] == 0) {
+                        $stmt = $conn->prepare("INSERT INTO answers (question_id, answer_text, count) VALUES (:question_id, :answer_text, :count)");
+                        foreach ($answer_array as $answer_text => $count) {
+                            $stmt->bindParam(':question_id', $question_id);
+                            $stmt->bindParam(':answer_text', $answer_text);
+                            $stmt->bindParam(':count', $count);
+                            if (!$stmt->execute()) {
+                                throw new Exception("Failed to insert answer: $answer_text");
+                            }
                         }
                     }
+                    else if ($question['type'] == 1) {
+                        // only update the count of the answers
+                        $stmt = $conn->prepare("UPDATE answers SET count = :count WHERE question_id = :question_id AND answer_text = :answer_text");
+                        foreach ($answer_array as $answer_text => $count) {
+                            $stmt->bindParam(':question_id', $question_id);
+                            $stmt->bindParam(':answer_text', $answer_text);
+                            $stmt->bindParam(':count', $count);
+                            if (!$stmt->execute()) {
+                                throw new Exception("Failed to update answer: $answer_text");
+                            }
+                        }
+                        
+                    }
+                    else {
+                        throw new Exception("Invalid question type");
+                    }                    
 
                     // set question to closed
                     $stmt = $conn->prepare("UPDATE questions SET closed = NOW(), note = :note WHERE question_id = :question_id");
@@ -415,25 +434,90 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
                     if (!$stmt->execute()) {
                         throw new Exception("Failed to close the question");
                     }
+                    
+                    $conn->commit();
+                    response(["message" => "Answers added successfully"], 201);
+                } catch (Exception $e) {
+                    $conn->rollBack();
+                    response(["error" => $e->getMessage()], 500);
+                }
+            }
+            else if($endpoint1== "/open"){
+                // GET question with answers and create new question
 
-                    //get the template_question_id
-                    $stmt = $conn->prepare("SELECT template_question_id FROM questions WHERE question_id = :question_id");
-                    $stmt->bindParam(':question_id', $question_id);
+                if (empty($endpoint2) || !is_numeric($endpoint2)) {
+                    response(["error" => "Missing or invalid template_question_id"], 400);
+                    exit;
+                }
+            
+                $user = verify_token($conn);
+                if (!$user) {
+                    exit;  // Stop further execution if the token is invalid
+                }
+
+                $template_question_id = $endpoint2;
+
+                try{
+                    $conn->beginTransaction();
+                    
+                    // get the question_id which isn't opened
+                    $stmt = $conn->prepare("SELECT question_id FROM questions WHERE template_question_id = :template_question_id AND closed IS NULL");
+                    $stmt->bindParam(':template_question_id', $template_question_id);
                     $stmt->execute();
-                    $template_question_id = $stmt->fetch(PDO::FETCH_COLUMN);
+                    $question_id = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                    // echo $template_question_id;
+                    if (!$question_id) {
+                        throw new Exception("No question found");
+                    }
 
-                    // // insert new question
+                    if (count($question_id) >1 ) {
+                        throw new Exception("Multiple not closed questions found");
+                    }
+
+                    //check if in question template is only type 
+                    $stmt = $conn->prepare("SELECT type FROM template_questions WHERE template_question_id = :template_question_id");
+                    $stmt->bindParam(':template_question_id', $template_question_id);
+                    $stmt->execute();
+                    $type = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                    if (!$type) {
+                        throw new Exception("Template question not found");
+                    }
+
+                    if ($type['type'] == 1) {
+                         // get the answers from the question
+                        $stmt = $conn->prepare("SELECT answer_id, answer_text FROM answers WHERE question_id = :question_id");
+                        $stmt->bindParam(':question_id', $question_id['question_id']);
+                        $stmt->execute();
+                        $answers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    }
+                    else{
+                        $answers = null;
+                    }
+
+                    // insert new question
                     $stmt = $conn->prepare("INSERT INTO questions (template_question_id) VALUES (:template_question_id)");
                     $stmt->bindParam(':template_question_id', $template_question_id);
                     if (!$stmt->execute()) {
                         throw new Exception("Failed to create question");
                     }
-
                     
+                    $new_question_id = $conn->lastInsertId();
+
+                    // insert answers if type is 1
+                    if ($type['type'] == 1) {
+                        $stmt = $conn->prepare("INSERT INTO answers (question_id, answer_text) VALUES (:question_id, :answer_text)");
+                        $stmt->bindParam(':question_id', $new_question_id);
+                        foreach ($answers as $answer) {
+                            $stmt->bindParam(':answer_text', $answer['answer_text']);
+                            if (!$stmt->execute()) {
+                                throw new Exception("Failed to insert answer");
+                            }
+                        }
+                    }
+
                     $conn->commit();
-                    response(["message" => "Answers added successfully"], 201);
+                    response(["message" => "Question opened successfully", "question_id" => $question_id, "answers" => $answers], 200);
                 } catch (Exception $e) {
                     $conn->rollBack();
                     response(["error" => $e->getMessage()], 500);
