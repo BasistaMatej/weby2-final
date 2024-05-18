@@ -1,11 +1,8 @@
 <template>
     <div class="card">
         <h1 class="text-center">Aká farba je tvoja oblúbená ?</h1>
-        <div class="flex flex-column gap-3">
-            <div class="box-line" v-for="ansver of ansvers" :key="ansver.id">
-                <Checkbox v-model="selectedAnsvers" name="ansver" :value="ansver.name" />
-                <label :for="ansver.id">{{ ansver.name }}</label>
-            </div>
+        <div id="box-input" class="flex flex-column gap-3">
+            <InputText v-model="selectedAnsvers" placeholder="Odpoveď" name="ansver" />
         </div>
         <Button @click="submitAnsver" type="submit" label="submit">Potvrdiť <lord-icon
                 src="https://cdn.lordicon.com/oqdmuxru.json" trigger="hover" colors="primary:#ffffff"
@@ -17,25 +14,20 @@
 
 <script setup>
 import { ref, watch } from "vue";
-import Checkbox from 'primevue/checkbox';
+import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 
-const toast = useToast();
-const ansvers = ref([
-    { name: "Zelena", id: "1" },
-    { name: "Biela", id: "2" },
-    { name: "Cierna", id: "3" }
-]);
-const selectedAnsvers = ref([]);
 
+const selectedAnsvers = ref(null);
+const toast = useToast();
 //NOT 100% implemented -> Treba na dobry ENDPOINT
 const submitAnsver = async () => {
     try {
         //const response = auth_fetch();//TODO
         //console.log('Answers submitted successfully');
-        selectedAnsvers.value = [];
+        selectedAnsvers.value = null;
         showSuccess();
     } catch (error) {
         showError(error);
@@ -58,6 +50,18 @@ const showError = (errorMessage) => {
 </script>
 
 <style scoped>
+#box-input {
+    width: 100%;
+}
+
+input {
+    margin-bottom: 1.5rem;
+    margin-top: 1.5rem;
+    width: 60%;
+    margin-right: 20%;
+    margin-left: 20%;
+}
+
 button {
     border-radius: 1rem;
     margin-bottom: 1.5rem;
@@ -65,10 +69,6 @@ button {
 
 h1 {
     margin-top: 1.5rem;
-}
-
-label {
-    font-size: 1.5rem;
 }
 
 .p-checkbox {
@@ -82,16 +82,5 @@ label {
     display: flex;
     align-items: center;
     border-radius: 2rem;
-}
-
-.box-line:last-child {
-    margin-bottom: 2rem;
-}
-
-#question-box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
 }
 </style>
