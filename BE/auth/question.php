@@ -148,6 +148,58 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
             }
 
         }
+        else if ($endpoint1 == "/export_questions"){
+            // GET every question template with question with answers ans with subject name
+        
+            $user = verify_token($conn);
+            if (!$user) {
+                exit;  // Stop further execution if the token is invalid
+            }
+            
+            try {
+                $conn->beginTransaction();
+        
+                // Check if the user has higher privilege
+                if ($user['auth_level'] != 2) {
+                    throw new Exception("Unauthorized to export questions");
+                }
+        
+                // get all questions
+                $stmt = $conn->prepare("SELECT tq.template_question_id, tq.template_question_text, tq.active, tq.type, tq.code, tq.created, s.subject_name, q.question_id, q.closed, q.note FROM template_questions tq JOIN subjects s ON tq.subject_id = s.subject_id JOIN questions q ON tq.template_question_id = q.template_question_id");
+                $stmt->execute();
+                $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+                if (!$questions) {
+                    throw new Exception("No questions found");
+                }
+        
+                // get all answers for each question
+                foreach ($questions as $key => $question) {
+                    $stmt = $conn->prepare("SELECT a.question_id, a.answer_text, a.count FROM answers a WHERE a.question_id = :question_id");
+                    $stmt->bindParam(':question_id', $question['question_id']);
+                    $stmt->execute();
+                    $answers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+                    // Add the answers to the question
+                    $questions[$key]['answers'] = $answers;
+                }
+        
+                $conn->commit();
+        
+                // Convert data to JSON
+                $json_data = json_encode($questions);
+        
+                // Set headers to force download
+                header('Content-Type: application/json');
+                header('Content-Disposition: attachment; filename="exported_questions.json"');
+                echo $json_data;
+                
+            } catch (Exception $e) {
+                $conn->rollBack();
+                header('HTTP/1.1 500 Internal Server Error');
+                echo json_encode(["error" => $e->getMessage()]);
+            }
+        }
         else{
             response(["error" => "Invalid endpoint"], 405);
         }
@@ -526,7 +578,7 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
             else {
                 response(["error" => "Invalid endpoint"], 405);
             }
-            break;
+        break;
         
 
 
