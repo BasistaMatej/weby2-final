@@ -5,16 +5,17 @@
     <AuthNavBar />
     <div id="history-box" class="mt-5">
         <!-- <h1>History ID: {{ template_question_id }}</h1> -->
-        <h1>Štatistika</h1>
+        <h1 class="mt-3">Štatistika</h1>
         <h2>História</h2>
-        <div v-if="template_question_type == 1">
-            <p>Toto je s odpovedami</p>
+        <div v-if="template_question_type == 0">
+            <p>Toto je otvorené odpovede</p>
             <canvas id="my-chart"></canvas>
         </div>
 
-        <div v-else class="card flex justify-content-center">
-            <h2>Otvorené odpovede</h2>
-            <Listbox v-model="answers" :options="openAnswers" optionLabel="name" class="w-full md:w-14rem" />
+        <div v-else>
+            <p>Tu by som potreboval Datum abo daco</p>
+            <canvas v-for="(question, index) in answerData" :key="question.question_id"
+                :id="'my-chart-' + index"></canvas>
         </div>
     </div>
 
@@ -41,8 +42,84 @@ let chart = null;
 
 
 const initialGetFetch = async () => {
-    return (await auth_fetch(`/question/answers/${template_question_id.value}`));
+    return (await auth_fetch(`/question/question_history/${template_question_id.value}`));
 }
+
+const createChart = (ctx, chartLabels, chartData) => {
+
+
+    chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: chartLabels,
+            datasets: [
+                {
+                    label: chartLabels,
+                    data: chartData,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                },
+            ],
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                },
+            },
+            interaction: {
+                mode: 'point',
+                intersect: true,
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            return 'count: ' + tooltipItem.parsed.y;
+                        }
+                    }
+                }
+            }
+        },
+    });
+};
+
+const renderCharts = async () => {
+    await nextTick();
+
+    if (template_question_type.value == 0) {
+        const ctx = document.getElementById('my-chart');
+        if (ctx) {
+            let chartLabels = [];
+            let chartData = [];
+            answerData.value.forEach(item => {
+                item.answers.forEach(answer => {
+                    chartLabels.push(answer.answer_text);
+                    chartData.push(answer.count);
+                });
+            });
+            createChart(ctx, chartLabels, chartData);
+        }
+    } else {
+        answerData.value.forEach((item, index) => {
+            const ctx = document.getElementById('my-chart-' + index);
+            if (ctx) {
+                let chartLabels = [];
+                let chartData = [];
+                item.answers.forEach(answer => {
+                    chartLabels.push(answer.answer_text);
+                    chartData.push(answer.count);
+                });
+                createChart(ctx, chartLabels, chartData);
+            }
+        });
+    }
+};
+
+
+
+
 onMounted(async () => {
     template_question_id.value = route.params.id;
     template_question_type.value = route.params.type;
@@ -52,42 +129,11 @@ onMounted(async () => {
         const data = await response.json();
     } else {
         const data = await response.json();
-        answerData.value = data.answers;
+        answerData.value = data.questions;
         console.log(answerData.value);
 
         await nextTick();
-        const ctx = document.getElementById('my-chart');
-        openAnswers.value = answerData.value.map(item => item.answer_text);
-        if (ctx) {
-            console.log("ctx");
-            const chartLabels = answerData.value.map(item => item.answer_text);
-            const chartData = answerData.value.map(item => item.count);
-
-            chart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: chartLabels,
-                    datasets: [{
-                        label: chartLabels,
-                        data: chartData,
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    },
-                    interaction: {
-                        mode: 'point',
-                        intersect: true
-                    },
-                }
-            });
-        }
+        renderCharts();
     }
 });
 </script>
@@ -101,5 +147,9 @@ onMounted(async () => {
     margin: 0 auto;
     background: white;
     border-radius: 1rem;
+}
+
+canvas {
+    margin-bottom: 1.5rem;
 }
 </style>
