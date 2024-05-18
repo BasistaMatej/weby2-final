@@ -1,26 +1,135 @@
 openapi: 3.0.0
 info:
-  title: User Management API
-  description: This API handles user verification, registration, authentication, and other user-related actions.
-  version: "1.0.0"
+  title: API Services for Questions and Templates
+  description: Provides endpoints for managing questions, templates, and their associated answers.
+  version: "1.0"
+
 servers:
-  - url: http://localhost/api
+  - url: 'https://node17.webte.fei.stuba.sk/'
+
 paths:
-  /verify:
+ 
+
+  paths:
+  /user:
     get:
-      summary: Verify user's email token
       tags:
-        - Verification
-      parameters:
-        - name: token
-          in: query
-          required: true
-          description: JWT token to verify user's email
-          schema:
-            type: string
+        - User
+      summary: Retrieves a list of all users (Admin only)
       responses:
         '200':
-          description: Account successfully verified
+          description: A list of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '403':
+          description: Unauthorized access if not admin
+        '500':
+          description: Database error
+          
+  /profile:
+    get:
+      tags:
+        - User
+      summary: Retrieves the profile of the currently logged-in user
+      responses:
+        '200':
+          description: User data retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '204':
+          description: User not found
+        '403':
+          description: Unauthorized access if token is invalid
+        '500':
+          description: Database error
+
+  /export_questions:
+    get:
+      tags:
+        - User
+      summary: Exports all question templates with their related questions and answers
+      responses:
+        '200':
+          description: Questions and their details exported successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QuestionDetail'
+        '403':
+          description: Unauthorized access if not admin
+        '500':
+          description: Error fetching data or no questions found
+
+  /user/{user_id}:
+    put:
+      tags:
+        - User
+      summary: Updates a specific user by ID
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: integer
+          description: The user's ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+      responses:
+        '200':
+          description: User updated successfully
+        '204':
+          description: User not found
+        '403':
+          description: Unauthorized action or unable to change admin
+        '500':
+          description: Server error
+
+    delete:
+      tags:
+        - User
+      summary: Deletes a specific user by ID
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: integer
+          description: The user's ID
+      responses:
+        '200':
+          description: User deleted successfully
+        '204':
+          description: User not found
+        '400':
+          description: Cannot delete self or admin
+        '403':
+          description: Unauthorized access
+        '500':
+          description: Server error
+
+  
+  
+  /verify:
+    get:
+      tags:
+      - Registration
+      summary: Verify a user's account using a token.
+      description: This endpoint is used to verify a user's account by updating their status in the database.
+      responses:
+        '200':
+          description: Account verified successfully.
           content:
             application/json:
               schema:
@@ -28,57 +137,48 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: Account verified
+                    description: Confirmation message indicating successful verification.
         '400':
-          description: Missing token in request
+          description: Token is invalid or missing.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Missing data
-        '401':
-          description: Invalid or expired token provided
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Invalid token
+                $ref: '#/components/schemas/Error'
+  
   /register:
     post:
-      summary: Register a new user and send a verification email
       tags:
-        - Registration
+      - Registration
+      summary: Register a new user and send a verification email.
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              properties:
-                email:
-                  type: string
-                  format: email
-                password:
-                  type: string
-                  format: password
-                name:
-                  type: string
-                surname:
-                  type: string
               required:
                 - email
                 - password
                 - name
                 - surname
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: Email of the user.
+                password:
+                  type: string
+                  format: password
+                  description: Password for the account.
+                name:
+                  type: string
+                  description: First name of the user.
+                surname:
+                  type: string
+                  description: Last name of the user.
       responses:
         '201':
-          description: User registered successfully, verification email sent
+          description: User registered successfully and verification email sent.
           content:
             application/json:
               schema:
@@ -86,48 +186,132 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: User registered successfully
+                    description: Confirmation message.
         '400':
-          description: Validation error for input data or email already exists
+          description: Missing or invalid input fields.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Missing required fields or validation error
+                $ref: '#/components/schemas/Error'
         '500':
-          description: Server error during user registration
+          description: Server error during account creation.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Error while creating the account.
-  /login:
+                $ref: '#/components/schemas/Error'
+
+
+  /request-reset:
     post:
-      summary: Authenticate a user
       tags:
-        - Authentication
+      - Change password
+      summary: Request a password reset link.
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
+              required:
+                - email
               properties:
                 email:
                   type: string
                   format: email
+                  description: Email address of the user requesting password reset.
+      responses:
+        '200':
+          description: Password reset email sent successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Confirmation message.
+        '400':
+          description: Missing required fields such as email.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Account blocked or not verified.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '204':
+          description: Email not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '405':
+          description: Invalid method or endpoint.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  
+  /reset-password:
+    post:
+      tags:
+      - Change password
+      summary: Reset the password using the token provided via email.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - password
+              properties:
                 password:
                   type: string
                   format: password
+                  description: New password to set for the user.
       responses:
         '200':
-          description: Authentication successful, access tokens returned
+          description: Password updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Confirmation message.
+        '400':
+          description: Missing new password.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Password not updated due to server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '405':
+          description: Invalid endpoint.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+
+  /generate_token:
+    get:
+      tags:
+      - Token
+      summary: Generates a new JWT access token for authenticated users
+      responses:
+        '200':
+          description: Successfully generated a new access token
           content:
             application/json:
               schema:
@@ -135,33 +319,578 @@ paths:
                 properties:
                   accessToken:
                     type: string
-                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-                  refreshToken:
-                    type: string
-                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                    description: The newly generated JWT access token
         '401':
-          description: Invalid credentials or account issues
+          description: Unauthorized - Invalid token or user session
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Invalid credentials or account not verified
-  /curl:
+                $ref: '#/components/schemas/Error'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /login:
     post:
-      summary: Endpoint to test with cURL
       tags:
-        - Test
+      - Login
+      summary: Authenticates a user and provides JWT access and refresh tokens.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User's email
+                password:
+                  type: string
+                  format: password
+                  description: User's password
       responses:
         '200':
-          description: Test endpoint reached successfully
+          description: Authentication successful, tokens provided.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  skuska:
+                  accessToken:
                     type: string
-                    example: Podarilo sa
+                    description: JWT access token valid for 10 minutes.
+                  refreshToken:
+                    type: string
+                    description: JWT refresh token valid for 1 day.
+                  auth_level:
+                    type: integer
+                    description: Authorization level of the user.
+        '400':
+          description: Missing required fields.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: Invalid credentials or account issues like not verified or blocked.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '405':
+          description: Method Not Allowed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+
+
+  /subject:
+    get:
+      tags:
+        - Subject
+      summary: Retrieves all subjects
+      responses:
+        '200':
+          description: List of all subjects
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  subjects:
+                    type: array
+                    items:
+                      type: string
+        '204':
+          description: No subjects found
+        '500':
+          description: Database error occurred
+
+    post:
+      tags:
+        - Subject
+      summary: Adds a new subject
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                subject_name:
+                  type: string
+      responses:
+        '200':
+          description: Subject added successfully
+        '400':
+          description: Missing subject_name or subject already exists
+        '500':
+          description: Failed to add subject
+
+    put:
+      tags:
+        - Subject
+      summary: Updates an existing subject's name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                old_subject_name:
+                  type: string
+                new_subject_name:
+                  type: string
+      responses:
+        '200':
+          description: Subject updated successfully
+        '204':
+          description: Subject not found
+        '400':
+          description: Missing required fields or new subject name already exists
+        '500':
+          description: Failed to update subject
+
+    delete:
+      tags:
+        - Subject
+      summary: Deletes an existing subject
+      parameters:
+        - in: query
+          name: subject_name
+          required: true
+          schema:
+            type: string
+          description: Name of the subject to delete
+      responses:
+        '200':
+          description: Subject deleted successfully
+        '204':
+          description: Subject not found
+        '400':
+          description: Subject is used in questions, cannot delete
+        '500':
+          description: Failed to delete subject
+
+
+  /question:
+    get:
+      tags:
+        - Question
+      summary: Retrieve all questions based on user authentication level
+      responses:
+        '200':
+          description: List of questions returned successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Question'
+        '204':
+          description: No questions found.
+        '500':
+          description: Server error processing request.
+
+  /question/answers/{template_question_id}:
+    get:
+      tags:
+        - Question
+      summary: Fetch answers for a specified template question that are not closed
+      parameters:
+        - in: path
+          name: template_question_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Answers retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Answer'
+        '204':
+          description: No answers found.
+        '400':
+          description: Missing or incorrect template question ID.
+
+
+
+  /question/export_questions:
+    get:
+      tags:
+        - Question
+      summary: Export all questions with their answers and related details
+      responses:
+        '200':
+          description: Data exported successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExportQuestion'
+                
+
+  /question/question_history/{template_question_id}:
+    get:
+      tags:
+        - Question
+      summary: Retrieve history of questions for a specified template
+      parameters:
+        - in: path
+          name: template_question_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Question history retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QuestionHistory'
+    delete:
+      tags:
+        - Question
+      summary: Delete history of questions for a specified template
+      parameters:
+        - in: path
+          name: template_question_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Question history deleted successfully.
+        '400':
+          description: Missing question ID.
+        '500':
+          description: Server error during deletion.
+
+  /question/template_question/{template_question_id}:
+    delete:
+      tags:
+        - Question
+      summary: Delete a specific template question
+      parameters:
+        - in: path
+          name: template_question_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Template question deleted successfully.
+        '400':
+          description: Missing template question ID.
+        '500':
+          description: Server error deleting the template.
+
+  /question/:
+    post:
+      tags:
+        - Question
+      summary: Create a new question template with specified details
+      responses:
+        '201':
+          description: Question template created successfully.
+        '400':
+          description: Missing required fields or invalid data provided.
+        '500':
+          description: Server error during creation.
+
+  /question/template_copy/{template_question_id}:
+    post:
+      tags:
+        - Question
+      summary: Copy a question template to a new one
+      parameters:
+        - in: path
+          name: template_question_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Question template copied successfully.
+        '500':
+          description: Server error or unauthorized operation.
+
+  /question/answers/{question_id}:
+    post:
+      tags:
+        - Question
+      summary: Submit or update answers for a specified question
+      parameters:
+        - in: path
+          name: question_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: Answers submitted or updated successfully.
+        '400':
+          description: Missing required fields or invalid data.
+        '500':
+          description: Server error processing answers.
+
+  /question/open/{template_question_id}:
+    post:
+      tags:
+        - Question
+      summary: Open a question that is currently not closed
+      parameters:
+        - in: path
+          name: template_question_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Question opened successfully.
+        '400':
+          description: Missing or invalid template question ID.
+        '500':
+          description: Server error opening the question.
+
+  /question/set_active/{template_question_id}:
+    put:
+      tags:
+        - Question
+      summary: Set the active status for a question template
+      parameters:
+        - in: path
+          name: template_question_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Active status updated successfully.
+        '400':
+          description: Missing template question ID or active status.
+        '500':
+          description: Failed to update active status.
+
+  /question/template/{template_question_id}:
+    put:
+      tags:
+        - Question
+      summary: Update a question template details
+      parameters:
+        - in: path
+          name: template_question_id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Template question updated successfully.
+        '400':
+          description: Missing required fields or invalid template question ID.
+        '500':
+          description: Server error during update.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+components:
+  schemas:
+    Question:
+      type: object
+      properties:
+        template_question_id:
+          type: integer
+        template_question_text:
+          type: string
+        created:
+          type: string
+          format: date-time
+        type:
+          type: integer
+        code:
+          type: string
+        active:
+          type: boolean
+        subject_name:
+          type: string
+
+    User:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          description: The unique identifier for the user
+        name:
+          type: string
+          description: The user's first name
+        surname:
+          type: string
+          description: The user's last name
+        email:
+          type: string
+          description: The user's email address
+        auth_level:
+          type: integer
+          description: The user's authorization level
+        valid:
+          type: boolean
+          description: Whether the user is active or not
+        last_login:
+          type: string
+          format: date-time
+          description: The timestamp of the user's last login
+
+    UserUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The user's first name
+        surname:
+          type: string
+          description: The user's last name
+        email:
+          type: string
+          description: The user's email address
+        password:
+          type: string
+          description: The user's new password, if changing
+        auth_level:
+          type: integer
+          description: The user's new authorization level, if changing
+        valid:
+          type: boolean
+          description: Whether the user is active or not
+        last_login:
+          type: string
+          format: date-time
+          description: The timestamp of the user's last login
+
+    QuestionDetail:
+      type: object
+      properties:
+        template_question_id:
+          type: integer
+        template_question_text:
+          type: string
+        active:
+          type: boolean
+        type:
+          type: integer
+        code:
+          type: string
+        created:
+          type: string
+          format: date-time
+        subject_name:
+          type: string
+        question_id:
+          type: integer
+        closed:
+          type: string
+          format: date-time
+        note:
+          type: string
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Answer'
+
+    Answer:
+      type: object
+      properties:
+        answer_id:
+          type: integer
+        answer_text:
+          type: string
+        count:
+          type: integer
+
+    QuestionHistory:
+      type: object
+      properties:
+        question_id:
+          type: integer
+        closed:
+          type: string
+          format: date-time
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Answer'
+
+    ExportQuestion:
+      type: object
+      properties:
+        template_question_id:
+          type: integer
+        template_question_text:
+          type: string
+        active:
+          type: boolean
+        type:
+          type: integer
+        code:
+          type: string
+        created:
+          type: string
+        subject_name:
+          type: string
+        question_id:
+          type: integer
+        closed:
+          type: string
+        note:
+          type: string
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Answer'
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message describing the issue encountered.
+
+
