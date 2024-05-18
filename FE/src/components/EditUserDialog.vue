@@ -68,7 +68,8 @@ const props = defineProps(['title', 'name', 'surname', 'email', 'id', 'status', 
 
 const statuses = ref([
   { name: 'Blocked', id: -1 },
-  { name: 'Basic', id: 1 }
+  { name: 'Basic', id: 1 },
+  { name: 'Admin', id: 2 }
 
 ]);
 
@@ -76,10 +77,12 @@ const setStatuses = (lang_id) => {
   if (lang_id === "en") {
     statuses.value[0].name = 'Blocked';
     statuses.value[1].name = 'Basic';
+    statuses.value[1].name = 'Admin';
 
   } else  {
     statuses.value[0].name = 'Blokovaný';
     statuses.value[1].name = 'Normálny';
+    statuses.value[2].name = 'Administrátor';
 
   }
 }
