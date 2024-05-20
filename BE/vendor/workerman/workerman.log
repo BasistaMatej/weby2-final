@@ -538,6 +538,9 @@ Stack trace:
 #8 /var/www/html/wsserver.php(228): Workerman\Worker::runAll()
 #9 {main}
 2024-05-20 13:47:19 pid:9 worker[none:27] exit with status 64000
+2024-05-20 15:55:06 pid:7 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-20 16:04:48 pid:7 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-20 16:35:35 pid:7 Workerman[./wsserver.php] start in DAEMON mode
 2024-05-20 13:49:17 pid:28 Error: Call to a member function prepare() on null in /var/www/html/wsserver.php:54
 Stack trace:
 #0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{\n  "type": "qu...')
@@ -869,3 +872,16 @@ Stack trace:
 2024-05-20 15:55:23 pid:6 Workerman[./wsserver.php] start in DAEMON mode
 2024-05-20 15:59:27 pid:7 Workerman[./wsserver.php] start in DAEMON mode
 2024-05-20 16:03:38 pid:7 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-20 16:48:03 pid:6 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-20 17:32:53 pid:10 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:24
+Stack trace:
+#0 /var/www/html/wsserver.php(117): Room->addPlayer(Object(Workerman\Connection\TcpConnection), Array)
+#1 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initPl...')
+#2 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #35)
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(560): Workerman\Worker::forkWorkers()
+#7 /var/www/html/wsserver.php(207): Workerman\Worker::runAll()
+#8 {main}
+2024-05-20 17:32:53 pid:8 worker[none:10] exit with status 64000

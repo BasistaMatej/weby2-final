@@ -32,7 +32,7 @@
                 <div id="button-box" class="d-flex">
                     <span class="fw-bold btn-login text-center" @click="lostPassword">{{ $t('forgotten_password')
                         }}</span>
-                    <Button @click="submitForm" type="submit" label="Registrácia"> {{ $t('login') }} <lord-icon
+                    <Button @click="submitForm($t('lang_id'))" type="submit" label="Registrácia"> {{ $t('login') }} <lord-icon
                             v-if="!isLoading" src="https://cdn.lordicon.com/oqdmuxru.json" trigger="hover"
                             colors="primary:#ffffff" style="width:2em;height:2em;margin-left:1em;">
                         </lord-icon><lord-icon v-else src="https://cdn.lordicon.com/lqxfrxad.json" trigger="loop"
@@ -52,7 +52,7 @@
 
                 <div id="button-box" class="d-flex">
 
-                    <Button @click="submitFormPassword" type="submit" label="Registrácia">{{ $t('submit') }} <lord-icon
+                    <Button @click="submitFormPassword($t('lang_id'))" type="submit" label="Registrácia">{{ $t('submit') }} <lord-icon
                             v-if="!isLoading" src="https://cdn.lordicon.com/oqdmuxru.json" trigger="hover"
                             colors="primary:#ffffff" style="width:2em;height:2em;margin-left:1em;">
                         </lord-icon><lord-icon v-else src="https://cdn.lordicon.com/lqxfrxad.json" trigger="loop"
@@ -144,7 +144,9 @@ const checkPasswords = () => {
 
 
 //WORK-IN-PROGRESS => ZMENA HESLA
-const submitFormPassword = async () => {
+const submitFormPassword = async (lang) => {
+  console.log(lang);
+
     isLoading.value = true;
     if (isEmailValid.value == true) {
         const response = await fetch('http://localhost:5151/change-password/request-reset', {
@@ -158,16 +160,16 @@ const submitFormPassword = async () => {
         if (!response.ok) {
             isLoading.value = false;
             const data = await response.json();
-            showError(data.error);
+            showError(data.error, lang);
         } else {
             isEmailFormSubmitted.value = true;
-            showSuccess();
+            showSuccess(lang);
         }
     }
     isLoading.value = false;
 }
 
-const submitForm = async () => {
+const submitForm = async (lang) => {
     isLoading.value = true;
     if (isEmailValid.value == true && isValidPassword.value == true) {
         const response = await fetch('http://localhost:5151/login', {
@@ -181,7 +183,7 @@ const submitForm = async () => {
         if (!response.ok) {
             isLoading.value = false;
             const data = await response.json();
-            showError(data.error);
+            showError(data.error, lang);
         } else {
             const data = await response.json();
             setLocalStorage('accessToken', data.accessToken);
@@ -196,12 +198,20 @@ const submitForm = async () => {
     isLoading.value = false;
 }
 
-const showSuccess = (successMessage) => {
+const showSuccess = (successMessage, lang) => {
+  if(lang === 'sk') {
+    toast.add({ severity: 'success', summary: 'Úspech', detail: "Operácia prebehla úspešne", life: 5000 });
+  } else {
     toast.add({ severity: 'success', summary: 'Success', detail: successMessage, life: 5000 });
+  }
 };
 
-const showError = (errorMessage) => {
-    toast.add({ severity: 'error', summary: 'Error Message', detail: errorMessage, life: 3000 });
+const showError = (errorMessage, lang) => {
+    if(lang === 'sk') {
+      toast.add({ severity: 'error', summary: 'Chybové hlásenie', detail: "Neplatné prihlasovacie údaje.", life: 3000 });
+    } else {
+      toast.add({ severity: 'error', summary: 'Error Message', detail: errorMessage, life: 3000 });
+    }
 };
 
 //NEROZUMIEM PRECO NEZOBRAZI TOAST SO SPRAVOU :(
@@ -215,7 +225,7 @@ onMounted(() => {
     const message = getLocalStorage("toast");
 
     if (message) {
-        showSuccess(message);
+        showSuccess(message, "sk");
         removeLocalStorage("toast");
     }
 });

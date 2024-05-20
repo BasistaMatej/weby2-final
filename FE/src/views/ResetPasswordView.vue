@@ -26,7 +26,7 @@
                         :placeholder="$t('confirm_password')" toggleMask />
                 </InputGroup>
 
-                <Button @click="submitForm" type="submit" label="Registrácia">{{ $t('change_password') }}<lord-icon
+                <Button @click="submitForm($t('lang_id'))" type="submit" label="Registrácia">{{ $t('change_password') }}<lord-icon
                         v-if="!isLoading" src="https://cdn.lordicon.com/oqdmuxru.json" trigger="hover"
                         colors="primary:#ffffff" style="width:2em;height:2em;margin-left:1em;">
                     </lord-icon><lord-icon v-else src="https://cdn.lordicon.com/lqxfrxad.json" trigger="loop"
@@ -43,7 +43,7 @@
                 <h1 class="roboto-black text-center"> {{ $t('change_password_success') }}</h1>
                 <p class="text-center">
                     {{ $t('success_email_validation') }}
-                    <router-link to="/login" class="router-link">Log in</router-link>
+                    <router-link to="/login" class="router-link">{{ $t('login') }}</router-link>
                 </p>
             </div>
         </div>
@@ -88,11 +88,15 @@ const checkPasswords = () => {
     }
 }
 
-const showError = (errorMessage) => {
+const showError = (errorMessage, lang) => {
+  if(lang === 'sk') {
+    toast.add({ severity: 'error', summary: 'Chybové hlásenie', detail: "Niečo sa pokazilo.", life: 3000 });
+  } else {
     toast.add({ severity: 'error', summary: 'Error Message', detail: errorMessage, life: 3000 });
+  }
 };
 
-const submitForm = async () => {
+const submitForm = async (lang) => {
     isLoading.value = true;
     if (passwordsMatch.value == true) {
         const response = await fetch('http://localhost:5151/change-password/reset-password', {
@@ -109,7 +113,7 @@ const submitForm = async () => {
             isLoading.value = false;
             const data = await response.json();
             console.log(data.error);
-            showError(data.error);
+            showError(data.error, lang);
         } else {
             password.value = null;
             confirmPassword.value = null;

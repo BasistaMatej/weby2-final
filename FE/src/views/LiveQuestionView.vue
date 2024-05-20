@@ -2,7 +2,7 @@
 <template>
   <div class="container">
     <Card v-if="errorText !== ''" class="text-center">
-      <template #title>Chyba</template>
+      <template #title>{{$t('error')}}</template>
       <template #content>
           <h2 class="my-4">
             {{ errorText }}
