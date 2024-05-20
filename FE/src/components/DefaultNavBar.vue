@@ -2,10 +2,19 @@
   <div class="w-100">
     <div class="container">
       <nav v-if="!isMobile" class="d-flex justify-content-end p-2">
+        <div class="d-flex justify-content-between w-100">
+          <div class="py-1">
+            <router-link to="/auth">
+              <img src="/favicon-128.png" style="max-height: 3em">
+            </router-link>
+          </div>
+          <div>
         <span class="fw-bold btn-login" v-on:click="$router.push('/login')">{{ $t('login') }}</span>
         <Button class="ml-5" @click="registrationShow" >{{ $t('registration') }}</Button>
         <Button class="ml-5 btn-manual" @click="$router.push('/manual')" outlined  >{{ $t('user_manual') }}</Button>
         <dropdown :options="$i18n.availableLocales" v-model="$i18n.locale" optionKey="locale" class="dropdown" />
+        </div>
+      </div>
       </nav>
 
 
@@ -17,6 +26,9 @@
             <span></span>☰</button>
           <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
+              <li class="nav-item">
+                <Router-link class="nav-link" to="/">{{ $t('home') }}</Router-link>
+              </li>
               <li class="nav-item">
                 <Router-link class="nav-link" to="/login">{{ $t('login') }}</Router-link>
               </li>

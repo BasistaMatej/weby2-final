@@ -2,9 +2,18 @@
   <div class="w-100">
     <div class="container">
       <nav v-if="!isMobile" class="d-flex justify-content-end p-2">
-        <span class="fw-bold btn-login" v-on:click="$router.push('/profile')">{{ $t('profile') }}</span>
-        <Button class="ml-5" @click="registrationShow($t('lang_id'))">{{ $t('logout') }}</Button>
-        <Dropdown :options="$i18n.availableLocales" v-model="$i18n.locale" optionKey="locale" class="dropdown" />
+        <div class="d-flex justify-content-between w-100">
+          <div class="py-1">
+            <router-link to="/auth">
+              <img src="/favicon-128.png" style="max-height: 3em">
+            </router-link>
+          </div>
+          <div>
+            <span class="fw-bold btn-login" v-on:click="$router.push('/profile')">{{ $t('profile') }}</span>
+            <Button class="ml-5" @click="registrationShow($t('lang_id'))">{{ $t('logout') }}</Button>
+            <Dropdown :options="$i18n.availableLocales" v-model="$i18n.locale" optionKey="locale" class="dropdown" />
+          </div>
+        </div>
       </nav>
 
       <nav v-else class="navbar navbar-expand-lg bg-body-tertiary w-100" id="mainNav">
@@ -15,6 +24,9 @@
             <span></span>☰</button>
           <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
+              <li class="nav-item">
+                <Router-link class="nav-link" to="/auth">{{ $t('home') }}</Router-link>
+              </li>
               <li class="nav-item">
                 <Router-link class="nav-link" to="/profile">{{ $t('profile') }}</Router-link>
               </li>
