@@ -79,6 +79,7 @@
   "add": "Add",
   "confirm": "Confirm",
   "answer": "Answer",
+  "error": "Error",
 
   "instructions_for_non_logged_in_user": "Instructions for a non-logged-in user",
   "up_instructions_for_non_logged_in_user": "INSTRUCTIONS FOR A NON-LOGGED-IN USER",

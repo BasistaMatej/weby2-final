@@ -1,5 +1,5 @@
 <template>
-  <Dialog v-model:visible="visible" modal header="Pridať predmet" :style="{ width: '25rem' }">
+  <Dialog v-model:visible="visible" modal :header="$t('add_subject')":style="{ width: '25rem' }">
     <div class="d-flex flex-column">
       <div class="flex align-items-center gap-3 mb-2">
         <label for="question" class="font-semibold w-6rem" style="min-width:15%">{{ $t('title') }}</label>
@@ -87,10 +87,19 @@ const saveSubject = async (lang) => {
   const res = await auth_fetch('/subject', 'POST', {subject_name: subjectText.value});
   if (!res.ok) {
     const data = await res.json();
-    toast.add({ severity: 'error', summary: 'Error', detail: data.error, life: 3000 });
+    if (lang === 'sk') {
+      toast.add({ severity: 'error', summary: 'Error', detail: 'Vyskytla sa chyba.', life: 3000 });
+    } else if (lang === 'en') {
+      toast.add({ severity: 'error', summary: 'Error', detail: data.error, life: 3000 });
+    }
+
     return;
   } else {
-    toast.add({ severity: 'success', summary: 'Success', detail: 'Subject saved', life: 3000 });
+    if (lang === 'sk') {
+      toast.add({ severity: 'success', summary: 'Úspech', detail: 'Predmet uložený', life: 3000 });
+    } else if (lang === 'en') {
+      toast.add({ severity: 'success', summary: 'Success', detail: 'Subject saved', life: 3000 });
+    }
     visible.value = false;
   }
 };

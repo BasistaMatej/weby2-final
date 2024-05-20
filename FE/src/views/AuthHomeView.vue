@@ -225,14 +225,18 @@ const formatDate = (value) => {
 
 const showSuccess = (lang) => {
   if (lang === 'sk') {
-    toast.add({ severity: 'success', summary: 'Success', detail: "Operácia vykonaná úspešne!", life: 5000 });
+    toast.add({ severity: 'success', summary: 'Úspech', detail: "Operácia vykonaná úspešne!", life: 5000 });
   } else if (lang === 'en') {
     toast.add({ severity: 'success', summary: 'Success', detail: "Operation done successfully!", life: 5000 });
   }
 };
 
-const showError = (errorMessage) => {
-  toast.add({ severity: 'error', summary: 'Error Message', detail: errorMessage, life: 3000 });
+const showError = (errorMessage, lang) => {
+  if(lang === 'sk') {
+    toast.add({ severity: 'error', summary: 'Chybové hlásenie', detail: "Niečo sa pokazilo.", life: 3000 });
+  } else {
+    toast.add({ severity: 'error', summary: 'Error Message', detail: errorMessage, life: 3000 });
+  }
 };
 
 const addNewSubject = () => {
@@ -265,7 +269,7 @@ const deleteItem = async (row, lang) => {
 
   if (!response.ok) {
     const data = await response.json();
-    showError(data.error);
+    showError(data.error, lang);
   } else {
     const response = await initialGetFetch();
     showSuccess(lang);
@@ -283,7 +287,7 @@ const activateItem = async (row, lang) => {
 
   if (!response.ok) {
     const data = await response.json();
-    showError(data.error);
+    showError(data.error, lang);
   } else {
     const response = await initialGetFetch();
     showSuccess(lang);
@@ -308,7 +312,7 @@ const copyItem = async (row, lang) => {
 
   if (!response.ok) {
     const data = await response.json();
-    showError(data.error);
+    showError(data.error, lang);
     return;
   } else {
     const response = await initialGetFetch();
@@ -327,7 +331,7 @@ const closeItem = async (row, lang) => {
 
   if (!response.ok) {
     const data = await response.json();
-    showError(data.error);
+    showError(data.error, lang);
     return;
   } else {
     // Close room ws

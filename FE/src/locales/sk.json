@@ -36,7 +36,7 @@
   "lang": "Jazyky",
   "math": "Matematika",
   "history": "História",
-  "error_msg": "Error Message",
+  "error_msg": "Chybové hlásenie",
   "success_msg": "Operácia prebehla úspešne",
   "success_email_validation": "Teraz sa môžete prihlásiť a užiť si zodpovedanie na všetky super otázky a ankety!",
   "error_email_validation": "Váš e-mail sa bohužiaľ nepodarilo overiť. Skúste to prosím neskôr.",
@@ -79,6 +79,7 @@
   "add": "Pridať",
   "confirm": "Potvrdiť",
   "answer": "Odpoveď",
+  "error": "Chyba",
 
   "instructions_for_non_logged_in_user": "Návod pre neprihláseného používateľa",
   "up_instructions_for_non_logged_in_user": "NÁVOD PRE NEPRIHLÁSENÉHO POUŽÍVATEĽA",

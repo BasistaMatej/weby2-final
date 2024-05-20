@@ -60,11 +60,11 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
               exit;
             }
 
-            $user = verify_token($conn);
+            /*$user = verify_token($conn);
             if (!$user) {
                 // The response is already handled within the function
                 exit;  // Stop further execution if the token is invalid
-            }
+            }*/
     
             $stmt = $conn->prepare("
             SELECT a.*
@@ -199,8 +199,22 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
                 header('HTTP/1.1 500 Internal Server Error');
                 echo json_encode(["error" => $e->getMessage()]);
             }
-        }
-        else{
+        } else if($endpoint1 == '/code') {
+          $code = $endpoint2;
+
+          // select from db via code
+          $stmt = $conn->prepare("SELECT active, type, template_question_text, template_question_id FROM template_questions WHERE  code = :code");
+          $stmt->bindParam(':code', $code);
+          $stmt->execute();
+          $question = $stmt->fetch(PDO::FETCH_ASSOC);
+
+          if (!$question) {
+              response(['error' => 'Question not found'], 404);
+          } else {
+              response(['question' => $question], 200);
+          }
+
+        } else{
             response(["error" => "Invalid endpoint"], 405);
         }
       break;

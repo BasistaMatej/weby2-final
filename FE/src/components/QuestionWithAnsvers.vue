@@ -1,58 +1,79 @@
 <template>
-    <div class="card">
-        <h1 class="text-center">Aká farba je tvoja oblúbená ?</h1>
-        <div class="flex flex-column gap-3">
-            <div class="box-line" v-for="ansver of ansvers" :key="ansver.id">
-                <Checkbox v-model="selectedAnsvers" name="ansver" :value="ansver.name" />
-                <label :for="ansver.id">{{ ansver.name }}</label>
-            </div>
-        </div>
-        <Button @click="submitAnsver" type="submit" label="submit">{{ $t('confirm') }} <lord-icon
-                src="https://cdn.lordicon.com/oqdmuxru.json" trigger="hover" colors="primary:#ffffff"
-                style="width:2em;height:2em;margin-left:1em;">
-            </lord-icon></Button>
+  <div>
+      <div class="card">
+          <h1 class="text-center">{{ questionText }}</h1>
+          <div class="flex flex-column gap-3">
+              <div class="box-line" v-for="ansver of ansvers" :key="ansver.answer_id">
+                  <RadioButton v-model="selectedAnsvers" name="ansver" :value="ansver.answer_text"  />
+                  <label :for="ansver.answer_id">{{ ansver.answer_text }}</label>
+              </div>
+          </div>
+          <Button @click="submitAnsver($t('lang_id'))" type="submit" label="submit">{{ $t('confirm') }} <lord-icon
+                  src="https://cdn.lordicon.com/oqdmuxru.json" trigger="hover" colors="primary:#ffffff"
+                  style="width:2em;height:2em;margin-left:1em;">
+              </lord-icon></Button>
+      </div>
+      <Toast />
     </div>
-    <Toast />
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
-import Checkbox from 'primevue/checkbox';
+import { ref, watch, onMounted } from "vue";
 import Button from 'primevue/button';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
+import RadioButton from 'primevue/radiobutton';
 
 const toast = useToast();
-const ansvers = ref([
-    { name: "Zelena", id: "1" },
-    { name: "Biela", id: "2" },
-    { name: "Cierna", id: "3" }
-]);
+const questionText = ref('');
+const props = defineProps(['question', 'answers']);
+const emits = defineEmits(['button-clicked']);
+const ansvers = ref([]);
 const selectedAnsvers = ref([]);
 
-//NOT 100% implemented -> Treba na dobry ENDPOINT
-const submitAnsver = async () => {
-    try {
-        //const response = auth_fetch();//TODO
-        //console.log('Answers submitted successfully');
-        selectedAnsvers.value = [];
-        showSuccess();
-    } catch (error) {
-        showError(error);
-        //console.error('Error submitting answers:', error);
+onMounted(() => {
+  questionText.value = props.question;
+  ansvers.value = props.answers;
+});
+
+watch(
+  () => props.question,
+  () => {
+    questionText.value = props.question;
+  }
+);
+
+watch(
+  () => props.answers,
+  () => {
+    ansvers.value = props.answers;
+  }
+);
+
+const submitAnsver = async (lang) => {
+  if (selectedAnsvers.value) {
+    emits('button-clicked', selectedAnsvers.value);
+    showSuccess(lang);
+  } else {
+    if (lang === 'sk') {
+      showError("Vyberte aspoň jednu možnosť!");
+    } else if (lang === 'en') {
+      showError("Select at least one option!");
     }
+  }
 }
 
-watch([selectedAnsvers], () => {
-    console.log(selectedAnsvers.value); //ZAKOMENTOVAT
-})
 
-const showSuccess = () => {
-    toast.add({ severity: 'success', summary: 'Success', detail: "Odpoveď bola zaznamenaná!", life: 5000 });
+const showSuccess = (lang) => {
+  if (lang === 'sk') {
+    toast.add({ severity: 'success', summary: 'Úspech', detail: "Odpoveď bola zaznamenaná!", life: 5000 });
+  } else if (lang === 'en') {
+    toast.add({ severity: 'success', summary: 'Success', detail: "The answer has been recorded!", life: 5000 });
+  }
 };
 
 const showError = (errorMessage) => {
-    toast.add({ severity: 'error', summary: 'Error Message', detail: errorMessage, life: 3000 });
+    toast.add({ severity: 'error', summary: 'Error ', detail: errorMessage, life: 3000 });
 };
 
 </script>
