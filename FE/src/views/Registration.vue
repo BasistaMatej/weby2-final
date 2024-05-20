@@ -51,7 +51,7 @@
                     <Password v-model="confirmPassword" @click="checkPasswords" :invalid="!passwordsMatch"
                         :placeholder="$t('confirm_password')" toggleMask />
                 </InputGroup>
-                <Button @click="submitForm" type="submit" label="Registrácia">{{ $t('register') }} <lord-icon
+                <Button @click="submitForm($t('lang_id'))" type="submit" label="Registrácia">{{ $t('register') }} <lord-icon
                         v-if="!isLoading" src="https://cdn.lordicon.com/oqdmuxru.json" trigger="hover"
                         colors="primary:#ffffff" style="width:2em;height:2em;margin-left:1em;">
                     </lord-icon><lord-icon v-else src="https://cdn.lordicon.com/lqxfrxad.json" trigger="loop"
@@ -152,15 +152,23 @@ watch(surname, () => {
     validateSurname();
 })
 
-const showSuccess = (successMessage) => {
+const showSuccess = (successMessage, lang) => {
+  if(lang === 'sk') {
+    toast.add({ severity: 'success', summary: 'Úspech', detail: "Registrácia prebehla úspešne", life: 5000 });
+  } else {
     toast.add({ severity: 'success', summary: 'Success', detail: successMessage, life: 5000 });
+  }
 };
 
-const showError = (errorMessage) => {
+const showError = (errorMessage, lang) => {
+  if(lang === 'sk') {
+    toast.add({ severity: 'error', summary: 'Chybové hlásenie', detail: "Niečo sa pokazilo.", life: 3000 });
+  } else {
     toast.add({ severity: 'error', summary: 'Error Message', detail: errorMessage, life: 3000 });
+  }
 };
 
-const submitForm = async () => {
+const submitForm = async (lang) => {
     isLoading.value = true;
     if (isEmailValid.value == true && isNameValid.value == true && isSurnameValid.value == true && passwordsMatch.value == true) {
         const response = await fetch('http://localhost:5151/registration', {
@@ -176,7 +184,7 @@ const submitForm = async () => {
         if (!response.ok) {
             isLoading.value = false;
             const data = await response.json();
-            showError(data.error);
+            showError(data.error, lang);
         } else {
             name.value = null;
             surname.value = null;
@@ -185,7 +193,7 @@ const submitForm = async () => {
             confirmPassword.value = null;
             isFormSubmitted.value = true;
             const data = await response.json();
-            showSuccess(data.message);
+            showSuccess(data.message, lang);
         }
     }
     isLoading.value = false;

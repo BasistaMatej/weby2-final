@@ -8,7 +8,7 @@
                   <label :for="ansver.answer_id">{{ ansver.answer_text }}</label>
               </div>
           </div>
-          <Button @click="submitAnsver" type="submit" label="submit">{{ $t('confirm') }} <lord-icon
+          <Button @click="submitAnsver($t('lang_id'))" type="submit" label="submit">{{ $t('confirm') }} <lord-icon
                   src="https://cdn.lordicon.com/oqdmuxru.json" trigger="hover" colors="primary:#ffffff"
                   style="width:2em;height:2em;margin-left:1em;">
               </lord-icon></Button>
@@ -50,22 +50,30 @@ watch(
   }
 );
 
-const submitAnsver = async () => {
+const submitAnsver = async (lang) => {
   if (selectedAnsvers.value) {
     emits('button-clicked', selectedAnsvers.value);
-    showSuccess();
+    showSuccess(lang);
   } else {
-    showError("Vyberte aspoň jednu možnosť!");
+    if (lang === 'sk') {
+      showError("Vyberte aspoň jednu možnosť!");
+    } else if (lang === 'en') {
+      showError("Select at least one option!");
+    }
   }
 }
 
 
-const showSuccess = () => {
-    toast.add({ severity: 'success', summary: 'Success', detail: "Odpoveď bola zaznamenaná!", life: 5000 });
+const showSuccess = (lang) => {
+  if (lang === 'sk') {
+    toast.add({ severity: 'success', summary: 'Úspech', detail: "Odpoveď bola zaznamenaná!", life: 5000 });
+  } else if (lang === 'en') {
+    toast.add({ severity: 'success', summary: 'Success', detail: "The answer has been recorded!", life: 5000 });
+  }
 };
 
 const showError = (errorMessage) => {
-    toast.add({ severity: 'error', summary: 'Error Message', detail: errorMessage, life: 3000 });
+    toast.add({ severity: 'error', summary: 'Error ', detail: errorMessage, life: 3000 });
 };
 
 </script>
