@@ -16,12 +16,13 @@
         //Server settings
         $mail = new PHPMailer(true);
         $mail->isSMTP();
-        $mail->Host       = 'mailproxy.nameserver.sk';
+        $mail->Host       = 'mail.webglobe.sk';
         $mail->SMTPAuth   = true;
         $mail->Username   = 'webyfinalne@basista.sk';
         $mail->Password   = 'fHg4g2rV';
-        $mail->Port       = 25;
-
+        $mail->Port       = 465;
+        $mail->SMTPSecure = 'ssl';
+        
         //Recipients
         $mail->setFrom('webyfinalne@basista.sk', 'Classroom Interact');
         $mail->addAddress($email);
