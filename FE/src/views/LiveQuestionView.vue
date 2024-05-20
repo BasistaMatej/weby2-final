@@ -1,6 +1,6 @@
 
 <template>
-  <div class="container">
+  <div class="container mt-5">
     <Card v-if="errorText !== ''" class="text-center">
       <template #title>Chyba</template>
       <template #content>
@@ -30,11 +30,14 @@
           <h1 class="text-center">Odpovede</h1>
           <div class="flex flex-column gap-3">
             <div class="box-line my-1" v-for="answer in allAnswers" :key="answer.answer_id">
-              <div class="flex flex-row gap-3 px-2 py-1" :style="'background: var(--primary-color); width: '+answer.count/maxAns*100+'%; border-radius: 1em'">
+              <div class="flex flex-row gap-3 px-2 py-1" :style="'background: '+((myAnswer == answer.answer_id) ? '#D0BDFB' : 'var(--primary-color)')+'; width: '+answer.count/maxAns*100+'%; border-radius: 1em'">
                 <h2 style="color: #444">{{ answer.answer_id }}</h2>
                 <h5 style="color: #444">{{ answer.count }}</h5>
               </div>
             </div>
+          </div>
+          <div class="mt-5">
+            <h6 style="background: #D0BDFB; border-radius: 1em" class="p-3 d-inline-block">Tvoja odpoved</h6>
           </div>
         </div>
       </div>
@@ -97,6 +100,7 @@ socket.onmessage = async (event) => {
       }
       break;
     case 'RESPONSE: initPlayer':
+      console.log(data);
       myAnswer.value = data.my_answer;
       let updatedAllAnswers = [];
 
