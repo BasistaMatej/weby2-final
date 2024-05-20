@@ -3,41 +3,54 @@
     <AuthNavBar />
     <div class="container">
       <div class="px-md-5">
-        <div>
-          <div class="d-inline-block" v-if="authLevel == 2">
-            <router-link to="/users" class="d-flex flex-columns align-items-center align-content-center p-2 table-link"
-              style="background: #8B5CF6AA">
-              <lord-icon src="https://cdn.lordicon.com/bjbmvfnr.json" trigger="hover" stroke="bold"
-                style="width:2em;height:2em" colors="primary:#121331,secondary:#d0bdfb">
-              </lord-icon>
-              <span>{{ $t('users') }}</span>
-            </router-link>
-          </div>
-          <div class="d-inline-block mx-2">
-            <div @click="editQuestion(null, null, null, null, null, $t('lang_id'))"
-              class="d-flex flex-columns align-items-center align-content-center p-2 table-link">
-              <lord-icon src="https://cdn.lordicon.com/zrkkrrpl.json" trigger="hover" stroke="bold"
-                style="width:2em;height:2em" colors="primary:#121331,secondary:#8b5cf6">
-              </lord-icon>
-              <span>{{ $t('create_question') }}</span>
+        <div class="d-flex justify-content-between">
+          <div>
+            <div class="d-inline-block" v-if="authLevel == 2">
+              <router-link to="/users" class="d-flex flex-columns align-items-center align-content-center p-2 table-link"
+                style="background: #8B5CF6AA">
+                <lord-icon src="https://cdn.lordicon.com/bjbmvfnr.json" trigger="hover" stroke="bold"
+                  style="width:2em;height:2em" colors="primary:#121331,secondary:#d0bdfb">
+                </lord-icon>
+                <span>{{ $t('users') }}</span>
+              </router-link>
+            </div>
+            <div class="d-inline-block mx-2">
+              <div @click="editQuestion(null, null, null, null, null, $t('lang_id'))"
+                class="d-flex flex-columns align-items-center align-content-center p-2 table-link">
+                <lord-icon src="https://cdn.lordicon.com/zrkkrrpl.json" trigger="hover" stroke="bold"
+                  style="width:2em;height:2em" colors="primary:#121331,secondary:#8b5cf6">
+                </lord-icon>
+                <span>{{ $t('create_question') }}</span>
+              </div>
+            </div>
+            <div class="d-inline-block" v-if="authLevel == 1">
+              <div @click="addNewSubject"
+                class="d-flex flex-columns align-items-center align-content-center p-2 table-link">
+                <lord-icon src="https://cdn.lordicon.com/zrkkrrpl.json" trigger="hover" stroke="bold"
+                  style="width:2em;height:2em" colors="primary:#121331,secondary:#8b5cf6">
+                </lord-icon>
+                <span>{{ $t('add_subject') }}</span>
+              </div>
+            </div>
+            <div class="d-inline-block" v-if="authLevel == 2">
+              <div @click="editSubjectDialog = true"
+                class="d-flex flex-columns align-items-center align-content-center p-2 table-link">
+                <lord-icon src="https://cdn.lordicon.com/wuvorxbv.json" state="hover-line" trigger="hover" stroke="bold"
+                  style="width:2em;height:2em" colors="primary:#121331,secondary:#8b5cf6">
+                </lord-icon>
+                <span>{{ $t('edit_subject') }}</span>
+              </div>
             </div>
           </div>
-          <div class="d-inline-block" v-if="authLevel == 1">
-            <div @click="addNewSubject"
-              class="d-flex flex-columns align-items-center align-content-center p-2 table-link">
-              <lord-icon src="https://cdn.lordicon.com/zrkkrrpl.json" trigger="hover" stroke="bold"
-                style="width:2em;height:2em" colors="primary:#121331,secondary:#8b5cf6">
-              </lord-icon>
-              <span>{{ $t('add_subject') }}</span>
-            </div>
-          </div>
-          <div class="d-inline-block" v-if="authLevel == 2">
-            <div @click="editSubjectDialog = true"
-              class="d-flex flex-columns align-items-center align-content-center p-2 table-link">
-              <lord-icon src="https://cdn.lordicon.com/wuvorxbv.json" state="hover-line" trigger="hover" stroke="bold"
-                style="width:2em;height:2em" colors="primary:#121331,secondary:#8b5cf6">
-              </lord-icon>
-              <span>{{ $t('edit_subject') }}</span>
+          <div>
+            <div class="d-inline-block">
+              <div @click="exporData"
+                class="d-flex flex-columns align-items-center align-content-center p-2 table-link">
+                <lord-icon src="https://cdn.lordicon.com/wzwygmng.json" state="hover-line" trigger="hover" stroke="bold"
+                  style="width:2em;height:2em" colors="primary:#121331,secondary:#8b5cf6">
+                </lord-icon>
+                <span>{{ $t('export_data') }}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -223,7 +236,24 @@ const formatDate = (value) => {
   });
 };
 
+const exporData = async () => {
+  const data = await auth_fetch('/question/export_questions');
+
+  if (!data.ok) {
+    showError(data.error, lang_id);
+  } else {
+
+    const blob = await data.blob();
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = 'ClassroomInteract_Export'
+    link.click()
+    URL.revokeObjectURL(link.href)
+  }
+}
+
 const showSuccess = (lang) => {
+  console.log(lang);
   if (lang === 'sk') {
     toast.add({ severity: 'success', summary: 'Úspech', detail: "Operácia vykonaná úspešne!", life: 5000 });
   } else if (lang === 'en') {

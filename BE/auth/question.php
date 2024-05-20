@@ -160,7 +160,7 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
                 $conn->beginTransaction();
         
                 // Check if the user has higher privilege
-                if ($user['auth_level'] != 2) {
+                if ($user['auth_level'] < 1) {
                     throw new Exception("Unauthorized to export questions");
                 }
         
