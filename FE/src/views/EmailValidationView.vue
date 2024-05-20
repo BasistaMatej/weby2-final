@@ -55,7 +55,7 @@ onMounted(async () => {
     } else {
       isError.value = false;
     }
-    dataText.value = data.message;
+    dataText.value = 'Účet overený';
   } catch (error) {
     isError.value = true;
     dataText.value = 'Nepodarilo sa overiť e-mail. Skúste to prosím neskôr.';
