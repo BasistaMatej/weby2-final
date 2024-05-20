@@ -6,7 +6,7 @@
         <label for="question" class="font-semibold w-6rem" style="min-width:15%">{{ $t('title') }}</label>
         <InputText id="question" class="flex-auto mx-3" autocomplete="off" style="min-width: 65%"
           v-model="subjectText" />
-        <Button type="button"  @click="saveSubject" class="mx-3">{{ $t('add') }}</Button>
+        <Button type="button"  @click="saveSubject($t('lang_id'))" class="mx-3">{{ $t('add') }}</Button>
       </div>
 
       <DataTable class="auth-table" stripedRows paginator :rows="50" :rowsPerPageOptions="[50, 100, 200]"
@@ -84,7 +84,7 @@ const editingRowNew = ref('');
 const visible = defineModel();
 
 onMounted(() => {
-  fetchAllSubjects();
+  fetchAllSubjects('sk');
 })
 
 const editItem = (name) => {
@@ -95,7 +95,7 @@ const editItem = (name) => {
 const updateItem = async (lang) => {
   if(editingRowName.value === editingRowNew.value) {
     if (lang === 'sk') {
-      toast.add({ severity: 'warn', summary: 'Warning', detail: 'Neboli vykonané žiadne zmeny', life: 3000 });
+      toast.add({ severity: 'warn', summary: 'Upozornenie', detail: 'Neboli vykonané žiadne zmeny', life: 3000 });
     } else if (lang === 'en') {
       toast.add({ severity: 'warn', summary: 'Warning', detail: 'No changes made', life: 3000 });
     }
@@ -106,20 +106,34 @@ const updateItem = async (lang) => {
   const res = await auth_fetch('/subject', 'PUT', {'old_subject_name': editingRowName.value, 'new_subject_name': editingRowNew.value});
   if (!res.ok) {
     const data = await res.json();
-    toast.add({ severity: 'error', summary: 'Error', detail: data.error, life: 3000 });
+    if (lang === 'sk') {
+      toast.add({ severity: 'error', summary: 'Error', detail: 'Vyskytla sa chyba.', life: 3000 });
+    } else if (lang === 'en') {
+      toast.add({ severity: 'error', summary: 'Error', detail: data.error, life: 3000 });
+    }
+
     return;
   } else {
-    toast.add({ severity: 'success', summary: 'Success', detail: 'Subject updated', life: 3000 });
+
+    if (lang === 'sk') {
+      toast.add({ severity: 'success', summary: 'Úspech', detail: 'Predmet aktualizovaný', life: 3000 });
+    } else if (lang === 'en') {
+      toast.add({ severity: 'success', summary: 'Success', detail: 'Subject updated', life: 3000 });
+    }
     editingRowName.value = '';
-    fetchAllSubjects();
+    fetchAllSubjects(lang);
   }
 }
 
-const fetchAllSubjects = async () => {
+const fetchAllSubjects = async (lang) => {
   const res = await auth_fetch('/subject');
   if (!res.ok) {
     const data = await res.json();
-    toast.add({ severity: 'error', summary: 'Error', detail: data.error, life: 3000 });
+    if (lang === 'sk') {
+      toast.add({ severity: 'error', summary: 'Error', detail: 'Vyskytla sa chyba.', life: 3000 });
+    } else if (lang === 'en') {
+      toast.add({ severity: 'error', summary: 'Error', detail: data.error, life: 3000 });
+    }
     return;
   } else {
     const data = await res.json();
@@ -144,8 +158,8 @@ const deleteItem = async (name, lang) => {
           toast.add({ severity: 'error', summary: 'Error', detail: 'Niekde sa stala chyba', life: 3000 });
           return;
         } else {
-          toast.add({ severity: 'success', summary: 'Success', detail: 'Predmet odstránený', life: 3000 });
-          fetchAllSubjects();
+          toast.add({ severity: 'success', summary: 'Úspech', detail: 'Predmet odstránený', life: 3000 });
+          fetchAllSubjects(lang);
         }
       },
       reject: () => {}
@@ -166,7 +180,7 @@ const deleteItem = async (name, lang) => {
           return;
         } else {
           toast.add({ severity: 'success', summary: 'Success', detail: 'Subject deleted', life: 3000 });
-          fetchAllSubjects();
+          fetchAllSubjects(lang);
         }
       },
       reject: () => {}
@@ -175,20 +189,33 @@ const deleteItem = async (name, lang) => {
 
 }
 
-const saveSubject = async () => {
+const saveSubject = async (lang) => {
   if (subjectText.value === '') {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Please fill in the question text', life: 3000 });
+    if (lang === 'sk') {
+      toast.add({ severity: 'error', summary: 'Error', detail: 'Vyplňte text otázky.', life: 3000 });
+    } else if (lang === 'en') {
+      toast.add({ severity: 'error', summary: 'Error', detail: 'Please fill in the question text', life: 3000 });
+    }
     return;
   }
 
   const res = await auth_fetch('/subject', 'POST', {subject_name: subjectText.value});
   if (!res.ok) {
     const data = await res.json();
-    toast.add({ severity: 'error', summary: 'Error', detail: data.error, life: 3000 });
+    if (lang === 'sk') {
+      toast.add({ severity: 'error', summary: 'Error', detail: 'Vyskytla sa chyba.', life: 3000 });
+    } else if (lang === 'en') {
+      toast.add({ severity: 'error', summary: 'Error', detail: data.error, life: 3000 });
+    }
+
     return;
   } else {
-    toast.add({ severity: 'success', summary: 'Success', detail: 'Subject saved', life: 3000 });
-    fetchAllSubjects();
+    if (lang === 'sk') {
+      toast.add({ severity: 'success', summary: 'Úspech', detail: 'Predmet uložený', life: 3000 });
+    } else if (lang === 'en') {
+      toast.add({ severity: 'success', summary: 'Success', detail: 'Subject saved', life: 3000 });
+    }
+    fetchAllSubjects(lang);
     subjectText.value = '';
   }
 };

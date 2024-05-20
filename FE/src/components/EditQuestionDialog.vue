@@ -194,12 +194,21 @@ const saveQuestion = async () => {
 
     if (!res.ok) {
       const data = await res.json();
-      toast.add({ severity: 'error', summary: 'Error', detail: data.error, life: 3000 });
+      if (lang_id.value === "sk") {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Vyskytla sa chyba.', life: 3000 });
+      } else  {
+        toast.add({ severity: 'error', summary: 'Error', detail: data.error, life: 3000 });
+      }
+
       isSending.value = false;
       return;
     } else {
       const data = await res.json();
-      toast.add({ severity: 'success', summary: 'Success', detail: data.message, life: 3000 });
+      if (lang_id.value === "en") {
+        toast.add({ severity: 'success', summary: 'Success', detail: data.message, life: 3000 });
+      } else  {
+        toast.add({ severity: 'success', summary: 'Úspech', detail: 'Operácia prebehla úspešne', life: 3000 });
+      }
       questionText.value = '';
       selectedCategory.value = null;
       isActive.value = false;
@@ -220,12 +229,20 @@ const saveQuestion = async () => {
 
     if (!res.ok) {
       const data = await res.json();
-      toast.add({ severity: 'error', summary: 'Error', detail: data.error, life: 3000 });
+      if (lang_id.value === "sk") {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Vyskytla sa chyba.', life: 3000 });
+      } else  {
+        toast.add({ severity: 'error', summary: 'Error', detail: data.error, life: 3000 });
+      }
       isSending.value = false;
       return;
     } else {
       const data = await res.json();
-      toast.add({ severity: 'success', summary: 'Success', detail: data.message, life: 3000 });
+      if (lang_id.value === "en") {
+        toast.add({ severity: 'success', summary: 'Success', detail: data.message, life: 3000 });
+      } else  {
+        toast.add({ severity: 'success', summary: 'Úspech', detail: 'Operácia prebehla úspešne', life: 3000 });
+      }
       questionText.value = '';
       selectedCategory.value = null;
       isActive.value = false;
@@ -241,7 +258,11 @@ const fetchAllSubjects = async () => {
   const res = await auth_fetch('/subject');
   if (!res.ok) {
     const data = await res.json();
-    toast.add({ severity: 'error', summary: 'Error', detail: data.error, life: 3000 });
+    if (lang_id.value === "sk") {
+      toast.add({ severity: 'error', summary: 'Error', detail: 'Vyskytla sa chyba.', life: 3000 });
+    } else  {
+      toast.add({ severity: 'error', summary: 'Error', detail: data.error, life: 3000 });
+    }
     return;
   } else {
     const data = await res.json();
@@ -299,7 +320,7 @@ watch(
     options.value.map(option => {
       if (option.value === props.type) {
         type.value = option;
-        if(option.value == 1)
+        if(option.value === 1)
           fetchAnswers();
       }
     });
@@ -320,8 +341,8 @@ const fetchAnswers = async () => {
       answers.value = data.answers;
     } else if(res.status === 204) {
       answers.value = [];
-      if(type.value.value == 1) {
-        if(lang_id.value == "en") {
+      if(type.value.value === 1) {
+        if(lang_id.value === "en") {
           // toast.add({ severity: 'info', summary: 'Information', detail: 'No answers found.', life: 4500 });
         } else {
           // toast.add({ severity: 'info', summary: 'Informácia', detail: 'Nenašli sa žiadne odpovede.', life: 4500 });
