@@ -77,6 +77,47 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
         }
     break;
 
+
+    case "POST":
+
+        $user = verify_token($conn);
+        if (!$user) {
+            // The response is already handled within the function
+            exit;  // Stop further execution if the token is invalid
+        }
+
+        // if the user is not an admin, return 403
+        if ($user['auth_level'] != 2) {
+            response(["error" => "Unauthorized"], 403);
+            exit;
+        }
+
+        $postdata = json_decode(file_get_contents("php://input"), true);
+    
+        // Check if all required fields are set
+        if (!isset($postdata['name']) || !isset($postdata['surname']) || !isset($postdata['email']) || !isset($postdata['password']) || !isset($postdata['status'])) {
+            response(["error" => "Missing required field"], 400);
+            return;
+        }
+    
+        // Prepare and bind
+        $stmt = $conn->prepare("INSERT INTO users (name, surname, email, password, auth_level) VALUES (:name, :surname, :email, :password, :auth_level)");
+        $stmt->bindParam(':name', $postdata['name']);
+        $stmt->bindParam(':surname', $postdata['surname']);
+        $stmt->bindParam(':email', $postdata['email']);
+        $stmt->bindParam(':password', password_hash($postdata['password'], PASSWORD_DEFAULT));
+        $stmt->bindParam(':auth_level', $postdata['status']);
+    
+        // Execute
+        $stmt->execute();
+    
+        if ($stmt->rowCount() === 1) {
+            response(["message" => "User created successfully"], 201);
+        } else {
+            response(["error" => "Failed to create user"], 500);
+        }
+        break;
+    
     case "PUT":
         
         $user = verify_token($conn);
@@ -126,20 +167,20 @@ switch(strtoupper($_SERVER["REQUEST_METHOD"])) {
         $email = isset($postdata['email']) ? $postdata['email'] : $editUser['email'];
         $password = isset($postdata['password']) ? password_hash($postdata['password'], PASSWORD_DEFAULT) : $editUser['password'];
         $auth_level = isset($postdata['auth_level']) ? $postdata['auth_level'] : $editUser['auth_level'];
-        $valid = isset($postdata['valid']) ? $postdata['valid'] : $editUser['valid'];
-        $last_login = isset($postdata['last_login']) ? $postdata['last_login'] : $editUser['last_login'];
+       // $valid = isset($postdata['valid']) ? $postdata['valid'] : $editUser['valid'];
+       // $last_login = isset($postdata['last_login']) ? $postdata['last_login'] : $editUser['last_login'];
 
 
         // update the user with the new data, but not every data need to be updated
-        $stmt = $conn->prepare("UPDATE users SET name = :name, surname = :surname, email = :email, password = :password, auth_level = :auth_level, valid = :valid, last_login = :last_login WHERE user_id = :user_id");
+        $stmt = $conn->prepare("UPDATE users SET name = :name, surname = :surname, email = :email, password = :password, auth_level = :auth_level WHERE user_id = :user_id");
         $stmt->bindParam(':user_id', $user_id);
         $stmt->bindParam(':name', $name);
         $stmt->bindParam(':surname', $surname);
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':password', $password);
         $stmt->bindParam(':auth_level', $auth_level);
-        $stmt->bindParam(':valid', $valid);
-        $stmt->bindParam(':last_login', $last_login);
+        //$stmt->bindParam(':valid', $valid);
+        //$stmt->bindParam(':last_login', $last_login);
         $stmt->execute();
 
         if ($stmt->rowCount() === 1) {

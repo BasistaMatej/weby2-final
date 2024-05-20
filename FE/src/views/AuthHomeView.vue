@@ -46,8 +46,8 @@
         </span>
         <DataTable class="auth-table" stripedRows paginator :rows="50" :rowsPerPageOptions="[50, 100, 200]"
           sortMode="multiple" :value="products" removableSort dataKey="id" selectionMode="single"
-          @rowSelect="(event) => editRow(event, $t('lang_id'))"
-          filterDisplay="menu" v-model:filters="filters" :globalFilterFields="['subject_name', 'created']">
+          @rowSelect="(event) => editRow(event, $t('lang_id'))" filterDisplay="menu" v-model:filters="filters"
+          :globalFilterFields="['subject_name', 'created']">
           <template #empty>
             <div class="d-flex flex-column align-items-center">
               <lord-icon src="https://cdn.lordicon.com/ribxmuoc.json" trigger="loop" delay="700"
@@ -60,18 +60,19 @@
           </template>
           <template #loading> {{ $t('loading') }} </template>
           <Column field="template_question_text" :header="$t('question')"></Column>
-          <Column field="subject_name" :header="$t('subject')"  sortable>
+          <Column field="subject_name" :header="$t('subject')" sortable>
             <template #filter="{ filterModel }">
-              <InputText v-model="filterModel.value" type="text" class="p-column-filter" :placeholder=" $t('search_subject') " />
+              <InputText v-model="filterModel.value" type="text" class="p-column-filter"
+                :placeholder="$t('search_subject')" />
             </template>
           </Column>
-          <Column field="created" :header="$t('created')"  dataType="date" sortable>
+          <Column field="created" :header="$t('created')" dataType="date" sortable>
             <template #filter="{ filterModel }">
               <Calendar v-model="filterModel.value" dateFormat="yy-mm-dd" placeholder="yy-mm-dd" mask="9999-99-99" />
             </template>
           </Column>
 
-          <Column field="code" :header="$t('code')" ></Column>
+          <Column field="code" :header="$t('code')"></Column>
           <Column field="tools" :header="$t('tools')">
             <template #body="slotProps">
               <div class="d-flex">
@@ -86,7 +87,8 @@
                     style="width:25px;height:25px">
                   </lord-icon>
                 </Button>
-                <Button v-if="slotProps.data.active == 0" class="row-buttons" @click="activateItem(slotProps.data, $t('lang_id'))">
+                <Button v-if="slotProps.data.active == 0" class="row-buttons"
+                  @click="activateItem(slotProps.data, $t('lang_id'))">
                   <lord-icon src="https://cdn.lordicon.com/aklfruoc.json" trigger="hover"
                     style="width:25px;height:25px">
                   </lord-icon>
@@ -114,7 +116,7 @@
                   <h1>{{ $t('join_question') }}</h1>
                   <QRCodeVue3 :width="200" :height="200" :value="`http://localhost:5173/${slotProps.data.code}`" />
                   <Button id="button-modal" class="mt-2" @click="isActiveQr = false" style="border-radius: 0.7em">{{
-                    $t('close') }}</Button>
+            $t('close') }}</Button>
                 </div>
               </div>
             </template>
@@ -140,7 +142,7 @@ import EditSubjectDialog from '@/components/EditSubjectDialog.vue';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import EditQuestionDialog from '@/components/EditQuestionDialog.vue';
-import {FilterMatchMode, FilterOperator} from 'primevue/api';
+import { FilterMatchMode, FilterOperator } from 'primevue/api';
 import InputText from 'primevue/inputtext';
 import Calendar from 'primevue/calendar';
 import ColumnGroup from 'primevue/columngroup';
@@ -292,7 +294,7 @@ const activateItem = async (row, lang) => {
       products.value = data.questions;
 
       // Init room ws
-      const message = {'type': 'initRoom', 'roomKey': data.questions.filter(item => item.template_question_id == row.template_question_id)[0].code };
+      const message = { 'type': 'initRoom', 'roomKey': data.questions.filter(item => item.template_question_id == row.template_question_id)[0].code };
       socket.send(JSON.stringify(message));
 
       isActiveQr.value = true;
@@ -330,7 +332,7 @@ const closeItem = async (row, lang) => {
   } else {
     // Close room ws
     console.log(row.code);
-    const message = {'type': 'closeRoom', 'roomKey': row.code };
+    const message = { 'type': 'closeRoom', 'roomKey': row.code };
     console.log(message);
     socket.send(JSON.stringify(message));
 

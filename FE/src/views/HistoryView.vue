@@ -8,14 +8,14 @@
         <h1 class="mt-3">{{ $t('stats') }}</h1>
         <h2>{{ $t('history') }}</h2>
         <div v-if="template_question_type == 0">
-            <p>Toto su otvorené odpovede</p>
             <canvas id="my-chart"></canvas>
         </div>
 
         <div v-else>
-            <p>Tu by som potreboval Datum abo daco</p>
-            <canvas v-for="(question, index) in answerData" :key="question.question_id"
-                :id="'my-chart-' + index"></canvas>
+            <div v-for="(question, index) in answerData" :key="question.question_id">
+                <p>{{ question.closed }}</p>
+                <canvas :id="'my-chart-' + index"></canvas>
+            </div>
         </div>
     </div>
 
