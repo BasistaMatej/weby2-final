@@ -14,6 +14,11 @@ import ConfirmationService from 'primevue/confirmationservice';
 
 const app = createApp(App)
 
+app.config.devtools = false
+app.config.debug = false
+app.config.silent = true
+app.config.warnHandler = (msg, instance, trace) => {}
+
 app.use(PrimeVue);
 app.directive('tooltip', Tooltip);
 app.use(router);
