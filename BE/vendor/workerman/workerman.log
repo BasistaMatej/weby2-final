@@ -931,3 +931,10 @@ Stack trace:
 2024-05-20 20:40:07 pid:7 Workerman[./wsserver.php] start in DAEMON mode
 2024-05-20 20:43:04 pid:7 Workerman[./wsserver.php] start in DAEMON mode
 2024-05-20 20:44:23 pid:6 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-20 20:49:19 pid:6 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-20 20:55:43 pid:7 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-20 20:56:49 pid:7 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-20 20:57:06 pid:6 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-20 20:58:38 pid:7 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-20 21:01:15 pid:7 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-20 21:02:48 pid:6 Workerman[./wsserver.php] start in DAEMON mode

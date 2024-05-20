@@ -112,7 +112,6 @@ const submitForm = async (lang) => {
         if (!response.ok) {
             isLoading.value = false;
             const data = await response.json();
-            console.log(data.error);
             showError(data.error, lang);
         } else {
             password.value = null;

@@ -77,7 +77,6 @@ socket.onopen = () => {
 };
 
 socket.onmessage = async (event) => {
-  //console.log("WebSocket message received:", event.data);
   const data = JSON.parse(event.data);
   switch(data.type) {
     case 'initBE':
@@ -100,7 +99,6 @@ socket.onmessage = async (event) => {
       }
       break;
     case 'RESPONSE: initPlayer':
-      console.log(data);
       myAnswer.value = data.my_answer;
       let updatedAllAnswers = [];
 
@@ -138,9 +136,7 @@ socket.onmessage = async (event) => {
   }
 };
 
-socket.onclose = (event) => {
-  //console.log("WebSocket connection closed:", event.code);
-};
+socket.onclose = (event) => {};
 
 const sendMessage = (type, code, fields) => {
   const data = {'type': type, 'roomKey': code, ...fields};

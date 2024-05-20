@@ -141,12 +141,7 @@ const checkPasswords = () => {
     }
 }
 
-
-
-//WORK-IN-PROGRESS => ZMENA HESLA
 const submitFormPassword = async (lang) => {
-  console.log(lang);
-
     isLoading.value = true;
     if (isEmailValid.value == true) {
         const response = await fetch('http://localhost:5151/change-password/request-reset', {

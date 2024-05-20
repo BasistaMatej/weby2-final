@@ -149,7 +149,6 @@ onMounted(async () => {
     } else {
         const data = await response.json();
         user.value = data.user;
-        console.log(user.value);
     }
 });
 

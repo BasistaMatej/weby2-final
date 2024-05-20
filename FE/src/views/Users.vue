@@ -146,7 +146,6 @@ const deleteRow = (id) => {
   // productsSample.value = productsSample.value.filter(productsSample => productsSample.id !== id);
 }
 const editRow = (event, lang) => {
-  console.log(event.data);
   newUser(event.data.user_id, event.data.name, event.data.surname, event.data.email, event.data.auth_level, event.data.last_login, lang)
 }
 
@@ -155,7 +154,6 @@ const newUser = (id, name, surname, email, status, last_login, lang) => {
     if (lang === 'sk') {
       dialogTitle.value = 'Pridanie nového používateľa';
     } else if (lang === 'en') {
-      console.log(lang);
       dialogTitle.value = 'Add new user';
     }
     dialogId.value = null;
@@ -176,7 +174,6 @@ const newUser = (id, name, surname, email, status, last_login, lang) => {
     dialogSurname.value = surname;
     dialogEmail.value = email;
     dialogStatus.value = status;
-    //console.log(status);
     dialogLast_login.value = last_login;
 
   }
@@ -211,7 +208,6 @@ const getSeverity = (status) => {
 
 watch(showDialog, async () => {
   if (showDialog.value == false) {
-    console.log("JEDIAL");
     const response = await initialGetFetch();
     if (!response.ok) {
       const data = await response.json();

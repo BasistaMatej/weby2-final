@@ -130,7 +130,6 @@ onMounted(async () => {
     } else {
         const data = await response.json();
         answerData.value = data.questions;
-        console.log(answerData.value);
 
         await nextTick();
         renderCharts();

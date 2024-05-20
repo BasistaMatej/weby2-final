@@ -127,7 +127,6 @@ const saveUser = async () => {
       }
     } else {
       try {
-        console.log(id.value);
         const response = await auth_fetch(`/user/${id.value}`, "PUT", { "name": name.value, "surname": surname.value, "password": password.value, "email": email.value, "status": selectedStatus.value.id });
         showSuccess("User created succesfully!");
         name.value = null;
@@ -143,8 +142,6 @@ const saveUser = async () => {
       }
     }
   }
-
-  console.log('Save user');
 }
 
 
@@ -256,8 +253,6 @@ watch(
     if (selectedStatus.value.length > 0) {
       selectedStatus.value = selectedStatus.value[0];
     }
-    console.log(props.status);
-    console.log(selectedStatus.value);
   }
 );
 

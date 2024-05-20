@@ -33,7 +33,7 @@ class Room
     }
 
     public function getAnswers() {
-        return $this->players;
+        return $this->answers;
     }
 
     public function removePlayer(TcpConnection $connection)

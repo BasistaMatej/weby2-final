@@ -185,14 +185,17 @@ const products = ref([]);
 const isActiveRow = ref(0);
 const router = useRouter();
 
+const closingTemplateQuestionId = ref(null);
+
 const socket = new WebSocket('ws://localhost:9999/wss');
 
-socket.onopen = () => {
-  console.log("WebSocket connected");
-};
+socket.onopen = () => {};
 
 socket.onmessage = (event) => {
-  console.log("WebSocket:", event.data);
+  // if(event.data.type == "RESPONSE: closeRoom") {
+  //   auth_fetch('/question/answers/', POST, event.data.all_answers)
+  // }
+  // console.log("WebSocket:", event);
 };
 
 const viewHistory = (row) => {
@@ -253,7 +256,6 @@ const exporData = async () => {
 }
 
 const showSuccess = (lang) => {
-  console.log(lang);
   if (lang === 'sk') {
     toast.add({ severity: 'success', summary: 'Úspech', detail: "Operácia vykonaná úspešne!", life: 5000 });
   } else if (lang === 'en') {
@@ -365,10 +367,9 @@ const closeItem = async (row, lang) => {
     return;
   } else {
     // Close room ws
-    console.log(row.code);
     const message = { 'type': 'closeRoom', 'roomKey': row.code };
-    console.log(message);
     socket.send(JSON.stringify(message));
+    //closingTemplateQuestionId.value 
 
     const response = await initialGetFetch();
     showSuccess(lang);
