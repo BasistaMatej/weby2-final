@@ -4,7 +4,7 @@
       <nav v-if="!isMobile" class="d-flex justify-content-end p-2">
         <div class="d-flex justify-content-between w-100">
           <div class="py-1">
-            <router-link to="/auth">
+            <router-link to="/">
               <img src="/favicon-128.png" style="max-height: 3em">
             </router-link>
           </div>
