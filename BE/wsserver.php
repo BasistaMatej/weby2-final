@@ -3,226 +3,205 @@ use Workerman\Worker;
 use Workerman\Connection\TcpConnection;
 
 require __DIR__ . '/vendor/autoload.php';
-require 'include/db_connect.php';
+
+class Room
+{
+    public $roomKey;
+    public $players = [];
+    public $answers = [];
+
+    public function __construct($roomKey)
+    {
+        $this->roomKey = $roomKey;
+    }
+
+    public function addPlayer(TcpConnection $connection, $answer)
+    {
+        $connection->roomKey = $this->roomKey;
+        $connection->answer = $answer;
+        $this->players[$connection->uuid] = $connection;
+
+        if (isset($this->answers[$answer])) {
+            $this->answers[$answer]++;
+        } else {
+            $this->answers[$answer] = 1;
+        }
+    }
+
+    public function getPlayers() {
+        return $this->players;
+    }
+
+    public function removePlayer(TcpConnection $connection)
+    {
+        unset($this->players[$connection->uuid]);
+    }
+}
 
 $ws_worker = new Worker("websocket://0.0.0.0:9999");
 $ws_worker->count = 1;
 
-$rooms = [];  // Each room will have its own players and answers
+$rooms = []; // Each room will have its own Room object
 
 // CONNECTION
 $ws_worker->onConnect = function (TcpConnection $connection) use ($ws_worker) {
-  // $connection->send(json_encode(["status" => "working"]));
+    $connection->uuid = uniqid();
 
-  // $ws_worker->connections[$connection->player_id] = $connection;
-
-  $connection->uuid = uniqid();
-  
-  // Send initialization data back to the client
-  $dataToSend = [
-    'type' => 'initBE',
-    'uuid' => $connection->uuid,
-    'message' => 'You are connected to the server!'
-  ];
-  $connection->send(json_encode($dataToSend));
-
+    $dataToSend = [
+        'type' => 'initBE',
+        'uuid' => $connection->uuid,
+        'message' => 'You are connected to the server!'
+    ];
+    $connection->send(json_encode($dataToSend));
 };
 
 // MESSAGE
 $ws_worker->onMessage = function (TcpConnection $connection, $data) use ($ws_worker, &$rooms) {
+    $decoded = json_decode($data, true);
 
-  $decoded = json_decode($data, true); //decode the incoming message
-
-  if (!$decoded){
-    $connection->send(json_encode(['error' => 'Invalid message format']));
-    return;
-  }
-  if (!isset($decoded['type']) ) {
-    $connection->send(json_encode(['error' => 'Invalid message format, nessage must contain "type"']));
-    return;
-  }
-
-  switch ($decoded['type']) {
-    case "questionInfo":
-      if (!isset($decoded['roomKey'])) {
-        $connection->send(json_encode(['error' => 'Invalid message format, message must contain "roomKey"']));
+    if (!$decoded) {
+        $connection->send(json_encode(['error' => 'Invalid message format']));
         return;
-      }
+    }
 
-      // select from db
-      $roomKey = $decoded['roomKey'];
-      $stmt = $conn->prepare("SELECT template_question_text FROM questions WHERE code = :code");
-      $stmt->bindParam(':code', $roomKey);
-      $stmt->execute();
-
-      // Check if exists
-      if ($stmt->rowCount() == 0) {
-        $connection->send(json_encode(['error' => 'Question not found']));
+    if (!isset($decoded['type'])) {
+        $connection->send(json_encode(['error' => 'Invalid message format, message must contain "type"']));
         return;
-      }
+    }
 
-      $question = $stmt->fetch(PDO::FETCH_ASSOC);
+    switch ($decoded['type']) {
+        case "initRoom":
+            if (!isset($decoded['roomKey'])) {
+                $connection->send(json_encode(['error' => 'Invalid message format, message must contain "roomKey"']));
+                return;
+            }
 
-      $dataToSend = [
-        'type' => 'RESPONSE: questionInfo',
-        'roomKey' => $roomKey,
-        'question' => $question['template_question_text']
-      ];
-      $connection->send(json_encode($dataToSend));
-      
-      break;
-    case "initRoom":
-      if (!isset($decoded['roomKey'])) {
-        $connection->send(json_encode(['error' => 'Invalid message format, message must contain "roomKey"']));
-        return;
-      }
+            $roomKey = $decoded['roomKey'];
 
-      /*if ($connection->initialised) {
-        $connection->send(json_encode(['error' => 'Admin already initialised']));
-        return;
-      }*/
+            if (isset($rooms[$roomKey])) {
+                $connection->send(json_encode(['error' => 'Room already exists']));
+                return;
+            }
 
-      $roomKey = $decoded['roomKey'];
-      
-      $connection->admin = true;
-      $connection->roomKey = $decoded['roomKey']; //store roomKey in connection
-      $connection->initialised = true;
+            $rooms[$roomKey] = new Room($roomKey);
+            $connection->admin = true;
+            $rooms[$roomKey]->players[$connection->uuid] = $connection;
 
-      // initiate new room 
-      if (!isset($rooms[$roomKey])) {
-        $rooms[$roomKey] = [
-          'connections' => [],
-          'answers' => []
-        ];
-      }
-      
-      else {
-        $connection->send(json_encode(['error' => 'Room already exists']));
-        return;
-      }
+            $dataToSend = [
+                'type' => 'RESPONSE: initRoom',
+                'roomKey' => $roomKey,
+                'message' => 'Room created successfully'
+            ];
+            $connection->send(json_encode($dataToSend));
+            break;
 
-      $rooms[$roomKey]['connections'][$connection->uuid] = $connection;
+        case 'initPlayer':
+            if (!isset($decoded['roomKey'])) {
+                $connection->send(json_encode(['error' => 'Invalid message format, message must contain "roomKey"']));
+                return;
+            }
 
-      $dataToSend = [
-        'type' => 'RESPONSE: initRoom',
-        'roomKey' => $connection->roomKey,
-        'message' => 'Room created successfully'
-      ];
-      $connection->send(json_encode($dataToSend));
-    break;
+            if (!isset($decoded['answer'])) {
+                $connection->send(json_encode(['error' => 'Invalid message format, message must contain "answer"']));
+                return;
+            }
 
-    case 'initPlayer':
-      if (!isset($decoded['roomKey'])) {
-        $connection->send(json_encode(['error' => 'Invalid message format, nessage must contain roomKey']));
-        return;
-      }
-      
-      if (!isset($decoded['answer'])) {
-        $connection->send(json_encode(['error' => 'Invalid message format, nessage must contain answer']));
-        return;
-      }
+            $roomKey = $decoded['roomKey'];
+            $answer = $decoded['answer'];
 
-      if ($connection->initialised) {
-        $connection->send(json_encode(['error' => 'Player already initialised']));
-        return;
-      }
+            if (!isset($rooms[$roomKey])) {
+                $connection->send(json_encode(['error' => 'Room not found']));
+                return;
+            }
 
-      $roomKey = $decoded['roomKey'];
-      $answer = $decoded['answer'];
-      
-      //check if roomkey is valid
-      if (!isset($rooms[$roomKey])) {
-        $connection->send(json_encode(['error' => 'Room not found']));
-        return;
-      }
+            $rooms[$roomKey]->addPlayer($connection, $answer);
 
-      $connection->admin = false;
-      $connection->roomKey = $roomKey; //store roomKey in connection
-      $connection->answer = $answer; //store answer in connection
-      $connection->initialised = true;
-      // Store player information in the room
-      $rooms[$roomKey][$connection->uuid] = $connection;
+            $dataToSend = [
+                'type' => 'RESPONSE: initPlayer',
+                'my_answer' => $answer,
+                'all_answers' => $rooms[$roomKey]->answers,
+                'message' => 'Your answer was added successfully'
+            ];
+            $connection->send(json_encode($dataToSend));
 
-      //store answer in room
-      if (isset($rooms[$roomKey]['answers'][$answer])) {
-        $rooms[$roomKey]['answers'][$answer]++;
-      } else {
-        $rooms[$roomKey]['answers'][$answer] = 1;
-      }
+              // Broadcast the updated answer count to all players in the room
+            $dataToSend = [
+              'type' => 'updateAnswers',
+              'answers' => $connection->answer,
+            ];
 
-      $dataToSend = [
-        'type' => 'RESPONSE: initPlayer',
-        'my_answer' => $connection->answer,
-        'all_answers' => $rooms[$roomKey]['answers'],
-        'message' => 'Your answer was added successfully'
-      ];
-      $connection->send(json_encode($dataToSend));
+            foreach ($rooms[$roomKey]->getPlayers() as $connectionPlayer) {
+              if($connectionPlayer->uuid != $connection->uuid)
+                $connectionPlayer->send(json_encode($dataToSend));
+            }
+            //broadcast($ws_worker, $connection, json_encode($dataToSend), $roomKey);
+            break;
+          case 'closeRoom':
+              //if player is not admin
+              /*if (!$connection->admin) {
+                $connection->send(json_encode(['error' => 'Only admin can close the room']));
+                return;
+              }*/
 
-      // Broadcast the updated answer count to all players in the room
-      $dataToSend = [
-        'type' => 'updateAnswers',
-        'answers' => $connection->answer,
-      ];
-      broadcast($ws_worker, $connection, json_encode($dataToSend));
-      
-
-    break;
-    case 'closeRoom':
-      //if player is not admin
-      /*if (!$connection->admin) {
-        $connection->send(json_encode(['error' => 'Only admin can close the room']));
-        return;
-      }*/
-
-      $roomKey = $connection->roomKey;
-
-      //check if roomkey is valid
-      if (!isset($rooms[$roomKey])) {
-        $connection->send(json_encode(['error' => 'Room not found']));
-        return;
-      }
-
-      $dataToSend = [
-        'type' => 'RESPONSE: closeRoom',
-        'roomKey' => $roomKey,
-        'all_answers' => $rooms[$roomKey]['answers'],
-        'message' => 'Room closed successfully'
-      ];
-      $connection->send(json_encode($dataToSend));
-
-      // Broadcast the room closure to all players in the room
-      $dataToSend = [
-        'type' => 'closeRoom',
-        'roomKey' => $roomKey,
-        'message' => 'Room closed by admin'
-      ];
-      broadcast($ws_worker, $connection, json_encode($dataToSend));
-
-      // Remove the room from the rooms array
-      foreach ($ws_worker->connections as $conn) {
-       
-        $conn->close();
-        unset($rooms[$roomKey][$conn->uuid]);
-      }
-
-      unset($rooms[$roomKey]);
-
-    break;
-    default:
-        $connection->send(json_encode(['error' => 'Unknown message type']));
-        break;
-  }
-
+              if(!isset($decoded['roomKey'])) {
+                $connection->send(json_encode(['error' => 'Invalid message format']));
+                return;
+              }
+        
+              $roomKey = $decoded['roomKey'];
+        
+              //check if roomkey is valid
+              if (!isset($rooms[$roomKey])) {
+                $connection->send(json_encode(['error' => 'Room not found']));
+                return;
+              }
+        
+              $dataToSend = [
+                'type' => 'RESPONSE: closeRoom',
+                'roomKey' => $roomKey,
+           //     'all_answers' => $rooms[$roomKey]['answers'],
+                'message' => 'Room closed successfully'
+              ];
+              $connection->send(json_encode($dataToSend));
+        
+              // Broadcast the room closure to all players in the room
+              $dataToSend = [
+                'type' => 'closeRoom',
+                'roomKey' => $roomKey,
+                'message' => 'Room closed'
+              ];
+              foreach ($rooms[$roomKey]->getPlayers() as $connectionPlayer) {
+                if($connectionPlayer->uuid != $connection->uuid)
+                  $connectionPlayer->send(json_encode($dataToSend));
+              }
+        
+              unset($rooms[$roomKey]);
+              break;
+            default:
+                $connection->send(json_encode(['error' => 'Unknown message type']));
+                break;
+          }
 };
 
-function broadcast($ws_worker, $connection, $data){
-  foreach ($ws_worker->connections as $conn) {
-      if ($connection === null || $conn !== $connection) {
-        if (isset($conn->initialised) && $conn->initialised == true) {
-          $conn->send($data); // Send the data only if the connection is initialised
+// DISCONNECT
+$ws_worker->onClose = function (TcpConnection $connection) use (&$rooms) {
+    if (isset($connection->roomKey)) {
+        $roomKey = $connection->roomKey;
+        if (isset($rooms[$roomKey])) {
+            $rooms[$roomKey]->removePlayer($connection);
         }
-      }
-  }
+    }
+};
+
+function broadcast($ws_worker, $connection, $data, $roomKey)
+{
+    foreach ($ws_worker->connections as $conn) {
+        if ($connection === null || $conn !== $connection) {
+            if (isset($conn->initialised) && $conn->initialised == true && isset($conn->roomKey) && $conn->roomKey === $roomKey) {
+                $conn->send($data); // Odeslat data pouze pokud je připojení inicializováno a má stejný roomKey
+            }
+        }
+    }
 }
 
 Worker::runAll();

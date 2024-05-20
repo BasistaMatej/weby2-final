@@ -22,10 +22,13 @@
     </Card>
     <div v-else>
       <div v-if="!answered">
-        <OpenQuestion question="adskljssa" @button-clicked="handleButtonClick" />
+        <OpenQuestion :question="questtionText" @button-clicked="handleButtonClick" v-if="type == 0" />
+        <QuestionWithAnsvers :question="questtionText" @button-clicked="handleButtonClick" :answers="choiceAnswers" v-else />
       </div>
       <div v-else>
-        ODPOVEDE
+        <div >
+
+        </div>
       </div>
     </div>
     
@@ -38,6 +41,7 @@ import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import Button from 'primevue/button';
 import Card from 'primevue/card';
+import QuestionWithAnsvers from '@/components/QuestionWithAnsvers.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -47,6 +51,10 @@ const started = ref(false);
 const init = ref(false);
 const code = ref(null);
 const answered = ref(false);
+const questtionText = ref('');
+const type = ref(0);
+
+const choiceAnswers = ref([]);
 
 const myAnswer = ref('');
 const allAnswers = ref([]);
@@ -55,26 +63,66 @@ socket.onopen = () => {
   
 };
 
-socket.onmessage = (event) => {
+socket.onmessage = async (event) => {
   console.log("WebSocket message received:", event.data);
   const data = JSON.parse(event.data);
   switch(data.type) {
     case 'initBE':
       started.value = true;
-      sendMessage('questionInfo', code.value);
-      //sendMessage('initPlayer', code.value, {'answer': 'jano'});
+      const res = await fetch('http://localhost:5151/question/code/'+code.value);
+
+      if(res.status != 200) {
+        errorText.value = 'Kód otázky neexistuje';
+        return;
+      }
+
+      const question = (await res.json()).question;
+
+      questtionText.value = question.template_question_text;
+      type.value = question.type;
+      if(type.value == 1) { // with answers
+        const res = await fetch('http://localhost:5151/question/answers/'+question.template_question_id);
+        const answers = (await res.json()).answers;
+        choiceAnswers.value = answers;
+      }
       break;
     case 'RESPONSE: initPlayer':
       myAnswer.value = data.my_answer;
       allAnswers.value = data.all_answers;
       break;
     case 'updateAnswers':
-      allAnswers.value.push(data.answers);
+      if(type.value === 1) {
+        const updatedAllAnswers = { ...allAnswers.value };
+
+        for (const key in allAnswers.value) {
+          if (key === data.answers) {
+            updatedAllAnswers[key] = allAnswers.value[key] + 1;
+          } else {
+            updatedAllAnswers[key] = allAnswers.value[key];
+          }
+        }
+
+        if (!Object.keys(updatedAllAnswers).includes(data.answers)) {
+          updatedAllAnswers[data.answers] = 1;
+        }
+
+        allAnswers.value = updatedAllAnswers;
+        console.log(updatedAllAnswers);
+      }
+      break;
+    case 'closeRoom':
+      if(data.roomKey === code.value) {
+        errorText.value = 'Hlasovanie bolo ukončené';
+      }
       break;
     case 'error':
       errorText.value = data.message;
       break;
   }
+};
+
+socket.onclose = (event) => {
+  console.log("WebSocket connection closed:", event.code);
 };
 
 const sendMessage = (type, code, fields) => {
@@ -83,6 +131,7 @@ const sendMessage = (type, code, fields) => {
 }
 
 const handleButtonClick = (answer) => {
+  sendMessage('initRoom', code.value);
   sendMessage('initPlayer', code.value, {'answer': answer});
   answered.value = true;
 };
