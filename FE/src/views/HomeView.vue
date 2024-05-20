@@ -18,7 +18,7 @@ const router = useRouter();
 const code = ref(null)
 
 watch(code, (newVal) => {
-  if(newVal.length == 5) {
+  if(newVal.length === 5) {
     router.push("/"+newVal);
   }
 })

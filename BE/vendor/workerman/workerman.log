@@ -885,3 +885,45 @@ Stack trace:
 #7 /var/www/html/wsserver.php(207): Workerman\Worker::runAll()
 #8 {main}
 2024-05-20 17:32:53 pid:8 worker[none:10] exit with status 64000
+2024-05-20 18:57:55 pid:14 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:24
+Stack trace:
+#0 /var/www/html/wsserver.php(117): Room->addPlayer(Object(Workerman\Connection\TcpConnection), Array)
+#1 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initPl...')
+#2 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #40)
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#8 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#9 /var/www/html/wsserver.php(207): Workerman\Worker::runAll()
+#10 {main}
+2024-05-20 18:57:55 pid:8 worker[none:14] exit with status 64000
+2024-05-20 19:01:33 pid:15 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:24
+Stack trace:
+#0 /var/www/html/wsserver.php(117): Room->addPlayer(Object(Workerman\Connection\TcpConnection), Array)
+#1 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initPl...')
+#2 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #33)
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#8 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#9 /var/www/html/wsserver.php(207): Workerman\Worker::runAll()
+#10 {main}
+2024-05-20 19:01:33 pid:8 worker[none:15] exit with status 64000
+2024-05-20 19:02:38 pid:16 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:24
+Stack trace:
+#0 /var/www/html/wsserver.php(117): Room->addPlayer(Object(Workerman\Connection\TcpConnection), Array)
+#1 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initPl...')
+#2 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #31)
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#8 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#9 /var/www/html/wsserver.php(207): Workerman\Worker::runAll()
+#10 {main}
+2024-05-20 19:02:38 pid:8 worker[none:16] exit with status 64000

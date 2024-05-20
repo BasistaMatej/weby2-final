@@ -7,8 +7,8 @@
           <h2 class="my-4">
             {{ errorText }}
           </h2>
-          <Button @click="toHome" type="submit" label="submit" style="border-radius: 1em">
-            {{ $t('home') }}
+          <Button @click="toHome" type="submit"  style="border-radius: 1em">
+            {{ $t('submit') }}
             <lord-icon
               src="https://cdn.lordicon.com/laqlvddb.json"
               trigger="hover"
