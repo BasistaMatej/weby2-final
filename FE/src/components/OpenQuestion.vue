@@ -1,6 +1,7 @@
 <template>
+  <div>
     <div class="card">
-        <h1 class="text-center">Aká farba je tvoja oblúbená ?</h1>
+        <h1 class="text-center">{{ questionText }}</h1>
         <div id="box-input" class="flex flex-column gap-3">
             <InputText v-model="selectedAnsvers" :placeholder="$t('answer')" name="ansver" />
         </div>
@@ -10,10 +11,11 @@
             </lord-icon></Button>
     </div>
     <Toast />
+  </div>
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, onMounted, defineEmits } from "vue";
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import Toast from 'primevue/toast';
@@ -22,22 +24,29 @@ import { useToast } from 'primevue/usetoast';
 
 const selectedAnsvers = ref(null);
 const toast = useToast();
-//NOT 100% implemented -> Treba na dobry ENDPOINT
-const submitAnsver = async () => {
-    try {
-        //const response = auth_fetch();//TODO
-        //console.log('Answers submitted successfully');
-        selectedAnsvers.value = null;
-        showSuccess();
-    } catch (error) {
-        showError(error);
-        //console.error('Error submitting answers:', error);
-    }
-}
+const props = defineProps(['question']);
+const emits = defineEmits(['button-clicked']);
+const questionText = ref('');
 
-watch([selectedAnsvers], () => {
-    console.log(selectedAnsvers.value); //ZAKOMENTOVAT
-})
+onMounted(() => {
+  questionText.value = props.question;
+});
+
+watch(
+  () => props.question,
+  () => {
+    questionText.value = props.question;
+  }
+);
+
+const submitAnsver = async () => {
+  if (selectedAnsvers.value) {
+    emits('button-clicked', selectedAnsvers.value);
+    showSuccess();
+  } else {
+    showError("Odpoveď nesmie byť prázdna!");
+  }
+}
 
 const showSuccess = () => {
     toast.add({ severity: 'success', summary: 'Success', detail: "Odpoveď bola zaznamenaná!", life: 5000 });

@@ -34,7 +34,7 @@ export function removeLocalStorage(storageItem) {
 export async function auth_fetch(endpoint, method = "GET", body = null) {
   const bodyContent = body ? {body: JSON.stringify(body)} : null;
 
-  const res = await fetch(`http://node17.webte.fei.stuba.sk:5151${endpoint}`, {
+  const res = await fetch(`http://localhost:5151${endpoint}`, {
       method: method,
       headers: {
         'AUTHORIZATION': 'Bearer ' + getLocalStorage('accessToken')
@@ -43,7 +43,7 @@ export async function auth_fetch(endpoint, method = "GET", body = null) {
   });
 
   if (res.status === 401) {
-    const res = await fetch(`http://node17.webte.fei.stuba.sk:5151/refresh`, {
+    const res = await fetch(`http://localhost:5151/refresh`, {
       method: "GET",
       headers: {
         'AUTHORIZATION': 'Bearer ' + getLocalStorage('refreshToken')
@@ -59,7 +59,7 @@ export async function auth_fetch(endpoint, method = "GET", body = null) {
     } else {
       const data = await res.json();
       setLocalStorage('accessToken', data.accessToken);
-      return await fetch(`http://node17.webte.fei.stuba.sk:5151${endpoint}`, {
+      return await fetch(`http://localhost:5151${endpoint}`, {
           method: method,
           headers: {
             'AUTHORIZATION': 'Bearer ' + getLocalStorage('accessToken')

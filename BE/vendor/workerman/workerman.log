@@ -10,3 +10,531 @@
 2024-05-16 20:16:35 pid:76623 Workerman[./wsserver.php] start in DEBUG mode
 2024-05-16 20:17:08 pid:76623 Workerman[wsserver.php] stopping ...
 2024-05-16 20:17:08 pid:76623 Workerman[wsserver.php] has been stopped
+2024-05-20 10:15:58 pid:7 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-20 11:03:17 pid:11 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:106
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initPl...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #52)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(560): Workerman\Worker::forkWorkers()
+#6 /var/www/html/wsserver.php(200): Workerman\Worker::runAll()
+#7 {main}
+2024-05-20 11:03:17 pid:9 worker[none:11] exit with status 64000
+2024-05-20 11:03:18 pid:14 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:106
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initPl...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #29)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(200): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 11:03:18 pid:9 worker[none:14] exit with status 64000
+2024-05-20 11:04:17 pid:15 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:64
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initRo...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #30)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(200): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 11:04:17 pid:9 worker[none:15] exit with status 64000
+2024-05-20 11:04:19 pid:16 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:64
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initRo...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #31)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(200): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 11:04:19 pid:9 worker[none:16] exit with status 64000
+2024-05-20 11:04:33 pid:17 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:64
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initRo...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #32)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(200): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 11:04:33 pid:9 worker[none:17] exit with status 64000
+2024-05-20 11:04:40 pid:18 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:64
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initRo...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #33)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(200): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 11:04:40 pid:9 worker[none:18] exit with status 64000
+2024-05-20 11:04:48 pid:19 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:64
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initRo...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #34)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(200): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 11:04:48 pid:9 worker[none:19] exit with status 64000
+2024-05-20 11:04:52 pid:20 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:64
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initRo...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #35)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(200): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 11:04:52 pid:9 worker[none:20] exit with status 64000
+2024-05-20 11:05:10 pid:21 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:64
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initRo...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #36)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(200): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 11:05:10 pid:9 worker[none:21] exit with status 64000
+2024-05-20 11:10:53 pid:6 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-20 11:13:36 pid:12 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:64
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initRo...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #31)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(560): Workerman\Worker::forkWorkers()
+#6 /var/www/html/wsserver.php(200): Workerman\Worker::runAll()
+#7 {main}
+2024-05-20 11:13:36 pid:8 worker[none:12] exit with status 64000
+2024-05-20 11:14:41 pid:13 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:64
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initRo...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #33)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(200): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 11:14:41 pid:8 worker[none:13] exit with status 64000
+2024-05-20 11:16:34 pid:14 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:64
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initRo...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #33)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(200): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 11:16:34 pid:8 worker[none:14] exit with status 64000
+2024-05-20 11:18:58 pid:15 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:64
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initRo...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #35)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(200): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 11:18:58 pid:8 worker[none:15] exit with status 64000
+2024-05-20 11:19:19 pid:16 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:64
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initRo...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #32)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(200): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 11:19:19 pid:8 worker[none:16] exit with status 64000
+2024-05-20 11:19:46 pid:17 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:64
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initRo...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #33)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(200): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 11:19:46 pid:8 worker[none:17] exit with status 64000
+2024-05-20 11:20:08 pid:18 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:64
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initRo...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #34)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(200): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 11:20:08 pid:8 worker[none:18] exit with status 64000
+2024-05-20 11:27:34 pid:7 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-20 11:38:48 pid:11 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:64
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initRo...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #50)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(560): Workerman\Worker::forkWorkers()
+#6 /var/www/html/wsserver.php(200): Workerman\Worker::runAll()
+#7 {main}
+2024-05-20 11:38:48 pid:9 worker[none:11] exit with status 64000
+2024-05-20 12:08:51 pid:7 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-20 12:09:46 pid:10 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:106
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initPl...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #31)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(560): Workerman\Worker::forkWorkers()
+#6 /var/www/html/wsserver.php(200): Workerman\Worker::runAll()
+#7 {main}
+2024-05-20 12:09:46 pid:9 worker[none:10] exit with status 64000
+2024-05-20 12:10:03 pid:14 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:106
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initPl...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #29)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(200): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 12:10:03 pid:9 worker[none:14] exit with status 64000
+2024-05-20 12:17:29 pid:15 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:106
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initPl...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #30)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(200): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 12:17:29 pid:9 worker[none:15] exit with status 64000
+2024-05-20 12:19:17 pid:16 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:106
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initPl...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #31)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(200): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 12:19:17 pid:9 worker[none:16] exit with status 64000
+2024-05-20 12:20:23 pid:17 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:106
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initPl...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #32)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(200): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 12:20:23 pid:9 worker[none:17] exit with status 64000
+2024-05-20 12:20:25 pid:18 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:106
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initPl...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #33)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(200): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 12:20:25 pid:9 worker[none:18] exit with status 64000
+2024-05-20 12:20:36 pid:19 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:106
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initPl...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #34)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(200): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 12:20:36 pid:9 worker[none:19] exit with status 64000
+2024-05-20 12:20:47 pid:20 TypeError: Cannot access offset of type array in isset or empty in /var/www/html/wsserver.php:106
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"initPl...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #35)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(200): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 12:20:47 pid:9 worker[none:20] exit with status 64000
+2024-05-20 12:42:10 pid:7 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-20 12:43:38 pid:7 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-20 12:43:42 pid:11 Error: Call to a member function prepare() on null in /var/www/html/wsserver.php:54
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"questi...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #32)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(560): Workerman\Worker::forkWorkers()
+#6 /var/www/html/wsserver.php(228): Workerman\Worker::runAll()
+#7 {main}
+2024-05-20 12:43:42 pid:9 worker[none:11] exit with status 64000
+2024-05-20 13:42:59 pid:7 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-20 13:43:39 pid:11 Error: Call to a member function prepare() on null in /var/www/html/wsserver.php:54
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"questi...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #35)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(560): Workerman\Worker::forkWorkers()
+#6 /var/www/html/wsserver.php(228): Workerman\Worker::runAll()
+#7 {main}
+2024-05-20 13:43:39 pid:9 worker[none:11] exit with status 64000
+2024-05-20 13:43:43 pid:14 Error: Call to a member function prepare() on null in /var/www/html/wsserver.php:54
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"questi...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #33)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(228): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 13:43:43 pid:9 worker[none:14] exit with status 64000
+2024-05-20 13:44:28 pid:15 Error: Call to a member function prepare() on null in /var/www/html/wsserver.php:54
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"questi...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #37)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(228): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 13:44:28 pid:9 worker[none:15] exit with status 64000
+2024-05-20 13:45:10 pid:16 Error: Call to a member function prepare() on null in /var/www/html/wsserver.php:54
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"questi...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #35)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(228): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 13:45:10 pid:9 worker[none:16] exit with status 64000
+2024-05-20 13:45:19 pid:17 Error: Call to a member function prepare() on null in /var/www/html/wsserver.php:54
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"questi...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #36)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(228): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 13:45:19 pid:9 worker[none:17] exit with status 64000
+2024-05-20 13:45:21 pid:18 Error: Call to a member function prepare() on null in /var/www/html/wsserver.php:54
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"questi...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #37)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(228): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 13:45:21 pid:9 worker[none:18] exit with status 64000
+2024-05-20 13:45:36 pid:19 Error: Call to a member function prepare() on null in /var/www/html/wsserver.php:54
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"questi...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #38)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(228): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 13:45:36 pid:9 worker[none:19] exit with status 64000
+2024-05-20 13:45:38 pid:20 Error: Call to a member function prepare() on null in /var/www/html/wsserver.php:54
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"questi...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #39)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(228): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 13:45:38 pid:9 worker[none:20] exit with status 64000
+2024-05-20 13:45:39 pid:21 Error: Call to a member function prepare() on null in /var/www/html/wsserver.php:54
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"questi...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #40)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(228): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 13:45:39 pid:9 worker[none:21] exit with status 64000
+2024-05-20 13:45:39 pid:22 Error: Call to a member function prepare() on null in /var/www/html/wsserver.php:54
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"questi...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #41)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(228): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 13:45:39 pid:9 worker[none:22] exit with status 64000
+2024-05-20 13:45:40 pid:23 Error: Call to a member function prepare() on null in /var/www/html/wsserver.php:54
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"questi...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #42)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(228): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 13:45:40 pid:9 worker[none:23] exit with status 64000
+2024-05-20 13:46:18 pid:24 Error: Call to a member function prepare() on null in /var/www/html/wsserver.php:54
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"questi...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #43)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(228): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 13:46:18 pid:9 worker[none:24] exit with status 64000
+2024-05-20 13:46:18 pid:25 Error: Call to a member function prepare() on null in /var/www/html/wsserver.php:54
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"questi...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #44)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(228): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 13:46:18 pid:9 worker[none:25] exit with status 64000
+2024-05-20 13:46:20 pid:26 Error: Call to a member function prepare() on null in /var/www/html/wsserver.php:54
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{"type":"questi...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #45)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(228): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 13:46:20 pid:9 worker[none:26] exit with status 64000
+2024-05-20 13:47:19 pid:27 Error: Call to a member function prepare() on null in /var/www/html/wsserver.php:54
+Stack trace:
+#0 /var/www/html/vendor/workerman/workerman/Connection/TcpConnection.php(646): {closure}(Object(Workerman\Connection\TcpConnection), '{\n  "type": "qu...')
+#1 /var/www/html/vendor/workerman/workerman/Events/Select.php(311): Workerman\Connection\TcpConnection->baseRead(Resource id #46)
+#2 /var/www/html/vendor/workerman/workerman/Worker.php(1638): Workerman\Events\Select->loop()
+#3 /var/www/html/vendor/workerman/workerman/Worker.php(1429): Workerman\Worker::forkOneWorkerForLinux(Object(Workerman\Worker))
+#4 /var/www/html/vendor/workerman/workerman/Worker.php(1403): Workerman\Worker::forkWorkersForLinux()
+#5 /var/www/html/vendor/workerman/workerman/Worker.php(1788): Workerman\Worker::forkWorkers()
+#6 /var/www/html/vendor/workerman/workerman/Worker.php(1724): Workerman\Worker::monitorWorkersForLinux()
+#7 /var/www/html/vendor/workerman/workerman/Worker.php(562): Workerman\Worker::monitorWorkers()
+#8 /var/www/html/wsserver.php(228): Workerman\Worker::runAll()
+#9 {main}
+2024-05-20 13:47:19 pid:9 worker[none:27] exit with status 64000

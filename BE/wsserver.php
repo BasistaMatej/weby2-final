@@ -3,8 +3,9 @@ use Workerman\Worker;
 use Workerman\Connection\TcpConnection;
 
 require __DIR__ . '/vendor/autoload.php';
+require 'include/db_connect.php';
 
-$ws_worker = new Worker("websocket://0.0.0.0:9191");
+$ws_worker = new Worker("websocket://0.0.0.0:9999");
 $ws_worker->count = 1;
 
 $rooms = [];  // Each room will have its own players and answers
@@ -42,17 +43,44 @@ $ws_worker->onMessage = function (TcpConnection $connection, $data) use ($ws_wor
   }
 
   switch ($decoded['type']) {
+    case "questionInfo":
+      if (!isset($decoded['roomKey'])) {
+        $connection->send(json_encode(['error' => 'Invalid message format, message must contain "roomKey"']));
+        return;
+      }
 
+      // select from db
+      $roomKey = $decoded['roomKey'];
+      $stmt = $conn->prepare("SELECT template_question_text FROM questions WHERE code = :code");
+      $stmt->bindParam(':code', $roomKey);
+      $stmt->execute();
+
+      // Check if exists
+      if ($stmt->rowCount() == 0) {
+        $connection->send(json_encode(['error' => 'Question not found']));
+        return;
+      }
+
+      $question = $stmt->fetch(PDO::FETCH_ASSOC);
+
+      $dataToSend = [
+        'type' => 'RESPONSE: questionInfo',
+        'roomKey' => $roomKey,
+        'question' => $question['template_question_text']
+      ];
+      $connection->send(json_encode($dataToSend));
+      
+      break;
     case "initRoom":
       if (!isset($decoded['roomKey'])) {
         $connection->send(json_encode(['error' => 'Invalid message format, message must contain "roomKey"']));
         return;
       }
 
-      if ($connection->initialised) {
+      /*if ($connection->initialised) {
         $connection->send(json_encode(['error' => 'Admin already initialised']));
         return;
-      }
+      }*/
 
       $roomKey = $decoded['roomKey'];
       
@@ -141,10 +169,10 @@ $ws_worker->onMessage = function (TcpConnection $connection, $data) use ($ws_wor
     break;
     case 'closeRoom':
       //if player is not admin
-      if (!$connection->admin) {
+      /*if (!$connection->admin) {
         $connection->send(json_encode(['error' => 'Only admin can close the room']));
         return;
-      }
+      }*/
 
       $roomKey = $connection->roomKey;
 

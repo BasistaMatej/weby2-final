@@ -6,7 +6,7 @@ services:
   nginx:
     image: nginx:1.18
     ports:
-      - 9191:9191
+      - 9999:9999
       - 5151:80
     volumes:
       - ./BE/:/var/www/html/
@@ -26,7 +26,7 @@ services:
       context: .
       dockerfile: ./.docker/vue/Dockerfile
     ports:
-      - "5173:80"
+      - "5175:80"
 
   # PhpMyAdmin Service
   phpmyadmin:

@@ -170,6 +170,16 @@ const products = ref([]);
 const isActiveRow = ref(0);
 const router = useRouter();
 
+const socket = new WebSocket('ws://localhost:9999/wss');
+
+socket.onopen = () => {
+  console.log("WebSocket connected");
+};
+
+socket.onmessage = (event) => {
+  console.log("WebSocket:", event.data);
+};
+
 const viewHistory = (row) => {
   router.push(`history/${row.template_question_id}/${row.type}`);
 }
@@ -280,6 +290,11 @@ const activateItem = async (row, lang) => {
     } else {
       const data = await response.json();
       products.value = data.questions;
+
+      // Init room ws
+      const message = {'type': 'initRoom', 'roomKey': data.questions.filter(item => item.template_question_id == row.template_question_id)[0].code };
+      socket.send(JSON.stringify(message));
+
       isActiveQr.value = true;
       isActiveRow.value = row.template_question_id;
     }
@@ -313,6 +328,12 @@ const closeItem = async (row, lang) => {
     showError(data.error);
     return;
   } else {
+    // Close room ws
+    console.log(row.code);
+    const message = {'type': 'closeRoom', 'roomKey': row.code };
+    console.log(message);
+    socket.send(JSON.stringify(message));
+
     const response = await initialGetFetch();
     showSuccess(lang);
     if (!response.ok) {
@@ -320,7 +341,6 @@ const closeItem = async (row, lang) => {
     } else {
       const data = await response.json();
       products.value = data.questions;
-      console.log(products.value);
     }
   }
 };

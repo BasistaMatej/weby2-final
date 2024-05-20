@@ -54,6 +54,11 @@ const router = createRouter({
       name: 'History',
       component: () => import('../views/HistoryView.vue')
     },
+    {
+      path: '/:code',
+      name: 'Question',
+      component: () => import('../views/LiveQuestionView.vue')
+    },
   ]
 })
 

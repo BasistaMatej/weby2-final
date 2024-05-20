@@ -147,7 +147,7 @@ const checkPasswords = () => {
 const submitFormPassword = async () => {
     isLoading.value = true;
     if (isEmailValid.value == true) {
-        const response = await fetch('http://node17.webte.fei.stuba.sk:5151/change-password/request-reset', {
+        const response = await fetch('http://localhost:5151/change-password/request-reset', {
             method: 'POST',
 
             body: JSON.stringify({
@@ -170,7 +170,7 @@ const submitFormPassword = async () => {
 const submitForm = async () => {
     isLoading.value = true;
     if (isEmailValid.value == true && isValidPassword.value == true) {
-        const response = await fetch('http://node17.webte.fei.stuba.sk:5151/login', {
+        const response = await fetch('http://localhost:5151/login', {
             method: 'POST',
             body: JSON.stringify({
                 email: email.value,

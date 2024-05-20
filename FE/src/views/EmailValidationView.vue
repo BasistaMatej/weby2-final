@@ -40,7 +40,7 @@ const isError = ref(false);
 
 onMounted(async () => {
   try {
-    const response = await fetch('http://node17.webte.fei.stuba.sk:5151/registration', {
+    const response = await fetch('http://localhost:5151/registration', {
       method: 'GET',
       headers: {
         'AUTHORIZATION': 'Bearer ' + route.params.token
