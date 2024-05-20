@@ -22,6 +22,8 @@ services:
 
   # Vue.js 3
   vue:
+    volumes:
+      - ./.docker/nginx/conf.d/vue.conf:/etc/nginx/conf.d/vue.conf:r
     build:
       context: .
       dockerfile: ./.docker/vue/Dockerfile
