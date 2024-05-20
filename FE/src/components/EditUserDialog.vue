@@ -113,7 +113,8 @@ const showSuccess = (errorMessage) => {
 setStatuses(lang_id.value);
 const saveUser = async () => {
   if (isEmailValid.value == true && isNameValid.value == true && isSurnameValid.value == true && isValidPassword.value == true) {
-    if (id === null) {
+
+    if (id.value === null) {
       try {
         const response = await auth_fetch(`/user`, "POST", { "name": name.value, "surname": surname.value, "password": password.value, "email": email.value, "status": selectedStatus.value.id });
         showSuccess("User created succesfully!");

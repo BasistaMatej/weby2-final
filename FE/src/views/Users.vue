@@ -62,7 +62,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import AuthNavBar from '@/components/AuthNavBar.vue';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
@@ -208,6 +208,19 @@ const getSeverity = (status) => {
       return null;
   }
 }
+
+watch(showDialog, async () => {
+  if (showDialog.value == false) {
+    console.log("JEDIAL");
+    const response = await initialGetFetch();
+    if (!response.ok) {
+      const data = await response.json();
+    } else {
+      const data = await response.json();
+      products.value = data.users;
+    }
+  }
+})
 
 </script>
 
