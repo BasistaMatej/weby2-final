@@ -929,3 +929,5 @@ Stack trace:
 2024-05-20 19:02:38 pid:8 worker[none:16] exit with status 64000
 2024-05-20 20:39:28 pid:7 Workerman[./wsserver.php] start in DAEMON mode
 2024-05-20 20:40:07 pid:7 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-20 20:43:04 pid:7 Workerman[./wsserver.php] start in DAEMON mode
+2024-05-20 20:44:23 pid:6 Workerman[./wsserver.php] start in DAEMON mode

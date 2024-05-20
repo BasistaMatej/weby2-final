@@ -5,7 +5,7 @@ WORKDIR /app
 COPY FE /app
 
 RUN npm install
-RUN npm run dev
+RUN npm run build
 
 FROM nginx:latest
 
