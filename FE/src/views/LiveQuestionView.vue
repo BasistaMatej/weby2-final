@@ -1,6 +1,6 @@
 
 <template>
-  <div class="container">
+  <div class="container mt-5">
     <Card v-if="errorText !== ''" class="text-center">
       <template #title>{{$t('error')}}</template>
       <template #content>
@@ -26,8 +26,19 @@
         <QuestionWithAnsvers :question="questtionText" @button-clicked="handleButtonClick" :answers="choiceAnswers" v-else />
       </div>
       <div v-else>
-        <div >
-
+        <div>
+          <h1 class="text-center">Odpovede</h1>
+          <div class="flex flex-column gap-3">
+            <div class="box-line my-1" v-for="answer in allAnswers" :key="answer.answer_id">
+              <div class="flex flex-row gap-3 px-2 py-1" :style="'background: '+((myAnswer == answer.answer_id) ? '#D0BDFB' : 'var(--primary-color)')+'; width: '+answer.count/maxAns*100+'%; border-radius: 1em'">
+                <h2 style="color: #444">{{ answer.answer_id }}</h2>
+                <h5 style="color: #444">{{ answer.count }}</h5>
+              </div>
+            </div>
+          </div>
+          <div class="mt-5">
+            <h6 style="background: #D0BDFB; border-radius: 1em" class="p-3 d-inline-block">Tvoja odpoved</h6>
+          </div>
         </div>
       </div>
     </div>
@@ -54,6 +65,8 @@ const answered = ref(false);
 const questtionText = ref('');
 const type = ref(0);
 
+const maxAns = ref(0);
+
 const choiceAnswers = ref([]);
 
 const myAnswer = ref('');
@@ -64,7 +77,7 @@ socket.onopen = () => {
 };
 
 socket.onmessage = async (event) => {
-  console.log("WebSocket message received:", event.data);
+  //console.log("WebSocket message received:", event.data);
   const data = JSON.parse(event.data);
   switch(data.type) {
     case 'initBE':
@@ -87,27 +100,31 @@ socket.onmessage = async (event) => {
       }
       break;
     case 'RESPONSE: initPlayer':
+      console.log(data);
       myAnswer.value = data.my_answer;
-      allAnswers.value = data.all_answers;
+      let updatedAllAnswers = [];
+
+        for (const key in data.all_answers) {
+          updatedAllAnswers.push({answer_id: key, count: data.all_answers[key]});
+        }
+      
+      updatedAllAnswers.sort((a, b) => b.count - a.count);
+      maxAns.value = updatedAllAnswers[0].count;
+
+      allAnswers.value = updatedAllAnswers;
       break;
     case 'updateAnswers':
       if(type.value === 1) {
-        const updatedAllAnswers = { ...allAnswers.value };
+        const obj = allAnswers.value.find(i => i.answer_id.toString() == data.answers.toString());
 
-        for (const key in allAnswers.value) {
-          if (key === data.answers) {
-            updatedAllAnswers[key] = allAnswers.value[key] + 1;
-          } else {
-            updatedAllAnswers[key] = allAnswers.value[key];
-          }
+        if(obj) {
+          obj.count += 1;
+        } else {
+          allAnswers.value.push({answer_id: data.answers, count: 1});
         }
-
-        if (!Object.keys(updatedAllAnswers).includes(data.answers)) {
-          updatedAllAnswers[data.answers] = 1;
-        }
-
-        allAnswers.value = updatedAllAnswers;
-        console.log(updatedAllAnswers);
+        const updatedAllAnswers = allAnswers.value;
+        updatedAllAnswers.sort((a, b) => b.count - a.count);
+        maxAns.value = updatedAllAnswers[0].count;
       }
       break;
     case 'closeRoom':
@@ -122,7 +139,7 @@ socket.onmessage = async (event) => {
 };
 
 socket.onclose = (event) => {
-  console.log("WebSocket connection closed:", event.code);
+  //console.log("WebSocket connection closed:", event.code);
 };
 
 const sendMessage = (type, code, fields) => {

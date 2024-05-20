@@ -41,7 +41,7 @@ watch(
 
 const submitAnsver = async () => {
   if (selectedAnsvers.value) {
-    emits('button-clicked', selectedAnsvers.value);
+    emits('button-clicked', selectedAnsvers.value.trim());
     showSuccess();
   } else {
     showError("Odpoveď nesmie byť prázdna!");
