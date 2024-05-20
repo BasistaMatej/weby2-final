@@ -32,6 +32,10 @@ class Room
         return $this->players;
     }
 
+    public function getAnswers() {
+        return $this->players;
+    }
+
     public function removePlayer(TcpConnection $connection)
     {
         unset($this->players[$connection->uuid]);
@@ -159,7 +163,7 @@ $ws_worker->onMessage = function (TcpConnection $connection, $data) use ($ws_wor
               $dataToSend = [
                 'type' => 'RESPONSE: closeRoom',
                 'roomKey' => $roomKey,
-           //     'all_answers' => $rooms[$roomKey]['answers'],
+                'all_answers' => $rooms[$roomKey]->getAnswers(),
                 'message' => 'Room closed successfully'
               ];
               $connection->send(json_encode($dataToSend));
