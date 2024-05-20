@@ -4,7 +4,7 @@
           <h1 class="text-center">{{ questionText }}</h1>
           <div class="flex flex-column gap-3">
               <div class="box-line" v-for="ansver of ansvers" :key="ansver.answer_id">
-                  <RadioButton v-model="selectedAnsvers" name="ansver" :value="ansver.answer_id"  />
+                  <RadioButton v-model="selectedAnsvers" name="ansver" :value="ansver.answer_text"  />
                   <label :for="ansver.answer_id">{{ ansver.answer_text }}</label>
               </div>
           </div>
@@ -49,10 +49,6 @@ watch(
     ansvers.value = props.answers;
   }
 );
-
-watch([selectedAnsvers], () => {
-    console.log(selectedAnsvers.value); //ZAKOMENTOVAT
-})
 
 const submitAnsver = async () => {
   if (selectedAnsvers.value) {
